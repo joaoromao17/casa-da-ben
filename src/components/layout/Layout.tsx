@@ -13,7 +13,7 @@ const Layout = ({ children }: LayoutProps) => {
       <Navbar />
       <main className="flex-grow">
         {children}
-        <div className="fixed bottom-4 right-4 bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-xs font-medium border border-gray-300 shadow-sm">
+        <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-3 py-1 rounded-full text-xs font-medium border border-gray-700 shadow-sm">
           Backend: Java Spring Boot
         </div>
       </main>
