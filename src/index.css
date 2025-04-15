@@ -13,7 +13,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 221.2 83.2% 53.3%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -35,19 +35,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -96,6 +89,52 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-['Open_Sans'];
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-['Montserrat'] font-semibold;
+  }
+}
+
+@layer components {
+  .container-church {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .section-title {
+    @apply text-3xl sm:text-4xl font-bold text-church-800 mb-6;
+  }
+  
+  .section-subtitle {
+    @apply text-xl font-medium text-church-600 mb-4;
+  }
+  
+  .card-church {
+    @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300;
+  }
+  
+  .btn-primary {
+    @apply bg-church-600 hover:bg-church-700 text-white font-semibold py-2 px-4 rounded-md transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-church-gold hover:bg-church-goldLight text-church-900 font-semibold py-2 px-4 rounded-md transition-colors;
+  }
+  
+  .btn-outline {
+    @apply border border-church-600 text-church-600 hover:bg-church-600 hover:text-white font-semibold py-2 px-4 rounded-md transition-colors;
+  }
+  
+  .nav-link {
+    @apply text-church-800 hover:text-church-600 font-medium transition-colors;
+  }
+  
+  .nav-link-active {
+    @apply text-church-600 font-semibold;
+  }
+
+  .verse-box {
+    @apply bg-church-50 border-l-4 border-church-gold p-4 rounded-r-md italic;
   }
 }
