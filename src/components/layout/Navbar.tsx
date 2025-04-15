@@ -26,7 +26,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <span className="text-2xl font-['Montserrat'] font-bold text-church-800">Casa da <span className="text-church-600">Benção</span></span>
+            <span className="text-2xl font-['Montserrat'] font-bold text-church-900">Casa da <span className="text-church-700">Benção</span></span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -38,12 +38,12 @@ const Navbar = () => {
                 Ministérios <ChevronDown className="ml-1 h-4 w-4" />
               </button>
               <div className="absolute z-10 hidden group-hover:block bg-white shadow-lg rounded-md py-2 w-48">
-                <Link to="/ministerios/louvor" className="block px-4 py-2 hover:bg-church-50">Louvor</Link>
-                <Link to="/ministerios/jovens" className="block px-4 py-2 hover:bg-church-50">Jovens</Link>
-                <Link to="/ministerios/casais" className="block px-4 py-2 hover:bg-church-50">Casais</Link>
-                <Link to="/ministerios/infantil" className="block px-4 py-2 hover:bg-church-50">Infantil</Link>
-                <Link to="/ministerios/intercessao" className="block px-4 py-2 hover:bg-church-50">Intercessão</Link>
-                <Link to="/ministerios/midia" className="block px-4 py-2 hover:bg-church-50">Mídia</Link>
+                <Link to="/ministerios/louvor" className="block px-4 py-2 hover:bg-church-100">Louvor</Link>
+                <Link to="/ministerios/jovens" className="block px-4 py-2 hover:bg-church-100">Jovens</Link>
+                <Link to="/ministerios/casais" className="block px-4 py-2 hover:bg-church-100">Casais</Link>
+                <Link to="/ministerios/infantil" className="block px-4 py-2 hover:bg-church-100">Infantil</Link>
+                <Link to="/ministerios/intercessao" className="block px-4 py-2 hover:bg-church-100">Intercessão</Link>
+                <Link to="/ministerios/midia" className="block px-4 py-2 hover:bg-church-100">Mídia</Link>
               </div>
             </div>
             <Link to="/estudos" className="nav-link">Estudos</Link>
@@ -71,7 +71,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden">
-            <button onClick={toggleMenu} className="text-church-800 focus:outline-none">
+            <button onClick={toggleMenu} className="text-church-900 focus:outline-none">
               {isMenuOpen ? (
                 <X className="h-6 w-6" />
               ) : (
@@ -92,12 +92,12 @@ const Navbar = () => {
                   Ministérios <ChevronDown className="h-4 w-4" />
                 </summary>
                 <div className="pl-4 mt-2 space-y-2">
-                  <Link to="/ministerios/louvor" className="block py-2 hover:text-church-600">Louvor</Link>
-                  <Link to="/ministerios/jovens" className="block py-2 hover:text-church-600">Jovens</Link>
-                  <Link to="/ministerios/casais" className="block py-2 hover:text-church-600">Casais</Link>
-                  <Link to="/ministerios/infantil" className="block py-2 hover:text-church-600">Infantil</Link>
-                  <Link to="/ministerios/intercessao" className="block py-2 hover:text-church-600">Intercessão</Link>
-                  <Link to="/ministerios/midia" className="block py-2 hover:text-church-600">Mídia</Link>
+                  <Link to="/ministerios/louvor" className="block py-2 hover:text-church-900">Louvor</Link>
+                  <Link to="/ministerios/jovens" className="block py-2 hover:text-church-900">Jovens</Link>
+                  <Link to="/ministerios/casais" className="block py-2 hover:text-church-900">Casais</Link>
+                  <Link to="/ministerios/infantil" className="block py-2 hover:text-church-900">Infantil</Link>
+                  <Link to="/ministerios/intercessao" className="block py-2 hover:text-church-900">Intercessão</Link>
+                  <Link to="/ministerios/midia" className="block py-2 hover:text-church-900">Mídia</Link>
                 </div>
               </details>
               <Link to="/estudos" className="nav-link py-2">Estudos</Link>
@@ -127,7 +127,7 @@ const Navbar = () => {
       </div>
 
       {/* Quick Access Buttons */}
-      <div className="bg-church-800 text-white py-3">
+      <div className="bg-church-900 text-white py-3">
         <div className="container-church flex flex-wrap justify-center sm:justify-between items-center gap-3">
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
             <Link to="/cadastro">
