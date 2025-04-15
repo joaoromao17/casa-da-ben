@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,16 +14,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 221.2 83.2% 53.3%;
+    --primary: 220 13% 28%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 220 14% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8.9% 46.1%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 220 14% 96%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -115,7 +116,7 @@
   }
   
   .btn-primary {
-    @apply bg-church-600 hover:bg-church-700 text-white font-semibold py-2 px-4 rounded-md transition-colors;
+    @apply bg-church-700 hover:bg-church-800 text-white font-semibold py-2 px-4 rounded-md transition-colors;
   }
   
   .btn-secondary {
@@ -135,6 +136,6 @@
   }
 
   .verse-box {
-    @apply bg-church-50 border-l-4 border-church-gold p-4 rounded-r-md italic;
+    @apply bg-church-50 border-l-4 border-church-300 p-4 rounded-r-md italic;
   }
 }
