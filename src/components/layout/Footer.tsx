@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { 
   Instagram, 
@@ -25,7 +26,7 @@ const Footer = () => {
             </p>
             <div className="flex space-x-4">
               <a 
-                href="https://instagram.com" 
+                href="https://www.instagram.com/icb_610/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-white hover:text-church-gold transition-colors"

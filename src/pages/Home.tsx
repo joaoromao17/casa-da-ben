@@ -364,13 +364,13 @@ const Home = () => {
 
           <div className="text-center mt-10">
             <a 
-              href="https://instagram.com" 
+              href="https://www.instagram.com/icb_610/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center"
             >
               <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-                <Instagram className="mr-2 h-5 w-5" /> @casadabencao
+                <Instagram className="mr-2 h-5 w-5" /> @icb_610
               </Button>
             </a>
           </div>
