@@ -94,7 +94,7 @@ const Home = () => {
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/sobre">
-                  <Button className="bg-black/80 text-white hover:bg-black/70 text-lg py-6 px-8">
+                  <Button className="bg-black/80 text-white hover:bg-black/60 text-lg py-6 px-8">
                     Conheça Nossa Igreja
                   </Button>
                 </Link>
@@ -134,11 +134,11 @@ const Home = () => {
       </section>
 
       {/* Welcome Section */}
-      <section className="py-16 bg-church-50">
+      <section className="py-16 bg-gray-50">
         <div className="container-church">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="section-title">Bem-vindo à Casa da Benção</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à Casa da Benção</h2>
               <p className="text-lg text-gray-700 mb-6">
                 Somos uma igreja comprometida com a propagação do evangelho de Jesus Cristo e o 
                 desenvolvimento espiritual de cada membro. Nossa missão é impactar vidas através 
@@ -168,7 +168,7 @@ const Home = () => {
       {/* Verse of the Day */}
       <section className="py-16 bg-white">
         <div className="container-church max-w-3xl">
-          <h2 className="section-title text-center">Versículo do Dia</h2>
+          <h2 className="text-4xl font-bold text-center mb-6">Versículo do Dia</h2>
           <VerseCard verse={verseOfDay.verse} reference={verseOfDay.reference} />
           <div className="text-center mt-8">
             <Link to="/estudos">
