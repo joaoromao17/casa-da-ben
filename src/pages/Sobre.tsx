@@ -1,4 +1,3 @@
-
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -40,7 +39,7 @@ const galeria = [
   "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&h=400",
   "https://images.unsplash.com/photo-1541911087797-f13abca6b2ad?auto=format&fit=crop&w=600&h=400",
   "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=600&h=400",
-  "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&h=400",
+  "https://images.unsplash.com/photo-1470225620780-dba8ba36b2ad?auto=format&fit=crop&w=600&h=400",
   "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=600&h=400",
 ];
 
@@ -84,7 +83,7 @@ const Sobre = () => {
             <TabsContent value="historia">
               <div className="grid md:grid-cols-2 gap-12 items-center">
                 <div>
-                  <h2 className="section-title">Nossa História</h2>
+                  <h2 className="text-3xl font-bold text-church-900 mb-6">Nossa História</h2>
                   <div className="space-y-4 text-gray-700">
                     <p>
                       A Igreja Casa da Benção teve início em 1995, quando um pequeno grupo de fiéis começou a se reunir nas casas para estudos bíblicos e momentos de oração.
@@ -138,7 +137,7 @@ const Sobre = () => {
             {/* Aba de Liderança */}
             <TabsContent value="lideranca">
               <div className="text-center mb-12">
-                <h2 className="section-title">Nossa Liderança</h2>
+                <h2 className="text-3xl font-bold text-church-900 mb-4">Nossa Liderança</h2>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                   Conheça os líderes que Deus levantou para servir e conduzir nossa igreja
                 </p>
@@ -242,7 +241,7 @@ const Sobre = () => {
             <TabsContent value="localizacao">
               <div className="grid md:grid-cols-2 gap-12">
                 <div>
-                  <h2 className="section-title">Onde Estamos</h2>
+                  <h2 className="text-3xl font-bold text-church-900 mb-6">Onde Estamos</h2>
                   <div className="space-y-6">
                     <div className="flex items-start space-x-3">
                       <MapPin className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
@@ -341,7 +340,7 @@ const Sobre = () => {
             {/* Aba de Galeria */}
             <TabsContent value="galeria">
               <div className="text-center mb-12">
-                <h2 className="section-title">Nossa Galeria</h2>
+                <h2 className="text-3xl font-bold text-church-900 mb-4">Nossa Galeria</h2>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                   Momentos especiais da nossa igreja ao longo dos anos
                 </p>
