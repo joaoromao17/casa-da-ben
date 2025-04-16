@@ -24,37 +24,39 @@ const Navbar = () => {
     <nav className="bg-white shadow-md">
       <div className="container-church py-4">
         <div className="flex justify-between items-center">
-          {/* Logo */}
-          <Link to="/" className="flex items-center ml-4"> {/* Added ml-4 to push the logo slightly to the left */}
+          {/* Logo on the left with spacing */}
+          <Link to="/" className="flex items-center pl-2"> 
             <span className="text-2xl font-['Montserrat'] font-bold text-church-900">Casa da <span className="text-church-700">Benção 610</span></span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
-            <Link to="/" className="nav-link">Início</Link>
-            <Link to="/sobre" className="nav-link">Sobre</Link>
-            <div className="relative group">
-              <button className="nav-link flex items-center">
-                Ministérios <ChevronDown className="ml-1 h-4 w-4" />
-              </button>
-              <div className="absolute z-10 hidden group-hover:block bg-white shadow-lg rounded-md py-2 w-48">
-                <Link to="/ministerios/louvor" className="block px-4 py-2 hover:bg-church-100">Louvor</Link>
-                <Link to="/ministerios/jovens" className="block px-4 py-2 hover:bg-church-100">Jovens</Link>
-                <Link to="/ministerios/casais" className="block px-4 py-2 hover:bg-church-100">Casais</Link>
-                <Link to="/ministerios/infantil" className="block px-4 py-2 hover:bg-church-100">Infantil</Link>
-                <Link to="/ministerios/intercessao" className="block px-4 py-2 hover:bg-church-100">Intercessão</Link>
-                <Link to="/ministerios/midia" className="block px-4 py-2 hover:bg-church-100">Mídia</Link>
+          {/* Desktop Navigation centered */}
+          <div className="hidden lg:flex items-center justify-center flex-1 mx-4">
+            <div className="flex space-x-8">
+              <Link to="/" className="nav-link">Início</Link>
+              <Link to="/sobre" className="nav-link">Sobre</Link>
+              <div className="relative group">
+                <button className="nav-link flex items-center">
+                  Ministérios <ChevronDown className="ml-1 h-4 w-4" />
+                </button>
+                <div className="absolute z-10 hidden group-hover:block bg-white shadow-lg rounded-md py-2 w-48">
+                  <Link to="/ministerios/louvor" className="block px-4 py-2 hover:bg-church-100">Louvor</Link>
+                  <Link to="/ministerios/jovens" className="block px-4 py-2 hover:bg-church-100">Jovens</Link>
+                  <Link to="/ministerios/casais" className="block px-4 py-2 hover:bg-church-100">Casais</Link>
+                  <Link to="/ministerios/infantil" className="block px-4 py-2 hover:bg-church-100">Infantil</Link>
+                  <Link to="/ministerios/intercessao" className="block px-4 py-2 hover:bg-church-100">Intercessão</Link>
+                  <Link to="/ministerios/midia" className="block px-4 py-2 hover:bg-church-100">Mídia</Link>
+                </div>
               </div>
+              <Link to="/estudos" className="nav-link">Estudos</Link>
+              <Link to="/eventos" className="nav-link">Eventos</Link>
+              <Link to="/contribuicoes" className="nav-link">Contribuições</Link>
+              <Link to="/testemunhos" className="nav-link">Testemunhos</Link>
+              <Link to="/contato" className="nav-link">Contato</Link>
             </div>
-            <Link to="/estudos" className="nav-link">Estudos</Link>
-            <Link to="/eventos" className="nav-link">Eventos</Link>
-            <Link to="/contribuicoes" className="nav-link">Contribuições</Link>
-            <Link to="/testemunhos" className="nav-link">Testemunhos</Link>
-            <Link to="/contato" className="nav-link">Contato</Link>
           </div>
 
-          {/* Authentication Buttons */}
-          <div className="hidden lg:flex items-center space-x-4">
+          {/* Authentication Buttons on the right with spacing */}
+          <div className="hidden lg:flex items-center space-x-4 pr-2">
             {isLoggedIn ? (
               <Button className="btn-primary">Área do Membro</Button>
             ) : (
