@@ -19,7 +19,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Section */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Casa da Benção 610</h3>
+            <h3 className="text-xl font-bold mb-4">ICB 610</h3>
             <p className="mb-4 text-gray-300">
               Igreja comprometida com a propagação do evangelho de Jesus Cristo e o 
               desenvolvimento espiritual de cada membro.
@@ -158,7 +158,7 @@ const Footer = () => {
         
         {/* Bottom Footer */}
         <div className="text-center text-gray-400">
-          <p>&copy; {currentYear} Igreja Casa da Benção 610. Todos os direitos reservados.</p>
+          <p>&copy; {currentYear} ICB 610. Todos os direitos reservados.</p>
           <p className="mt-2">
             <Link to="/politica-de-privacidade" className="hover:text-white transition-colors">
               Política de Privacidade

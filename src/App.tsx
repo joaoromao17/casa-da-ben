@@ -9,6 +9,7 @@ import Sobre from "./pages/Sobre";
 import Cadastro from "./pages/Cadastro";
 import Login from "./pages/Login";
 import Estudos from "./pages/Estudos";
+import Eventos from "./pages/Eventos";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/login" element={<Login />} />
           <Route path="/estudos" element={<Estudos />} />
+          <Route path="/eventos" element={<Eventos />} />
           {/* Outras rotas serão adicionadas conforme necessário */}
           <Route path="*" element={<NotFound />} />
         </Routes>
