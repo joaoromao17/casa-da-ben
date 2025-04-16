@@ -288,7 +288,7 @@ const Home = () => {
       <section className="py-16 bg-white">
         <div className="container-church">
           <div className="flex justify-between items-center mb-10">
-            <h2 className="section-title">Testemunhos</h2>
+            <h2 className="text-4xl font-bold text-church-800">Testemunhos</h2>
             <Link to="/testemunhos">
               <Button variant="ghost" className="text-church-600 hover:text-church-800">
                 Ver Todos <ArrowRight className="ml-2 h-4 w-4" />
@@ -343,10 +343,10 @@ const Home = () => {
       </section>
 
       {/* Instagram Feed */}
-      <section className="py-16 bg-church-50">
+      <section className="py-16 bg-gray-50">
         <div className="container-church">
           <div className="text-center mb-12">
-            <h2 className="section-title">Siga-nos no Instagram</h2>
+            <h2 className="text-4xl font-bold text-church-800">Siga-nos no Instagram</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Acompanhe nossas atividades e mantenha-se atualizado com as novidades da igreja
             </p>
