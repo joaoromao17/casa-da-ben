@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Estudos from "./pages/Estudos";
 import Eventos from "./pages/Eventos";
 import Contribuicoes from "./pages/Contribuicoes";
+import Testemunhos from "./pages/Testemunhos";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/estudos" element={<Estudos />} />
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/contribuicoes" element={<Contribuicoes />} />
+          <Route path="/testemunhos" element={<Testemunhos />} />
           {/* Outras rotas serão adicionadas conforme necessário */}
           <Route path="*" element={<NotFound />} />
         </Routes>
