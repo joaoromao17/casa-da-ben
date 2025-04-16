@@ -386,12 +386,12 @@ const Home = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/cadastro">
-              <Button className="bg-white text-church-800 hover:bg-church-100 text-lg py-6 px-8">
+              <Button className="bg-black text-white hover:bg-white hover:text-black text-lg py-6 px-8">
                 Cadastre-se
               </Button>
             </Link>
             <Link to="/contato">
-              <Button variant="outline" className="border-white text-white hover:bg-white/10 text-lg py-6 px-8">
+              <Button variant="outline" className="border-black text-black bg-white hover:bg-black hover:text-white text-lg py-6 px-8">
                 Fale Conosco
               </Button>
             </Link>
