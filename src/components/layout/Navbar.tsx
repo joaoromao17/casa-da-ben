@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ const Navbar = () => {
       <div className="container-church py-4">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center ml-4"> {/* Added ml-4 to push the logo slightly to the left */}
             <span className="text-2xl font-['Montserrat'] font-bold text-church-900">Casa da <span className="text-church-700">Benção 610</span></span>
           </Link>
 
