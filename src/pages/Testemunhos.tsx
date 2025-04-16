@@ -172,7 +172,7 @@ const Testemunhos = () => {
                   </div>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos</SelectItem>
+                  <SelectItem value="todos">Todos</SelectItem>
                   <SelectItem value="cura">Cura</SelectItem>
                   <SelectItem value="família">Família</SelectItem>
                   <SelectItem value="provisão">Provisão</SelectItem>
