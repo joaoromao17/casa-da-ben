@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -95,7 +94,7 @@ const Home = () => {
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/sobre">
-                  <Button className="btn-primary text-lg py-6 px-8">
+                  <Button className="bg-black/80 text-white hover:bg-black/70 text-lg py-6 px-8">
                     Conheça Nossa Igreja
                   </Button>
                 </Link>

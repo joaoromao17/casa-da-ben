@@ -60,10 +60,10 @@ const Navbar = () => {
             ) : (
               <>
                 <Link to="/cadastro">
-                  <Button className="btn-outline">Cadastre-se</Button>
+                  <Button className="bg-black/80 text-white hover:bg-black/70 hover:text-white">Cadastre-se</Button>
                 </Link>
                 <Link to="/login">
-                  <Button className="btn-primary">Entrar</Button>
+                  <Button className="bg-black/80 text-white hover:bg-black/70 hover:text-white">Entrar</Button>
                 </Link>
               </>
             )}
@@ -131,17 +131,26 @@ const Navbar = () => {
         <div className="container-church flex flex-wrap justify-center sm:justify-between items-center gap-3">
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
             <Link to="/cadastro">
-              <Button variant="ghost" className="text-white hover:text-church-100 flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                className="text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
+              >
                 <User size={18} /> Cadastre-se
               </Button>
             </Link>
             <Link to="/estudos">
-              <Button variant="ghost" className="text-white hover:text-church-100 flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                className="text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
+              >
                 <BookOpen size={18} /> Escola Bíblica
               </Button>
             </Link>
             <Link to="/eventos">
-              <Button variant="ghost" className="text-white hover:text-church-100 flex items-center gap-2">
+              <Button 
+                variant="ghost" 
+                className="text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
+              >
                 <CalendarDays size={18} /> Eventos
               </Button>
             </Link>
@@ -150,9 +159,12 @@ const Navbar = () => {
             href="https://instagram.com" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-white hover:text-church-100"
           >
-            <Instagram size={20} /> @casadabencao
+            <Button 
+              className="bg-transparent text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
+            >
+              <Instagram size={20} /> @casadabencao
+            </Button>
           </a>
         </div>
       </div>
