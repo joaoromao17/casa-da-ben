@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -216,7 +217,7 @@ const Home = () => {
           <div className="text-center mt-10">
             <p className="text-xl mb-6">Estamos localizados na Av. Principal, 1234, Centro - Sua Cidade/UF</p>
             <Link to="/contato">
-              <Button className="bg-white text-church-800 hover:bg-church-100">
+              <Button className="bg-white text-church-800 hover:bg-church-100 transition-transform hover:scale-105 duration-300">
                 Como Chegar <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
