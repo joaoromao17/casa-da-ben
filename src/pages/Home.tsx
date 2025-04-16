@@ -85,7 +85,7 @@ const Home = () => {
           <div className="absolute inset-0 flex items-center z-20">
             <div className="container-church text-white">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-                Igreja Casa da Benção
+                Igreja Casa da Benção 610
               </h1>
               <p className="text-xl md:text-2xl mb-8 max-w-2xl">
                 "Porque Deus não nos deu o espírito de covardia, mas de poder, de amor e de moderação."
@@ -137,7 +137,7 @@ const Home = () => {
         <div className="container-church">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à Casa da Benção</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à Casa da Benção 610</h2>
               <p className="text-lg text-gray-700 mb-6">
                 Somos uma igreja comprometida com a propagação do evangelho de Jesus Cristo e o 
                 desenvolvimento espiritual de cada membro. Nossa missão é impactar vidas através 
