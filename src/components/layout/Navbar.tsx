@@ -158,14 +158,14 @@ const Navbar = () => {
             </Link>
           </div>
           <a 
-            href="https://instagram.com" 
+            href="https://www.instagram.com/icb_610/" 
             target="_blank" 
             rel="noopener noreferrer"
           >
             <Button 
               className="bg-transparent text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
             >
-              <Instagram size={20} /> @casadabencao
+              <Instagram size={20} /> @icb_610
             </Button>
           </a>
         </div>
