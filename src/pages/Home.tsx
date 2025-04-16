@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,6 @@ import TestimonyCard from "@/components/ui/TestimonyCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Instagram, User, BookOpen, CalendarDays, ArrowRight, ArrowDown } from "lucide-react";
 
-// Dados simulados - Estes seriam buscados de uma API ou backend
 const verseOfDay = {
   verse: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
   reference: "João 3:16"
@@ -80,7 +78,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
         <div className="relative h-[70vh] min-h-[500px]">
           <img 
-            src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1920&h=1080" 
+            src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=800&h=400" 
             alt="Igreja Casa da Benção" 
             className="w-full h-full object-cover"
           />
@@ -229,7 +227,7 @@ const Home = () => {
       <section className="py-16 bg-white">
         <div className="container-church">
           <div className="flex justify-between items-center mb-10">
-            <h2 className="section-title">Próximos Eventos</h2>
+            <h2 className="text-4xl font-bold text-church-800">Próximos Eventos</h2>
             <Link to="/eventos">
               <Button variant="ghost" className="text-church-600 hover:text-church-800">
                 Ver Todos <ArrowRight className="ml-2 h-4 w-4" />
@@ -255,10 +253,10 @@ const Home = () => {
       </section>
 
       {/* Our Ministries */}
-      <section className="py-16 bg-church-50">
+      <section className="py-16 bg-gray-100">
         <div className="container-church">
           <div className="text-center mb-12">
-            <h2 className="section-title">Nossos Ministérios</h2>
+            <h2 className="text-4xl font-bold text-church-800">Nossos Ministérios</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Descubra como você pode servir e crescer em nossa comunidade através dos diversos ministérios
             </p>
@@ -355,7 +353,6 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {/* Aqui seriam mostradas as imagens do Instagram via API */}
             {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
               <div key={item} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
                 <div className="h-full w-full flex items-center justify-center text-gray-400">
