@@ -12,6 +12,7 @@ import Estudos from "./pages/Estudos";
 import Eventos from "./pages/Eventos";
 import Contribuicoes from "./pages/Contribuicoes";
 import Testemunhos from "./pages/Testemunhos";
+import Contato from "./pages/Contato";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/contribuicoes" element={<Contribuicoes />} />
           <Route path="/testemunhos" element={<Testemunhos />} />
+          <Route path="/contato" element={<Contato />} />
           {/* Outras rotas serão adicionadas conforme necessário */}
           <Route path="*" element={<NotFound />} />
         </Routes>
