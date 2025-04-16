@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Layout } from "@/components/layout/Layout";
+import Layout from "@/components/layout/Layout";
 import TestimonyCard from "@/components/ui/TestimonyCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
