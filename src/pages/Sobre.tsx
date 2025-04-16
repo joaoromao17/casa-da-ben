@@ -1,3 +1,4 @@
+
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -69,10 +70,10 @@ const Sobre = () => {
       </section>
 
       {/* Tabs de Conteúdo */}
-      <section className="py-16 bg-white">
+      <section className="py-12 bg-white">
         <div className="container-church">
           <Tabs defaultValue="historia" className="w-full">
-            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 mb-12">
+            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 mb-6">
               <TabsTrigger value="historia">História</TabsTrigger>
               <TabsTrigger value="lideranca">Liderança</TabsTrigger>
               <TabsTrigger value="localizacao">Localização</TabsTrigger>
@@ -377,12 +378,12 @@ const Sobre = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/cultos">
-              <Button className="bg-white text-church-800 hover:bg-church-100 text-lg py-6 px-8">
+              <Button className="bg-white text-black hover:bg-black hover:text-white transition-colors text-lg py-6 px-8">
                 Horários de Culto
               </Button>
             </Link>
             <Link to="/contato">
-              <Button variant="outline" className="border-white text-white hover:bg-white/10 text-lg py-6 px-8">
+              <Button variant="outline" className="bg-white text-black hover:bg-black hover:text-white border-white transition-colors text-lg py-6 px-8">
                 Fale Conosco
               </Button>
             </Link>
