@@ -192,7 +192,6 @@ const Home = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-church-700/50 p-8 rounded-lg text-center">
               <h3 className="text-2xl font-bold mb-3">Domingo</h3>
-              <div className="my-4 border-t border-church-600"></div>
               <p className="text-lg mb-2">Culto da Família</p>
               <p className="text-church-gold font-bold">18:30</p>
             </div>
