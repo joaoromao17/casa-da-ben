@@ -7,81 +7,61 @@ import MinistryCard from "@/components/ui/MinistryCard";
 import TestimonyCard from "@/components/ui/TestimonyCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Instagram, User, BookOpen, CalendarDays, ArrowRight, ArrowDown } from "lucide-react";
-
 const verseOfDay = {
   verse: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
   reference: "João 3:16"
 };
-
-const featuredEvents = [
-  {
-    id: "1",
-    title: "Culto de Celebração",
-    description: "Junte-se a nós para um momento especial de adoração e comunhão. Teremos uma mensagem poderosa e ministração de louvor.",
-    date: new Date(2025, 3, 20),
-    time: "19:00",
-    location: "Templo Principal",
-    imageUrl: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=800&h=400"
-  },
-  {
-    id: "2",
-    title: "Encontro de Jovens",
-    description: "Um evento especial para jovens com música, dinâmicas e uma mensagem direcionada para a nova geração.",
-    date: new Date(2025, 3, 22),
-    time: "20:00",
-    location: "Salão de Eventos",
-    imageUrl: "https://images.unsplash.com/photo-1523803326055-13445def5a7f?auto=format&fit=crop&w=800&h=400"
-  }
-];
-
-const featuredMinistries = [
-  {
-    title: "Ministério de Louvor",
-    description: "Levando a igreja à presença de Deus através da adoração.",
-    imageUrl: "https://images.unsplash.com/photo-1487180144351-b8472da7d491?auto=format&fit=crop&w=800&h=400",
-    slug: "louvor"
-  },
-  {
-    title: "Ministério de Jovens",
-    description: "Desenvolvendo uma nova geração de líderes para o Reino.",
-    imageUrl: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&h=400",
-    slug: "jovens"
-  },
-  {
-    title: "Escola Bíblica",
-    description: "Aprofundando o conhecimento nas escrituras sagradas.",
-    imageUrl: "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=800&h=400",
-    slug: "escola-biblica"
-  }
-];
-
-const recentTestimonies = [
-  {
-    name: "Maria Silva",
-    date: new Date(2025, 3, 15),
-    content: "Depois de muito tempo em oração, fui curada de uma doença que me afligia há anos. Glória a Deus por essa bênção!",
-    isAnonymous: false
-  },
-  {
-    name: "",
-    date: new Date(2025, 3, 10),
-    content: "Minha família estava passando por dificuldades financeiras, mas após participar da campanha de oração, recebemos uma proposta de emprego inesperada.",
-    isAnonymous: true
-  }
-];
-
+const featuredEvents = [{
+  id: "1",
+  title: "Culto de Celebração",
+  description: "Junte-se a nós para um momento especial de adoração e comunhão. Teremos uma mensagem poderosa e ministração de louvor.",
+  date: new Date(2025, 3, 20),
+  time: "19:00",
+  location: "Templo Principal",
+  imageUrl: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=800&h=400"
+}, {
+  id: "2",
+  title: "Encontro de Jovens",
+  description: "Um evento especial para jovens com música, dinâmicas e uma mensagem direcionada para a nova geração.",
+  date: new Date(2025, 3, 22),
+  time: "20:00",
+  location: "Salão de Eventos",
+  imageUrl: "https://images.unsplash.com/photo-1523803326055-13445def5a7f?auto=format&fit=crop&w=800&h=400"
+}];
+const featuredMinistries = [{
+  title: "Ministério de Louvor",
+  description: "Levando a igreja à presença de Deus através da adoração.",
+  imageUrl: "https://images.unsplash.com/photo-1487180144351-b8472da7d491?auto=format&fit=crop&w=800&h=400",
+  slug: "louvor"
+}, {
+  title: "Ministério de Jovens",
+  description: "Desenvolvendo uma nova geração de líderes para o Reino.",
+  imageUrl: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&h=400",
+  slug: "jovens"
+}, {
+  title: "Escola Bíblica",
+  description: "Aprofundando o conhecimento nas escrituras sagradas.",
+  imageUrl: "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=800&h=400",
+  slug: "escola-biblica"
+}];
+const recentTestimonies = [{
+  name: "Maria Silva",
+  date: new Date(2025, 3, 15),
+  content: "Depois de muito tempo em oração, fui curada de uma doença que me afligia há anos. Glória a Deus por essa bênção!",
+  isAnonymous: false
+}, {
+  name: "",
+  date: new Date(2025, 3, 10),
+  content: "Minha família estava passando por dificuldades financeiras, mas após participar da campanha de oração, recebemos uma proposta de emprego inesperada.",
+  isAnonymous: true
+}];
 const Home = () => {
-  return (
-    <Layout>
+  return <Layout>
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
         <div className="relative h-[70vh] min-h-[500px]">
-          <img 
-            src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=800&h=400" 
-            alt="Igreja Casa da Benção" 
-            className="w-full h-full object-cover"
-          />
+          <img src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=800&h=400" alt="Igreja Casa da Benção" className="w-full h-full object-cover" />
           <div className="absolute inset-0 flex items-center z-20">
             <div className="container-church text-white">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
@@ -154,11 +134,7 @@ const Home = () => {
               </Link>
             </div>
             <div>
-              <img 
-                src="https://images.unsplash.com/photo-1511649475669-e288648b2339?auto=format&fit=crop&w=600&h=600" 
-                alt="Membros da Igreja Casa da Benção" 
-                className="rounded-lg shadow-lg max-w-full h-auto"
-              />
+              <img alt="Membros da Igreja Casa da Benção" className="rounded-lg shadow-lg max-w-full h-auto object-fill" src="/lovable-uploads/055ba792-c198-4d19-a42c-971ae55b0e51.jpg" />
             </div>
           </div>
         </div>
@@ -239,18 +215,7 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            {featuredEvents.map(event => (
-              <EventCard 
-                key={event.id}
-                id={event.id}
-                title={event.title}
-                description={event.description}
-                date={event.date}
-                time={event.time}
-                location={event.location}
-                imageUrl={event.imageUrl}
-              />
-            ))}
+            {featuredEvents.map(event => <EventCard key={event.id} id={event.id} title={event.title} description={event.description} date={event.date} time={event.time} location={event.location} imageUrl={event.imageUrl} />)}
           </div>
         </div>
       </section>
@@ -266,15 +231,7 @@ const Home = () => {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {featuredMinistries.map((ministry, index) => (
-              <MinistryCard 
-                key={index}
-                title={ministry.title}
-                description={ministry.description}
-                imageUrl={ministry.imageUrl}
-                slug={ministry.slug}
-              />
-            ))}
+            {featuredMinistries.map((ministry, index) => <MinistryCard key={index} title={ministry.title} description={ministry.description} imageUrl={ministry.imageUrl} slug={ministry.slug} />)}
           </div>
 
           <div className="text-center mt-12">
@@ -306,31 +263,13 @@ const Home = () => {
             </TabsList>
             <TabsContent value="recent">
               <div className="grid md:grid-cols-2 gap-8">
-                {recentTestimonies.map((testimony, index) => (
-                  <TestimonyCard 
-                    key={index}
-                    name={testimony.name}
-                    date={testimony.date}
-                    content={testimony.content}
-                    isAnonymous={testimony.isAnonymous}
-                  />
-                ))}
+                {recentTestimonies.map((testimony, index) => <TestimonyCard key={index} name={testimony.name} date={testimony.date} content={testimony.content} isAnonymous={testimony.isAnonymous} />)}
               </div>
             </TabsContent>
             <TabsContent value="featured">
               <div className="grid md:grid-cols-2 gap-8">
-                <TestimonyCard 
-                  name="João Oliveira"
-                  date={new Date(2025, 2, 20)}
-                  content="Entrei na igreja quando passava por um momento muito difícil na minha vida. Através das orações e apoio dos irmãos, consegui superar o vício e hoje sou um novo homem. Agradeço a Deus por esta igreja!"
-                  isAnonymous={false}
-                />
-                <TestimonyCard 
-                  name="Ana Beatriz"
-                  date={new Date(2025, 1, 15)}
-                  content="Participei da campanha de oração pela minha filha que estava hospitalizada. Os médicos não davam esperança, mas Deus operou um milagre e hoje ela está completamente curada. Glória a Deus!"
-                  isAnonymous={false}
-                />
+                <TestimonyCard name="João Oliveira" date={new Date(2025, 2, 20)} content="Entrei na igreja quando passava por um momento muito difícil na minha vida. Através das orações e apoio dos irmãos, consegui superar o vício e hoje sou um novo homem. Agradeço a Deus por esta igreja!" isAnonymous={false} />
+                <TestimonyCard name="Ana Beatriz" date={new Date(2025, 1, 15)} content="Participei da campanha de oração pela minha filha que estava hospitalizada. Os médicos não davam esperança, mas Deus operou um milagre e hoje ela está completamente curada. Glória a Deus!" isAnonymous={false} />
               </div>
             </TabsContent>
           </Tabs>
@@ -356,22 +295,15 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
-              <div key={item} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(item => <div key={item} className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
                 <div className="h-full w-full flex items-center justify-center text-gray-400">
                   <Instagram size={32} />
                 </div>
-              </div>
-            ))}
+              </div>)}
           </div>
 
           <div className="text-center mt-10">
-            <a 
-              href="https://www.instagram.com/icb_610/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center"
-            >
+            <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
               <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
                 <Instagram className="mr-2 h-5 w-5" /> @icb_610
               </Button>
@@ -401,8 +333,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Home;
