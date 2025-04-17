@@ -137,7 +137,7 @@ const Home = () => {
         <div className="container-church">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à Casa da Benção 610</h2>
+              <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à Igreja Casa da Benção 610</h2>
               <p className="text-lg text-gray-700 mb-6">
                 Somos uma igreja comprometida com a propagação do evangelho de Jesus Cristo e o 
                 desenvolvimento espiritual de cada membro. Nossa missão é impactar vidas através 
@@ -192,28 +192,32 @@ const Home = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-church-700/50 p-8 rounded-lg text-center">
               <h3 className="text-2xl font-bold mb-3">Domingo</h3>
-              <p className="text-lg mb-2">Escola Bíblica Dominical</p>
-              <p className="text-church-gold font-bold">09:00</p>
               <div className="my-4 border-t border-church-600"></div>
-              <p className="text-lg mb-2">Culto de Celebração</p>
-              <p className="text-church-gold font-bold">18:00</p>
+              <p className="text-lg mb-2">Culto da Família</p>
+              <p className="text-church-gold font-bold">18:30</p>
+            </div>
+
+            <div className="bg-church-700/50 p-8 rounded-lg text-center">
+              <h3 className="text-2xl font-bold mb-3">Terça-feira</h3>
+              <p className="text-lg mb-2">Oração</p>
+              <p className="text-church-gold font-bold">20h</p>
             </div>
 
             <div className="bg-church-700/50 p-8 rounded-lg text-center">
               <h3 className="text-2xl font-bold mb-3">Quarta-feira</h3>
-              <p className="text-lg mb-2">Culto de Ensino e Oração</p>
-              <p className="text-church-gold font-bold">19:30</p>
+              <p className="text-lg mb-2">Escola Bíblica</p>
+              <p className="text-church-gold font-bold">20h</p>
             </div>
 
             <div className="bg-church-700/50 p-8 rounded-lg text-center">
               <h3 className="text-2xl font-bold mb-3">Sexta-feira</h3>
-              <p className="text-lg mb-2">Culto de Jovens</p>
+              <p className="text-lg mb-2">Culto de Libertação</p>
               <p className="text-church-gold font-bold">20:00</p>
             </div>
           </div>
 
           <div className="text-center mt-10">
-            <p className="text-xl mb-6">Estamos localizados na Av. Principal, 1234, Centro - Sua Cidade/UF</p>
+            <p className="text-xl mb-6">Estamos localizados na Qs 610 Samabaia Norte - DF</p>
             <Link to="/contato">
               <Button className="bg-white text-church-800 hover:bg-church-100 transition-transform hover:scale-105 duration-300">
                 Como Chegar <ArrowRight className="ml-2 h-4 w-4" />
@@ -346,7 +350,7 @@ const Home = () => {
       <section className="py-16 bg-gray-50">
         <div className="container-church">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-church-800">Siga-nos no Instagram</h2>
+            <h2 className="text-4xl font-bold text-church-800">Siga-nos no Instagram - @icb_610</h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Acompanhe nossas atividades e mantenha-se atualizado com as novidades da igreja
             </p>
