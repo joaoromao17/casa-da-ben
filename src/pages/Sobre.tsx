@@ -219,8 +219,8 @@ const Sobre = () => {
                       <MapPin className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
                       <div>
                         <h3 className="font-semibold text-lg text-church-800">Endereço</h3>
-                        <p className="text-gray-700">Av. Principal, 1234, Centro</p>
-                        <p className="text-gray-700">Sua Cidade - UF, CEP 00000-000</p>
+                        <p className="text-gray-700">QS 610 - Samambaia Norte</p>
+                        <p className="text-gray-700">Brasília - DF, 72320-500</p>
                       </div>
                     </div>
                     
@@ -238,7 +238,7 @@ const Sobre = () => {
                       <div>
                         <h3 className="font-semibold text-lg text-church-800">E-mail</h3>
                         <p className="text-gray-700">contato@casadabencao.org</p>
-                        <p className="text-gray-700">secretaria@casadabencao.org</p>
+                        
                       </div>
                     </div>
                     
@@ -255,19 +255,19 @@ const Sobre = () => {
                       <h3 className="font-semibold text-lg text-church-800 mb-3">Horários de Culto</h3>
                       <ul className="space-y-3 text-gray-700">
                         <li className="flex justify-between border-b pb-2">
-                          <span className="font-medium">Domingo - Escola Bíblica:</span>
-                          <span>09:00</span>
+                          <span className="font-medium">Domingo - Culto da Família:</span>
+                          <span>18:30</span>
                         </li>
                         <li className="flex justify-between border-b pb-2">
-                          <span className="font-medium">Domingo - Culto de Celebração:</span>
-                          <span>18:00</span>
+                          <span className="font-medium">Terça-feira - Oração:</span>
+                          <span>20:00</span>
                         </li>
                         <li className="flex justify-between border-b pb-2">
-                          <span className="font-medium">Quarta-feira - Culto de Ensino:</span>
-                          <span>19:30</span>
+                          <span className="font-medium">Quarta-feira - Escola Bíblica:</span>
+                          <span>20:00</span>
                         </li>
                         <li className="flex justify-between border-b pb-2">
-                          <span className="font-medium">Sexta-feira - Culto de Jovens:</span>
+                          <span className="font-medium">Sexta-feira - Culto de Libertação:</span>
                           <span>20:00</span>
                         </li>
                       </ul>
