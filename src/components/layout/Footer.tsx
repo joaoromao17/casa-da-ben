@@ -132,7 +132,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
-                <span className="text-gray-300">Av. Principal, 1234, Centro - Sua Cidade/UF</span>
+                <span className="text-gray-300">Qs 610 Samambaia Norte</span>
               </li>
               <li className="flex items-center">
                 <Phone className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
@@ -140,14 +140,16 @@ const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
-                <span className="text-gray-300">contato@casadabencao.org</span>
+                <span className="text-gray-300">icbcasadabencao610@gmail.com</span>
               </li>
               <li className="flex items-start">
                 <Clock className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
                 <div className="text-gray-300">
                   <p>Cultos:</p>
-                  <p>Domingo: 9h e 18h</p>
+                  <p>Domingo: 18:30h</p>
+                  <p>Terça: 20h</p>
                   <p>Quarta: 19h30</p>
+                  <p>Sexta: 20h</p>
                 </div>
               </li>
             </ul>
