@@ -1,4 +1,3 @@
-
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,55 +6,37 @@ import { MapPin, Phone, Mail, Clock, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Dados simulados dos líderes
-const lideranca = [
-  {
-    nome: "Pr. João Silva",
-    cargo: "Pastor Presidente",
-    descricao: "Servo de Deus há mais de 20 anos, dedicado à obra e ao crescimento espiritual da igreja.",
-    foto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&h=300"
-  },
-  {
-    nome: "Pr. Carlos Oliveira",
-    cargo: "Pastor Auxiliar",
-    descricao: "Responsável pelo ministério de famílias e aconselhamento pastoral.",
-    foto: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&w=300&h=300"
-  },
-  {
-    nome: "Débora Santos",
-    cargo: "Líder de Louvor",
-    descricao: "Coordena toda a equipe de músicos e ministração nos cultos.",
-    foto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&h=300"
-  },
-  {
-    nome: "Marcos Pereira",
-    cargo: "Líder de Jovens",
-    descricao: "Trabalha com juventude há 8 anos, focado no discipulado da nova geração.",
-    foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&h=300"
-  }
-];
+const lideranca = [{
+  nome: "Pr. João Silva",
+  cargo: "Pastor Presidente",
+  descricao: "Servo de Deus há mais de 20 anos, dedicado à obra e ao crescimento espiritual da igreja.",
+  foto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&h=300"
+}, {
+  nome: "Pr. Carlos Oliveira",
+  cargo: "Pastor Auxiliar",
+  descricao: "Responsável pelo ministério de famílias e aconselhamento pastoral.",
+  foto: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&w=300&h=300"
+}, {
+  nome: "Débora Santos",
+  cargo: "Líder de Louvor",
+  descricao: "Coordena toda a equipe de músicos e ministração nos cultos.",
+  foto: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&h=300"
+}, {
+  nome: "Marcos Pereira",
+  cargo: "Líder de Jovens",
+  descricao: "Trabalha com juventude há 8 anos, focado no discipulado da nova geração.",
+  foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&h=300"
+}];
 
 // Dados simulados da galeria
-const galeria = [
-  "https://images.unsplash.com/photo-1511649475669-e288648b2d1e?auto=format&fit=crop&w=600&h=400",
-  "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&h=400",
-  "https://images.unsplash.com/photo-1541911087797-f13abca6b2ad?auto=format&fit=crop&w=600&h=400",
-  "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=600&h=400",
-  "https://images.unsplash.com/photo-1470225620780-dba8ba36b2ad?auto=format&fit=crop&w=600&h=400",
-  "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=600&h=400",
-];
-
+const galeria = ["https://images.unsplash.com/photo-1511649475669-e288648b2d1e?auto=format&fit=crop&w=600&h=400", "https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=600&h=400", "https://images.unsplash.com/photo-1541911087797-f13abca6b2ad?auto=format&fit=crop&w=600&h=400", "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=600&h=400", "https://images.unsplash.com/photo-1470225620780-dba8ba36b2ad?auto=format&fit=crop&w=600&h=400", "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=600&h=400"];
 const Sobre = () => {
-  return (
-    <Layout>
+  return <Layout>
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
         <div className="relative h-[40vh] min-h-[300px]">
-          <img 
-            src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=1920&h=600" 
-            alt="Igreja Casa da Benção" 
-            className="w-full h-full object-cover"
-          />
+          <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=1920&h=600" alt="Igreja Casa da Benção" className="w-full h-full object-cover" />
           <div className="absolute inset-0 flex items-center z-20">
             <div className="container-church text-white">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -104,11 +85,7 @@ const Sobre = () => {
                   </div>
                 </div>
                 <div className="space-y-8">
-                  <img 
-                    src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=600&h=400" 
-                    alt="História da Igreja" 
-                    className="rounded-lg shadow-lg w-full"
-                  />
+                  <img alt="História da Igreja" className="rounded-lg shadow-lg w-full" src="/lovable-uploads/76ba9a4a-3cc5-402d-9493-a1b9432cd42c.jpg" />
                   
                   <div className="bg-church-50 p-6 rounded-lg border border-church-100">
                     <h3 className="text-xl font-semibold text-church-800 mb-3">Nossa Missão</h3>
@@ -145,22 +122,16 @@ const Sobre = () => {
               </div>
               
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {lideranca.map((lider, index) => (
-                  <Card key={index} className="overflow-hidden">
+                {lideranca.map((lider, index) => <Card key={index} className="overflow-hidden">
                     <div className="aspect-square overflow-hidden">
-                      <img 
-                        src={lider.foto} 
-                        alt={lider.nome} 
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={lider.foto} alt={lider.nome} className="w-full h-full object-cover" />
                     </div>
                     <CardContent className="p-6">
                       <h3 className="text-xl font-bold text-church-800">{lider.nome}</h3>
                       <p className="text-church-600 font-medium mb-2">{lider.cargo}</p>
                       <p className="text-gray-600 text-sm">{lider.descricao}</p>
                     </CardContent>
-                  </Card>
-                ))}
+                  </Card>)}
               </div>
               
               <div className="mt-16 bg-church-50 p-8 rounded-lg border border-church-100">
@@ -348,15 +319,9 @@ const Sobre = () => {
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {galeria.map((imagem, index) => (
-                  <div key={index} className="overflow-hidden rounded-lg shadow-md group">
-                    <img 
-                      src={imagem} 
-                      alt={`Foto da Igreja ${index + 1}`} 
-                      className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  </div>
-                ))}
+                {galeria.map((imagem, index) => <div key={index} className="overflow-hidden rounded-lg shadow-md group">
+                    <img src={imagem} alt={`Foto da Igreja ${index + 1}`} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110" />
+                  </div>)}
               </div>
               
               <div className="text-center mt-12">
@@ -390,8 +355,6 @@ const Sobre = () => {
           </div>
         </div>
       </section>
-    </Layout>
-  );
+    </Layout>;
 };
-
 export default Sobre;
