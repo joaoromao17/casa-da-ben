@@ -285,20 +285,18 @@ const Sobre = () => {
                   
                   <div className="bg-church-50 p-6 rounded-lg border border-church-100">
                     <h3 className="text-xl font-semibold text-church-800 mb-3">Como Chegar</h3>
-                    <p className="text-gray-700 mb-4">
-                      Nossa igreja está localizada em uma região central, de fácil acesso por transporte público ou carro.
-                    </p>
+                    <p className="text-gray-700 mb-4">Nossa igreja está localizada perto do HRSAM e em frente ao um campo de futebol</p>
                     
                     <h4 className="font-medium text-church-700 mb-2">Transporte Público:</h4>
                     <ul className="list-disc pl-5 text-gray-700 mb-4">
-                      <li>Ônibus: Linhas 123, 456 e 789</li>
-                      <li>Ponto de ônibus a 100m da igreja</li>
+                      <li>Ônibus: Linhas 0.373, 0.366 e 0.391</li>
+                      <li>Ponto de ônibus a 30m da igreja</li>
                     </ul>
                     
                     <h4 className="font-medium text-church-700 mb-2">De Carro:</h4>
                     <ul className="list-disc pl-5 text-gray-700 mb-4">
-                      <li>Estacionamento próprio com 50 vagas</li>
-                      <li>Acessível pela Avenida Principal</li>
+                      <li>Estacionamento próprio com 30 vagas</li>
+                      
                     </ul>
                     
                     <Button className="w-full">
