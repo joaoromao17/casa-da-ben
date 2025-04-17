@@ -3,6 +3,7 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock, Calendar } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Cultos = () => {
   const horariosCulto = [
@@ -77,9 +78,11 @@ const Cultos = () => {
                 <Calendar className="w-4 h-4 mr-2" />
                 Agendar Visita
               </Button>
-              <Button variant="outline" className="border-church-700 text-church-700 hover:bg-church-50">
-                Como Chegar
-              </Button>
+              <Link to="/contato">
+                <Button variant="outline" className="border-church-700 text-church-700 hover:bg-church-50">
+                  Como Chegar
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -89,3 +92,4 @@ const Cultos = () => {
 };
 
 export default Cultos;
+
