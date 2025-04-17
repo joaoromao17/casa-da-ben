@@ -237,7 +237,7 @@ const Sobre = () => {
                       <Mail className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
                       <div>
                         <h3 className="font-semibold text-lg text-church-800">E-mail</h3>
-                        <p className="text-gray-700">contato@casadabencao.org</p>
+                        <p className="text-gray-700">icbcasadabencao610@gmail.com</p>
                         
                       </div>
                     </div>
