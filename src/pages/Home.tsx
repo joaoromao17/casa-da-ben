@@ -60,8 +60,8 @@ const Home = () => {
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
-        <div className="relative h-[70vh] min-h-[500px]">
-          <img src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=800&h=400" alt="Igreja Casa da Benção" className="w-full h-full object-cover" />
+        <div className="relative h-[70vh] min-h-[500px]">        
+        <img src="/lovable-uploads/banner_casa_da_bencao.jpeg" alt="Igreja Casa da Benção" className="w-full h-full object-cover" />
           <div className="absolute inset-0 flex items-center z-20">
             <div className="container-church text-white">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
