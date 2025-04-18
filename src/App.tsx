@@ -1,9 +1,10 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Páginas principais
 import Home from "./pages/Home";
 import Sobre from "./pages/Sobre";
 import Cadastro from "./pages/Cadastro";
@@ -15,8 +16,10 @@ import Testemunhos from "./pages/Testemunhos";
 import Contato from "./pages/Contato";
 import Cultos from "./pages/Cultos";
 import NotFound from "./pages/NotFound";
+
+// Páginas de ministérios
 import Ministerios from "./pages/Ministerios";
-import MinisterioJovens from "./pages/ministerios/MinisterioJovens";
+import MinisterioModelo from "./pages/ministerios/MinisterioModelo"; // Importando o modelo
 
 const queryClient = new QueryClient();
 
@@ -38,7 +41,7 @@ const App = () => (
           <Route path="/contato" element={<Contato />} />
           <Route path="/cultos" element={<Cultos />} />
           <Route path="/ministerios" element={<Ministerios />} />
-          <Route path="/ministerios/jovens" element={<MinisterioJovens />} />
+          <Route path="/ministerios/modelo" element={<MinisterioModelo />} /> {/* Nova rota adicionada */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
