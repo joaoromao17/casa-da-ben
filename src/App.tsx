@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 
 // Páginas de ministérios
 import Ministerios from "./pages/Ministerios";
+import Ministerio from "./pages/ministerios/Ministerio";
 import MinisterioModelo from "./pages/ministerios/MinisterioModelo"; // Importando o modelo
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/contato" element={<Contato />} />
           <Route path="/cultos" element={<Cultos />} />
           <Route path="/ministerios" element={<Ministerios />} />
+          <Route path="/ministerios/:nome" element={<Ministerio />} />
           <Route path="/ministerios/modelo" element={<MinisterioModelo />} /> {/* Nova rota adicionada */}
           <Route path="*" element={<NotFound />} />
         </Routes>
