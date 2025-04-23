@@ -6,68 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDays, Search, Filter } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Mock data for events
 const mockEvents = [
   {
     id: "1",
-    title: "Conferência de Jovens",
-    description: "Um tempo especial de comunhão, adoração e aprendizado para os jovens da igreja.",
+    title: "Título do Evento",
+    description: "Descrição do Evento",
     date: new Date("2025-05-15"),
-    time: "19:00",
-    location: "Templo Principal",
-    imageUrl: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2000&auto=format&fit=crop",
+    time: "Horário do Evento",
+    location: "Localização do Evento",
+    imageUrl: "/lovable-uploads/eventos.jpg",
     category: "Jovens"
-  },
-  {
-    id: "2",
-    title: "Encontro de Casais",
-    description: "Uma noite especial para fortalecer relacionamentos e aprender princípios bíblicos para o casamento.",
-    date: new Date("2025-04-30"),
-    time: "20:00",
-    location: "Salão de Eventos",
-    imageUrl: "https://images.unsplash.com/photo-1529634806980-85c3dd6d34ac?q=80&w=2069&auto=format&fit=crop",
-    category: "Casais"
-  },
-  {
-    id: "3",
-    title: "Culto de Adoração",
-    description: "Venha adorar a Deus conosco em mais um culto dominical repleto da presença do Senhor.",
-    date: new Date("2025-04-21"),
-    time: "18:00",
-    location: "Templo Principal",
-    imageUrl: "https://images.unsplash.com/photo-1601455763557-db1bea8a9a5a?q=80&w=2112&auto=format&fit=crop",
-    category: "Culto"
-  },
-  {
-    id: "4",
-    title: "Vigília de Oração",
-    description: "Uma noite inteira dedicada à oração, intercessão e busca pela presença de Deus.",
-    date: new Date("2025-05-05"),
-    time: "22:00",
-    location: "Templo Principal",
-    imageUrl: "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2134&auto=format&fit=crop",
-    category: "Oração"
-  },
-  {
-    id: "5",
-    title: "Ação Social na Comunidade",
-    description: "Estaremos distribuindo alimentos e compartilhando o amor de Cristo com a comunidade local.",
-    date: new Date("2025-05-10"),
-    time: "09:00",
-    location: "Praça Central",
-    imageUrl: "https://images.unsplash.com/photo-1593113598332-cd59a0c3a9a1?q=80&w=2070&auto=format&fit=crop",
-    category: "Ação Social"
-  },
-  {
-    id: "6",
-    title: "Retiro Espiritual",
-    description: "Um fim de semana de conexão com Deus e renovação espiritual para toda a igreja.",
-    date: new Date("2025-06-15"),
-    time: "08:00",
-    location: "Sítio Recanto da Paz",
-    imageUrl: "https://images.unsplash.com/photo-1506784365847-bbad939e9335?q=80&w=2068&auto=format&fit=crop",
-    category: "Retiro"
   }
 ];
 
@@ -194,9 +145,11 @@ const Eventos = () => {
               </p>
             </div>
             <div className="flex-shrink-0">
+            <Link to="/contato">
               <Button className="bg-white text-church-900 hover:bg-gray-200">
                 Enviar Sugestão
               </Button>
+              </Link>
             </div>
           </div>
         </div>

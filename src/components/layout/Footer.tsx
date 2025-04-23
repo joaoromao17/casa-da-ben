@@ -1,13 +1,13 @@
 
 import { Link } from "react-router-dom";
-import { 
-  Instagram, 
-  Facebook, 
-  Youtube, 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Clock 
+import {
+  Instagram,
+  Facebook,
+  Youtube,
+  MapPin,
+  Phone,
+  Mail,
+  Clock
 } from "lucide-react";
 
 const Footer = () => {
@@ -21,29 +21,29 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">ICB 610</h3>
             <p className="mb-4 text-gray-300">
-              Igreja comprometida com a propagação do evangelho de Jesus Cristo e o 
+              Igreja comprometida com a propagação do evangelho de Jesus Cristo e o
               desenvolvimento espiritual de cada membro.
             </p>
             <div className="flex space-x-4">
-              <a 
-                href="https://www.instagram.com/icb_610/" 
-                target="_blank" 
+              <a
+                href="https://www.instagram.com/icb_610/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-white hover:text-church-gold transition-colors"
               >
                 <Instagram size={20} />
               </a>
-              <a 
-                href="https://facebook.com" 
-                target="_blank" 
+              <a
+                href="https://www.facebook.com/icbsamambaianorte610"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-white hover:text-church-gold transition-colors"
               >
                 <Facebook size={20} />
               </a>
-              <a 
-                href="https://youtube.com" 
-                target="_blank" 
+              <a
+                href="https://www.youtube.com/@icbsamambaianorte610"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-white hover:text-church-gold transition-colors"
               >
@@ -154,10 +154,17 @@ const Footer = () => {
               </li>
             </ul>
           </div>
+          <div className="col-span-full flex justify-center mt-4">
+            <img
+              src="/lovable-uploads/logo_branco.png"
+              alt="Logo da Casa da Benção"
+              width="250px"
+            />
+          </div>
         </div>
 
         <hr className="border-gray-700 my-8" />
-        
+
         {/* Bottom Footer */}
         <div className="text-center text-gray-400">
           <p>&copy; {currentYear} ICB 610. Todos os direitos reservados.</p>

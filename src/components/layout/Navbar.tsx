@@ -25,9 +25,7 @@ const Navbar = () => {
       <div className="container-church py-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center pl-2">
-            <span className="text-2xl font-['Montserrat'] font-bold text-church-900">
-              ICB <span className="text-church-700">610</span>
-            </span>
+          <img src="/lovable-uploads/logo.png" alt="Logo da Casa da Benção" width="75px" />
           </Link>
 
           <div className="hidden lg:flex items-center justify-center flex-1 mx-4">

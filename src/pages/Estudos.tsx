@@ -6,60 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Search } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // Mock data for studies
 const mockStudies = [
   {
     id: "1",
-    title: "Fundamentos da Fé",
-    description: "Estudo profundo sobre os fundamentos da fé cristã e como aplicá-los no dia a dia.",
-    author: "Pr. João Silva",
+    title: "Nome do Estudo",
+    description: "Descrição do Estudo",
+    author: "Professor do Estudo",
     date: new Date("2025-03-15"),
     category: "Doutrina",
-    pdfUrl: "#"
-  },
-  {
-    id: "2",
-    title: "O Livro de Romanos",
-    description: "Análise detalhada do livro de Romanos e suas implicações para a vida cristã contemporânea.",
-    author: "Pr. Maria Santos",
-    date: new Date("2025-03-01"),
-    category: "Bíblia",
-    pdfUrl: "#"
-  },
-  {
-    id: "3",
-    title: "Vida em Família",
-    description: "Como construir uma família baseada em princípios bíblicos e desenvolver relacionamentos saudáveis.",
-    author: "Pr. Carlos Oliveira",
-    date: new Date("2025-02-20"),
-    category: "Família",
-    pdfUrl: "#"
-  },
-  {
-    id: "4",
-    title: "Evangelismo Prático",
-    description: "Métodos e estratégias para compartilhar o evangelho de forma eficaz no mundo contemporâneo.",
-    author: "Pr. Ana Costa",
-    date: new Date("2025-02-10"),
-    category: "Evangelismo",
-    pdfUrl: "#"
-  },
-  {
-    id: "5",
-    title: "Batalha Espiritual",
-    description: "Compreendendo a batalha espiritual e como permanecer firme na fé diante das adversidades.",
-    author: "Pr. Pedro Mendes",
-    date: new Date("2025-01-25"),
-    category: "Vida Cristã"
-  },
-  {
-    id: "6",
-    title: "Mordomia Cristã",
-    description: "Princípios bíblicos sobre como administrar bem os recursos que Deus nos confiou.",
-    author: "Pr. Juliana Pereira",
-    date: new Date("2025-01-15"),
-    category: "Finanças",
     pdfUrl: "#"
   }
 ];
@@ -162,15 +119,14 @@ const Estudos = () => {
 
         {/* Call to Action */}
         <div className="bg-church-900 text-white p-8 rounded-lg text-center">
-          <h2 className="text-2xl font-bold mb-4">Escola Bíblica Dominical</h2>
-          <p className="mb-6">Participe de nossa Escola Bíblica Dominical todos os domingos às 9h e aprofunde seu conhecimento da Palavra.</p>
+          <h2 className="text-2xl font-bold mb-4">Escola Bíblica</h2>
+          <p className="mb-6">Participe de nossa Escola Bíblica todas as quartas-feiras às 20h e aprofunde seu conhecimento da Palavra.</p>
           <div className="flex flex-wrap justify-center gap-4">
+            <Link to="/cultos">
             <Button className="bg-white text-church-900 hover:bg-gray-200">
               Ver Horários
             </Button>
-            <Button className="bg-white text-church-900 hover:bg-gray-200">
-              Material da EBD
-            </Button>
+            </Link>
           </div>
         </div>
       </div>

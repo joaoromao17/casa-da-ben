@@ -27,39 +27,11 @@ import { Search, Filter, Plus, Heart } from "lucide-react";
 const testimoniesData = [
   {
     id: 1,
-    name: "Maria Silva",
+    name: "Nome da Pessoa",
     date: new Date(2024, 2, 15),
-    content: "Fui curada de uma doença grave após a igreja orar por mim durante um culto de oração. Deus é fiel!",
-    category: "cura"
-  },
-  {
-    id: 2,
-    name: "João Oliveira",
-    date: new Date(2024, 3, 5),
-    content: "Meu casamento estava à beira do fim, mas após frequentarmos os estudos para casais, nossa relação foi restaurada.",
-    category: "família"
-  },
-  {
-    id: 3,
-    name: "Ana Cristina",
-    date: new Date(2024, 3, 20),
-    content: "Estava desempregada há mais de um ano e, após participar da corrente de oração, recebi duas propostas de emprego em uma semana!",
-    category: "provisão"
-  },
-  {
-    id: 4,
-    name: "Carlos Mendes",
-    date: new Date(2024, 4, 2),
-    content: "Meu filho estava envolvido com drogas, mas após muito jejum e oração, ele aceitou ajuda e está limpo há 6 meses.",
+    content: "Conteúdo do Testemunho",
     isAnonymous: true,
-    category: "libertação"
-  },
-  {
-    id: 5,
-    name: "Roberta Almeida",
-    date: new Date(2024, 4, 10),
-    content: "Depois de muitas tentativas, consegui engravidar após receber oração de imposição de mãos do pastor.",
-    category: "milagre"
+    category: "cura"
   }
 ];
 
