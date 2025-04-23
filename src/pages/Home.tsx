@@ -7,25 +7,32 @@ import MinistryCard from "@/components/ui/MinistryCard";
 import { ministeriosData } from "@/data/ministeriosData";
 import TestimonyCard from "@/components/ui/TestimonyCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import InstagramWidget from "@/components/ui/InstagramWidget";
 import { Instagram, User, BookOpen, CalendarDays, ArrowRight, ArrowDown } from "lucide-react";
+import InstagramWidget from "@/components/ui/InstagramWidget";
+
 const verseOfDay = {
   verse: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
   reference: "João 3:16"
 };
 const featuredEvents = [{
   id: "1",
-  title: "Título do Evento",
+  title: "Nome do Evento",
   description: "Descrição do Evento",
   date: new Date(2025, 3, 20),
   time: "Horário do Evento",
-  location: "Local do Evento",
+  location: "Localização do Evento",
   imageUrl: "/lovable-uploads/eventos.jpg"
+}];
+const featuredMinistries = [{
+  title: "Nome do Ministério",
+  description: "Descrição do Ministério",
+  imageUrl: "/lovable-uploads/ministerios.jpg",
+  slug: "louvor"
 }];
 const recentTestimonies = [{
   name: "Nome da pessoa",
   date: new Date(2025, 3, 15),
-  content: "Contéudo do Testemunho",
+  content: "Conteudo do Testemunho",
   isAnonymous: false
 }];
 const Home = () => {
