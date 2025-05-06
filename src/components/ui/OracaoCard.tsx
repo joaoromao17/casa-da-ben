@@ -4,7 +4,7 @@ import { Share2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-interface TestimonyCardProps {
+interface OracaoCardProps {
   name: string;
   date: Date;
   message: string;
@@ -12,12 +12,13 @@ interface TestimonyCardProps {
   category: string; // Categoria do testemunho
 }
 
-const TestimonyCard = ({ name, date, message, isAnonymous = false, category }: TestimonyCardProps) => {
+const OracaoCard = ({ name, date, message, isAnonymous = false, category }: OracaoCardProps) => {
   const formattedDate = format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+  
   const displayName = isAnonymous ? "Anônimo" : name;
 
   const shareOnWhatsApp = () => {
-    const text = `Testemunho de ${displayName}: "${message}" - Compartilhado da Igreja Casa da Benção`;
+    const text = `Oração de ${displayName}: "${message}" - Compartilhado da Igreja Casa da Benção`;
     const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   };
@@ -30,7 +31,7 @@ const TestimonyCard = ({ name, date, message, isAnonymous = false, category }: T
             <h3 className="font-semibold text-church-800">{displayName}</h3>
             <p className="text-sm text-gray-500">{formattedDate}</p>
           </div>
-          {/* Exibe a categoria no lugar de "Testemunho" */}
+          {/* Exibe a categoria no lugar de "Oração" */}
           <div className="text-xs px-2 py-1 rounded-full bg-church-100 text-church-700">
             {category} {/* Exibe o tipo de categoria */}
           </div>
@@ -53,4 +54,4 @@ const TestimonyCard = ({ name, date, message, isAnonymous = false, category }: T
   );
 };
 
-export default TestimonyCard;
+export default OracaoCard;

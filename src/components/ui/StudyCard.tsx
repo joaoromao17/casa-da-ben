@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, FileText } from "lucide-react";
@@ -18,6 +17,25 @@ interface StudyCardProps {
 const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: StudyCardProps) => {
   const formattedDate = format(date, "dd/MM/yyyy", { locale: ptBR });
 
+  const handleReadStudy = () => {
+    if (pdfUrl) {
+      window.open(pdfUrl, "_blank");
+    }
+  };
+
+  const handleDownloadPDF = () => {
+    if (pdfUrl) {
+      const link = document.createElement("a");
+      link.href = pdfUrl;
+      link.setAttribute("download", `${title}.pdf`);
+      link.setAttribute("target", "_blank"); // Adiciona isso para garantir que não tente abrir na mesma aba
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+  
+
   return (
     <Card className="card-church overflow-hidden h-full flex flex-col">
       <CardHeader>
@@ -35,23 +53,25 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
         <p className="text-gray-600 line-clamp-3">{description}</p>
       </CardContent>
       <CardFooter className="flex justify-between gap-2 pt-2 border-t border-gray-100">
-        <Button 
-          variant="outline" 
-          className="flex items-center gap-2"
-          onClick={() => window.location.href = `/estudos/${id}`}
-        >
-          <FileText size={18} />
-          Ler Estudo
-        </Button>
         {pdfUrl && (
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-2"
-            onClick={() => window.open(pdfUrl, '_blank')}
-          >
-            <Download size={18} />
-            Download PDF
-          </Button>
+          <>
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={handleReadStudy}
+            >
+              <FileText size={18} />
+              Ler Estudo
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={handleDownloadPDF}
+            >
+              <Download size={18} />
+              Download PDF
+            </Button>
+          </>
         )}
       </CardFooter>
     </Card>

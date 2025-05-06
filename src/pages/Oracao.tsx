@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
-import TestimonyCard from "@/components/ui/TestimonyCard";
+import OracaoCard from "@/components/ui/OracaoCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,7 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Search, Filter, Plus, Heart } from "lucide-react";
 import api from "@/services/api";
 
-interface Testimony {
+interface Oracao {
   message: string;
   id: number;
   name: string;
@@ -33,13 +33,13 @@ interface Testimony {
   category: string;
 }
 
-const Testemunhos = () => {
+const Oracao = () => {
   const { toast } = useToast();
-  const [testimonies, setTestimonies] = useState<Testimony[]>([]);
+  const [oracoes, setOracoes] = useState<Oracao[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [newTestimony, setNewTestimony] = useState({
+  const [newOracao, setNewOracao] = useState({
     name: "",
     message: "",
     isAnonymous: false,
@@ -47,28 +47,29 @@ const Testemunhos = () => {
   });
 
   useEffect(() => {
-    const fetchTestimonies = async () => {
+    const fetchOracoes = async () => {
       try {
-        const response = await api.get("/testemunhos");
-        const approvedTestimonies = response.data.filter((t: Testimony) => t.approved);
-        setTestimonies(approvedTestimonies);
+        const response = await api.get("/oracoes");
+        const unapprovedOracoes = response.data.filter((t: Oracao) => !t.approved);
+        setOracoes(unapprovedOracoes);
       } catch (error) {
         toast({
-          title: "Erro ao carregar testemunhos",
+          title: "Erro ao carregar orações",
           description: "Tente novamente mais tarde.",
           variant: "destructive"
         });
       }
     };
-
-    fetchTestimonies();
+  
+    fetchOracoes();
   }, []);
+  
 
-  const filteredTestimonies = [...testimonies]
+  const filteredOracoes = [...oracoes]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .filter((testimony) => {
-      const message = testimony.message ?? "";
-      const name = testimony.isAnonymous ? "Anônimo" : (testimony.name ?? "");
+    .filter((oracao) => {
+      const message = oracao.message ?? "";
+      const name = oracao.isAnonymous ? "Anônimo" : (oracao.name ?? "");
 
       const matchesSearch =
       message.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -76,7 +77,7 @@ const Testemunhos = () => {
 
       // Filtro por categoria
       const matchesCategory =
-        selectedCategory === "" || selectedCategory === "todos" || testimony.category === selectedCategory;
+        selectedCategory === "" || selectedCategory === "todos" || oracao.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
@@ -91,22 +92,30 @@ const Testemunhos = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setNewTestimony(prev => ({ ...prev, [name]: value }));
+    setNewOracao(prev => ({ ...prev, [name]: value }));
   };
 
   const handleCheckboxChange = (checked: boolean) => {
-    setNewTestimony(prev => ({ ...prev, isAnonymous: checked }));
+    setNewOracao(prev => ({ ...prev, isAnonymous: checked }));
   };
 
   const handleCategorySelect = (value: string) => {
-    setNewTestimony(prev => ({ ...prev, category: value }));
+    setNewOracao(prev => ({ ...prev, category: value }));
   };
 
   const handleSubmit = async () => {
-    if (!newTestimony.isAnonymous && !newTestimony.name.trim()) {
+    if (!newOracao.isAnonymous && !newOracao.name.trim()) {
       toast({
         title: "Erro",
         description: "Por favor, insira seu nome ou marque como anônimo.",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (!newOracao.message.trim()) {
+      toast({
+        title: "Erro",
+        description: "A mensagem da oração não pode estar vazia.",
         variant: "destructive"
       });
       return;
@@ -115,21 +124,21 @@ const Testemunhos = () => {
     try {
       const currentDate = new Date().toISOString(); // Obtém a data atual em formato ISO
   
-      const response = await api.post("/testemunhos", {
-        name: newTestimony.isAnonymous ? "Anônimo" : newTestimony.name || "Membro da Igreja",
-        message: newTestimony.message,
-        category: newTestimony.category || "geral",
-        isAnonymous: newTestimony.isAnonymous,
+      const response = await api.post("/oracoes", {
+        name: newOracao.isAnonymous ? "Anônimo" : newOracao.name || "Membro da Igreja",
+        message: newOracao.message,
+        category: newOracao.category || "geral",
+        isAnonymous: newOracao.isAnonymous,
         date: currentDate
       });
 
-      setTestimonies([response.data, ...testimonies]);
+      setOracoes([response.data, ...oracoes]);
       toast({
-        title: "Testemunho compartilhado",
-        description: "Seu testemunho foi enviado com sucesso!"
+        title: "Oração compartilhado",
+        description: "Sua oração foi enviado com sucesso!"
       });
 
-      setNewTestimony({
+      setNewOracao({
         name: "",
         message: "",
         isAnonymous: false,
@@ -150,9 +159,9 @@ const Testemunhos = () => {
     <Layout>
       <div className="container-church py-12">
         <div className="flex flex-col items-center text-center mb-10">
-          <h1 className="text-4xl font-bold text-church-900 mb-4">Testemunhos</h1>
+          <h1 className="text-4xl font-bold text-church-900 mb-4">Orações</h1>
           <p className="text-xl text-gray-600 max-w-3xl">
-            Compartilhe as maravilhas que Deus tem feito em sua vida e inspire outros com seu testemunho.
+            Compartilhe o seu pedido de oração para que a igreja te ajude nessa batalha.
           </p>
         </div>
 
@@ -161,7 +170,7 @@ const Testemunhos = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <Input
-              placeholder="Pesquisar testemunhos..."
+              placeholder="Pesquisar orações..."
               className="pl-10"
               value={searchTerm}
               onChange={handleSearch}
@@ -196,23 +205,23 @@ const Testemunhos = () => {
           </div>
         </div>
 
-        {/* Testemunhos */}
-        {filteredTestimonies.length > 0 ? (
+        {/* Orações */}
+        {filteredOracoes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTestimonies.map((testimony) => (
-              <TestimonyCard
-                key={testimony.id}
-                name={testimony.name}
-                date={new Date(testimony.date)}
-                message={testimony.message}
-                isAnonymous={testimony.isAnonymous}
-                category={testimony.category}
+            {filteredOracoes.map((oracao) => (
+              <OracaoCard
+                key={oracao.id}
+                name={oracao.name}
+                date={new Date(oracao.date)}
+                message={oracao.message}
+                isAnonymous={oracao.isAnonymous}
+                category={oracao.category}
               />
             ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-600">Nenhum testemunho encontrado.</p>
+            <p className="text-xl text-gray-600">Nenhuma oração encontrado.</p>
             <Button
               className="mt-4 bg-church-700 hover:bg-church-800"
               onClick={() => setIsDialogOpen(true)}
@@ -225,40 +234,40 @@ const Testemunhos = () => {
         {/* Seção inspiradora */}
         <div className="mt-16 bg-church-50 p-8 rounded-xl text-center">
           <Heart size={48} className="mx-auto text-church-700 mb-4" />
-          <h2 className="text-2xl font-bold text-church-900 mb-3">Deus continua fazendo milagres hoje</h2>
+          <h2 className="text-2xl font-bold text-church-900 mb-3">Deus ouve as orações do seu povo</h2>
           <p className="text-gray-700 mb-6 max-w-3xl mx-auto">
-            "Contem entre os povos a sua glória, entre todas as nações as suas maravilhas."
+            "Orai uns pelos outros, para que sareis. A oração feita por um justo pode muito em seus efeitos."
             <br />
-            <span className="font-medium">Salmos 96:3</span>
+            <span className="font-medium">Tiago 5:16b</span>
           </p>
           <Button
             className="bg-church-700 hover:bg-church-800"
             onClick={() => setIsDialogOpen(true)}
           >
-            Compartilhe seu testemunho
+            Compartilhe sua Oração
           </Button>
         </div>
       </div>
 
-      {/* Dialog para adicionar testemunho */}
+      {/* Dialog para adicionar oração */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Compartilhe seu testemunho</DialogTitle>
+            <DialogTitle>Compartilhe sua Oração</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <Input
               name="name"
               placeholder="Seu nome"
-              value={newTestimony.name}
+              value={newOracao.name}
               onChange={handleInputChange}
             />
             <Select
-              value={newTestimony.category}
+              value={newOracao.category}
               onValueChange={handleCategorySelect}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Categoria do testemunho" />
+                <SelectValue placeholder="Categoria da oração" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="cura">Cura</SelectItem>
@@ -273,13 +282,13 @@ const Testemunhos = () => {
               name="message"
               placeholder="Compartilhe como Deus agiu em sua vida..."
               className="h-32"
-              value={newTestimony.message}
+              value={newOracao.message}
               onChange={handleInputChange}
             />
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="isAnonymous"
-                checked={newTestimony.isAnonymous}
+                checked={newOracao.isAnonymous}
                 onCheckedChange={handleCheckboxChange}
               />
               <label
@@ -307,4 +316,4 @@ const Testemunhos = () => {
     </Layout>
   );
 };
-export default Testemunhos;
+export default Oracao;

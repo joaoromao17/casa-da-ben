@@ -1,46 +1,66 @@
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import EventCard from "@/components/ui/EventCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDays, Search, Filter } from "lucide-react";
+import { CalendarDays, Search } from "lucide-react";
 import { Link } from "react-router-dom";
+import api from "@/services/api";
 
-// Mock data for events
-const mockEvents = [
-  {
-    id: "1",
-    title: "Título do Evento",
-    description: "Descrição do Evento",
-    date: new Date("2025-05-15"),
-    time: "Horário do Evento",
-    location: "Localização do Evento",
-    imageUrl: "/lovable-uploads/eventos.jpg",
-    category: "Jovens"
-  }
-];
+const categories = ["Todos", "Culto", "Oração", "Ação Social", "Retiro"];
 
-const categories = ["Todos", "Culto", "Jovens", "Casais", "Oração", "Ação Social", "Retiro"];
+interface Event {
+  id: number;
+  title: string;
+  description: string;
+  date: Date; // convertida depois
+  time: string;
+  location: string;
+  imageUrl: string;
+  category: string;
+}
 
 const Eventos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEventos = async () => {
+      try {
+        const response = await api.get("/eventos");
+        setEvents(response.data);
+      } catch (err) {
+        setError("Erro ao carregar eventos.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEventos();
+  }, []);
+
+  if (loading) return <div>Carregando...</div>;
+  if (error) return <div>{error}</div>;
   
-  const filteredEvents = mockEvents.filter(event => {
-    // Filter by search term
-    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          event.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    // Filter by category
-    const matchesCategory = selectedCategory === "Todos" || event.category === selectedCategory;
-    
+  const filteredEvents = events.filter(event => {
+    const matchesSearch =
+      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.description.toLowerCase().includes(searchTerm.toLowerCase());
+  
+    // Por enquanto, categoria não existe nos dados. Se quiser usar, precisará ser adicionada no backend.
+    const matchesCategory = selectedCategory === "Todos"  || event.category === selectedCategory;
+  
     return matchesSearch && matchesCategory;
   });
-
+  
   // Sort events by date (closest first)
-  const sortedEvents = [...filteredEvents].sort((a, b) => a.date.getTime() - b.date.getTime());
+  const sortedEvents = [...filteredEvents].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  
 
   return (
     <Layout>
@@ -111,18 +131,18 @@ const Eventos = () => {
           <h2 className="text-2xl font-bold text-church-900 mb-6 flex items-center">
             <CalendarDays className="mr-2" /> Próximos Eventos
           </h2>
-          
-          {sortedEvents.length > 0 ? (
+
+          {filteredEvents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sortedEvents.map((event) => (
-                <EventCard key={event.id} {...event} />
+          {sortedEvents.map((event) => (
+            <EventCard key={event.id} {...event} id={String(event.id)} />
               ))}
             </div>
           ) : (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
               <p className="text-gray-600">Nenhum evento encontrado para sua pesquisa.</p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="mt-4"
                 onClick={() => {
                   setSearchTerm("");
@@ -151,25 +171,6 @@ const Eventos = () => {
               </Button>
               </Link>
             </div>
-          </div>
-        </div>
-        
-        {/* Upcoming Special Events Section */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold text-church-900 mb-6">Eventos Especiais</h2>
-          <div className="bg-gradient-to-r from-church-100 to-church-200 p-6 rounded-lg">
-            <h3 className="text-xl font-bold text-church-900 mb-3">Aniversário da Igreja</h3>
-            <p className="text-gray-700 mb-4">
-              Celebre conosco os 15 anos da ICB 610. Uma semana inteira de celebração com pregadores convidados, 
-              apresentações especiais e muito mais.
-            </p>
-            <div className="flex items-center text-church-800 mb-4">
-              <CalendarDays className="mr-2 h-5 w-5" />
-              <span>15 a 22 de Junho, 2025</span>
-            </div>
-            <Button className="bg-church-800 hover:bg-church-900 text-white">
-              Saiba Mais
-            </Button>
           </div>
         </div>
       </div>

@@ -25,37 +25,19 @@ const Navbar = () => {
       <div className="container-church py-4">
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center pl-2">
-          <img src="/lovable-uploads/logo.png" alt="Logo da Casa da Benção" width="75px" />
+            <img src="/lovable-uploads/logo.png" alt="Logo da Casa da Benção" width="75px" />
           </Link>
 
           <div className="hidden lg:flex items-center justify-center flex-1 mx-4">
             <div className="flex space-x-8">
               <Link to="/" className="nav-link">Início</Link>
               <Link to="/sobre" className="nav-link">Sobre</Link>
-
-              <div className="relative group">
-                <button className="nav-link flex items-center">
-                  Ministérios <ChevronDown className="ml-1 h-4 w-4" />
-                </button>
-                <div className="absolute z-10 hidden group-hover:block bg-white shadow-lg rounded-md py-2 w-48">
-                  {Object.entries(ministeriosData)
-                    .filter(([slug]) => slug !== "modelo")
-                    .map(([slug, ministerio]) => (
-                      <Link
-                        key={slug}
-                        to={`/ministerios/${slug}`}
-                        className="block px-4 py-2 hover:bg-church-100"
-                      >
-                        {ministerio.title}
-                      </Link>
-                    ))}
-                </div>
-              </div>
-
+              <Link to="/ministerios" className="nav-link">Ministérios</Link>
               <Link to="/estudos" className="nav-link">Estudos</Link>
               <Link to="/eventos" className="nav-link">Eventos</Link>
               <Link to="/contribuicoes" className="nav-link">Contribuições</Link>
               <Link to="/testemunhos" className="nav-link">Testemunhos</Link>
+              <Link to="/oracao" className="nav-link">Orações</Link>
               <Link to="/contato" className="nav-link">Contato</Link>
             </div>
           </div>
@@ -113,6 +95,7 @@ const Navbar = () => {
               <Link to="/eventos" className="nav-link py-2">Eventos</Link>
               <Link to="/contribuicoes" className="nav-link py-2">Contribuições</Link>
               <Link to="/testemunhos" className="nav-link py-2">Testemunhos</Link>
+              <Link to="/oracao" className="nav-link py-2">Orações</Link>
               <Link to="/contato" className="nav-link py-2">Contato</Link>
               <div className="flex flex-col space-y-2 pt-2">
                 {isLoggedIn ? (

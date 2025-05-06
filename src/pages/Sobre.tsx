@@ -325,7 +325,7 @@ const Sobre = () => {
               </div>
               
               <div className="text-center mt-12">
-                <a href="https://drive.google.com/drive/u/1/my-drive?hl=pt-br" target="_blank">
+                <a href="https://drive.google.com/drive/folders/1-7c8j9A9urrFsOtD_8tBx3e5AOD-9ybY?usp=sharing" target="_blank">
                 <Button className="btn-primary">
                   Ver Mais Fotos
                 </Button>

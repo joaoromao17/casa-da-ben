@@ -13,14 +13,13 @@ import Estudos from "./pages/Estudos";
 import Eventos from "./pages/Eventos";
 import Contribuicoes from "./pages/Contribuicoes";
 import Testemunhos from "./pages/Testemunhos";
+import Oracao from "./pages/Oracao";
 import Contato from "./pages/Contato";
 import Cultos from "./pages/Cultos";
 import NotFound from "./pages/NotFound";
-
-// Páginas de ministérios
 import Ministerios from "./pages/Ministerios";
-import Ministerio from "./pages/ministerios/Ministerio";
-import MinisterioDetail from "@/pages/ministerios/MinisterioDetail";
+import MinisterioDetail from "@/pages/MinisterioDetail";
+import EventoDetail from "@/pages/EventoDetail";
 
 const queryClient = new QueryClient();
 
@@ -39,11 +38,13 @@ const App = () => (
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/contribuicoes" element={<Contribuicoes />} />
           <Route path="/testemunhos" element={<Testemunhos />} />
+          <Route path="/oracao" element={<Oracao />} />
           <Route path="/contato" element={<Contato />} />
           <Route path="/cultos" element={<Cultos />} />
           <Route path="/ministerios" element={<Ministerios />} />
-          <Route path="/ministerios/:slug" element={<MinisterioDetail />} />
+          <Route path="/ministerios/:id" element={<MinisterioDetail />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/eventos/:id" element={<EventoDetail />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

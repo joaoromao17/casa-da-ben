@@ -1,45 +1,101 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import VerseCard from "@/components/ui/VerseCard";
 import EventCard from "@/components/ui/EventCard";
 import MinistryCard from "@/components/ui/MinistryCard";
-import { ministeriosData } from "@/data/ministeriosData";
-import TestimonyCard from "@/components/ui/TestimonyCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Instagram, User, BookOpen, CalendarDays, ArrowRight, ArrowDown } from "lucide-react";
 import InstagramWidget from "@/components/ui/InstagramWidget";
+import api from "@/services/api";
 
-const verseOfDay = {
-  verse: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
-  reference: "João 3:16"
+interface Ministry {
+  name: string;
+  id: number;
+  title: string;
+  description: string;
+  imageUrl: string;
+  slug: string;
+}
+
+type Evento = {
+  time: string;
+  description: string;
+  id: number;
+  title: string;
+  date: string;
+  location: string;
+  imageUrl: string;
+  category: string;
 };
-const featuredEvents = [{
-  id: "1",
-  title: "Nome do Evento",
-  description: "Descrição do Evento",
-  date: new Date(2025, 3, 20),
-  time: "Horário do Evento",
-  location: "Localização do Evento",
-  imageUrl: "/lovable-uploads/eventos.jpg"
-}];
-const featuredMinistries = [{
-  title: "Nome do Ministério",
-  description: "Descrição do Ministério",
-  imageUrl: "/lovable-uploads/ministerios.jpg",
-  slug: "louvor"
-}];
-const recentTestimonies = [{
-  name: "Nome da pessoa",
-  date: new Date(2025, 3, 15),
-  content: "Conteudo do Testemunho",
-  isAnonymous: false
-}];
+
 const Home = () => {
-  const featuredMinistries = Object.entries(ministeriosData).slice(0, 3).map(([slug, data]) => ({
-    ...data,
-    slug,
-  }));
+  const [verseOfDay, setVerseOfDay] = useState<{ verse: string; reference: string }>({
+    verse: "",
+    reference: "",
+  });
+
+  useEffect(() => {
+    const fetchVerse = async () => {
+      try {
+        const res = await api.get('/versiculos/random'); // nova rota da sua API
+        const data = res.data;
+  
+        console.log("Versículo recebido:", data);
+  
+        setVerseOfDay({
+          verse: data.verse.trim(), // 'verse' vem do seu modelo Versiculo
+          reference: data.reference,
+        });
+      } catch (error) {
+        console.error("Erro ao buscar versículo:", error);
+        setVerseOfDay({
+          verse: "Erro ao carregar o versículo.",
+          reference: "",
+        });
+      }
+    };
+  
+    fetchVerse();
+  }, []);
+
+  const [ministries, setMinistries] = useState<Ministry[]>([]);
+
+  useEffect(() => {
+    async function fetchMinistries() {
+      try {
+        const response = await api.get("/ministerios");
+        const limited = response.data.slice(0, 3); // limita para 3
+        setMinistries(limited);
+      } catch (error) {
+        console.error("Erro ao buscar ministérios:", error);
+      }
+    }
+
+    fetchMinistries();
+  }, []);
+
+  const [eventos, setEventos] = useState<Evento[]>([]);
+
+  useEffect(() => {
+    async function fetchEventos() {
+      try {
+        const response = await api.get("/eventos");
+        console.log("Eventos recebidos:", response.data);
+        const eventosOrdenados = response.data
+          .sort((a: Evento, b: Evento) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        setEventos(eventosOrdenados);
+      } catch (error) {
+        console.error("Erro ao buscar eventos:", error);
+      }
+    }
+
+    fetchEventos();
+  }, []);
+
+
+
   return <Layout>
     {/* Hero Section */}
     <section className="relative">
@@ -126,13 +182,42 @@ const Home = () => {
 
     {/* Verse of the Day */}
     <section className="py-16 bg-white">
-      <div className="container-church max-w-3xl">
-        <h2 className="text-4xl font-bold text-center mb-6">Versículo do Dia</h2>
-        <VerseCard verse={verseOfDay.verse} reference={verseOfDay.reference} />
-        <div className="text-center mt-8">
-          <Link to="/estudos">
-            <Button variant="outline" className="btn-outline">
-              Explorar Mais Estudos Bíblicos <ArrowRight className="ml-2 h-4 w-4" />
+        <div className="container-church max-w-3xl">
+          <h2 className="text-4xl font-bold text-center mb-6">Versículo do Dia</h2>
+          <VerseCard verse={verseOfDay.verse} reference={verseOfDay.reference} />
+          <div className="text-center mt-8">
+            <Link to="/estudos">
+              <Button variant="outline" className="btn-outline">
+                Explorar Mais Estudos Bíblicos <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+        {/* Featured Events */}
+        <section className="py-16 bg-gray-100">
+      <div className="container-church">
+        <h2 className="text-3xl font-bold text-church-800 text-center mb-8">Próximos Eventos</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          {eventos.map((evento) => (
+            <EventCard
+              key={evento.id}
+              id={evento.id.toString()}
+              title={evento.title}
+              description={evento.description}
+              date={new Date(evento.date)}
+              time={evento.time}
+              location={evento.location}
+              imageUrl={evento.imageUrl}
+              category={evento.category}
+            />
+          ))}
+        </div>
+        <div className="text-center mt-12">
+          <Link to="/eventos">
+            <Button className="btn-primary">
+              Ver todos os eventos <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         </div>
@@ -186,24 +271,6 @@ const Home = () => {
       </div>
     </section>
 
-    {/* Featured Events */}
-    <section className="py-16 bg-white">
-      <div className="container-church">
-        <div className="flex justify-between items-center mb-10">
-          <h2 className="text-4xl font-bold text-church-800">Próximos Eventos</h2>
-          <Link to="/eventos">
-            <Button variant="ghost" className="text-church-600 hover:text-church-800">
-              Ver Todos <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          {featuredEvents.map(event => <EventCard key={event.id} id={event.id} title={event.title} description={event.description} date={event.date} time={event.time} location={event.location} imageUrl={event.imageUrl} />)}
-        </div>
-      </div>
-    </section>
-
     {/* Our Ministries */}
 
     <section className="py-16 bg-gray-100">
@@ -216,13 +283,13 @@ const Home = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {featuredMinistries.map((ministry, index) => (
+          {ministries.map((ministry, index) => (
             <MinistryCard
-              key={index}
-              title={ministry.title}
+              key={ministry.id}
+              title={ministry.name}
               description={ministry.description}
               imageUrl={ministry.imageUrl}
-              slug={ministry.slug}
+              slug={ministry.id.toString()}
             />
           ))}
         </div>
@@ -238,7 +305,7 @@ const Home = () => {
     </section>
 
 
-    {/* Testimonies Section */}
+    {/* Testimonies Section 
     <section className="py-16 bg-white">
       <div className="container-church">
         <div className="flex justify-between items-center mb-10">
@@ -277,6 +344,8 @@ const Home = () => {
         </div>
       </div>
     </section>
+
+    */}
 
     {/* Instagram Feed */}
     <section className="py-16 bg-gray-50">
