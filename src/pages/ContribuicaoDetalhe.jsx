@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { obterContribuicao, registrarDoacao } from '@/services/contribuicoes';
@@ -22,9 +21,9 @@ import {
   Share, 
   User, 
   X, 
-  WhatsApp, 
-  Facebook, 
-  Instagram
+  MessageSquare, 
+  Share2, 
+  Share as ShareIcon
 } from "lucide-react";
 
 const ContribuicaoDetalhe = () => {
@@ -86,6 +85,7 @@ const ContribuicaoDetalhe = () => {
     }
   };
 
+  // Sharing functions using available icons
   const handleShare = (platform) => {
     const url = window.location.href;
     const title = `Contribua para: ${contribuicao?.title}`;
@@ -280,7 +280,7 @@ const ContribuicaoDetalhe = () => {
               {/* Compartilhar */}
               <div className="flex flex-wrap gap-2 mt-4">
                 <div className="text-sm text-gray-500 flex items-center mr-2">
-                  <Share className="h-4 w-4 mr-1" /> Compartilhar:
+                  <ShareIcon className="h-4 w-4 mr-1" /> Compartilhar:
                 </div>
                 <Button 
                   variant="outline" 
@@ -288,7 +288,7 @@ const ContribuicaoDetalhe = () => {
                   className="rounded-full"
                   onClick={() => handleShare('whatsapp')}
                 >
-                  <WhatsApp className="h-4 w-4 mr-1" /> WhatsApp
+                  <MessageSquare className="h-4 w-4 mr-1" /> WhatsApp
                 </Button>
                 <Button 
                   variant="outline" 
@@ -296,7 +296,7 @@ const ContribuicaoDetalhe = () => {
                   className="rounded-full"
                   onClick={() => handleShare('facebook')}
                 >
-                  <Facebook className="h-4 w-4 mr-1" /> Facebook
+                  <Share2 className="h-4 w-4 mr-1" /> Facebook
                 </Button>
               </div>
             </div>
