@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from "@/components/layout/Layout";
@@ -184,6 +185,8 @@ const ContribuicaoDetalhe = () => {
   const formatarData = (dataString) => {
     if (!dataString) return '';
     const data = new Date(dataString);
+    // Corrigindo o problema do fuso horário adicionando um dia
+    data.setDate(data.getDate() + 1);
     return data.toLocaleDateString('pt-BR');
   };
 
@@ -210,7 +213,7 @@ const ContribuicaoDetalhe = () => {
   const collectedValue = contribuicao?.collectedValue ? Number(contribuicao.collectedValue) : 0;
   
   // Calcula a porcentagem de progresso
-  const progressPercentage = contribuicao?.isGoalVisible && targetValue > 0
+  const progressPercentage = contribuicao?.isGoalVisible !== false && targetValue > 0
     ? Math.min(Math.round((collectedValue / targetValue) * 100), 100)
     : null;
 
@@ -244,6 +247,10 @@ const ContribuicaoDetalhe = () => {
                 src={imageUrl} 
                 alt={contribuicao?.title} 
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  console.error("Erro ao carregar imagem:", imageUrl);
+                  e.target.src = '/placeholder.svg';
+                }}
               />
             </div>
             
