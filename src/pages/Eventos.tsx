@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import EventCard from "@/components/ui/EventCard";
@@ -7,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDays, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "@/services/api";
+import ErrorAlert from "@/components/ui/ErrorAlert";
 
 const categories = ["Todos", "Culto", "Oração", "Ação Social", "Retiro"];
 
@@ -41,9 +43,6 @@ const Eventos = () => {
     };
     fetchEventos();
   }, []);
-
-  if (loading) return <div>Carregando...</div>;
-  if (error) return <div>{error}</div>;
   
   const filteredEvents = events.filter(event => {
     const matchesSearch =
@@ -132,10 +131,20 @@ const Eventos = () => {
             <CalendarDays className="mr-2" /> Próximos Eventos
           </h2>
 
-          {filteredEvents.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-8">
+              <p>Carregando eventos...</p>
+            </div>
+          ) : error ? (
+            <ErrorAlert 
+              title="Erro ao carregar eventos" 
+              message="Tente novamente mais tarde."
+              onRetry={() => window.location.reload()}
+            />
+          ) : filteredEvents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sortedEvents.map((event) => (
-            <EventCard key={event.id} {...event} id={String(event.id)} />
+              {sortedEvents.map((event) => (
+                <EventCard key={event.id} {...event} id={String(event.id)} />
               ))}
             </div>
           ) : (

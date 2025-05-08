@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from "@/components/layout/Layout";
@@ -11,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loading } from "@/components/ui/loading";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import ErrorAlert from "@/components/ui/ErrorAlert";
 import api from "@/services/api";
 import { 
   ArrowLeft, 
@@ -48,6 +47,7 @@ const ContribuicaoDetalhe = () => {
       try {
         const response = await api.get(`/contribuicoes/${id}`);
         setContribuicao(response.data);
+        console.log("Dados recebidos da API:", response.data);
       } catch (error) {
         console.error("Erro ao carregar contribuição:", error);
         setError("Não foi possível carregar os detalhes desta campanha.");
@@ -180,11 +180,10 @@ const ContribuicaoDetalhe = () => {
     }
   };
 
-  // Formatar data corrigindo o dia (adiciona um dia para corrigir o problema de fuso horário)
+  // Formatar data corrigindo o dia (o problema de fuso horário)
   const formatarData = (dataString) => {
     if (!dataString) return '';
     const data = new Date(dataString);
-    data.setDate(data.getDate() + 1); // Adiciona um dia para corrigir o problema
     return data.toLocaleDateString('pt-BR');
   };
 
@@ -195,13 +194,11 @@ const ContribuicaoDetalhe = () => {
       <Layout>
         <div className="container-church py-12">
           <div className="text-center">
-            <Alert variant="destructive" className="mb-6">
-              <AlertTitle>Erro</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-            <Button onClick={() => navigate('/contribuicoes')}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para Contribuições
-            </Button>
+            <ErrorAlert 
+              title="Erro" 
+              message={error}
+              onRetry={() => navigate('/contribuicoes')}
+            />
           </div>
         </div>
       </Layout>
@@ -275,7 +272,7 @@ const ContribuicaoDetalhe = () => {
                 </p>
               )}
               
-              {contribuicao?.isGoalVisible && progressPercentage !== null && (
+              {contribuicao?.isGoalVisible !== false && progressPercentage !== null && (
                 <div className="mb-6">
                   <div className="flex items-center gap-2 text-lg font-medium mb-1">
                     <DollarSign className="h-5 w-5 text-church-700" />

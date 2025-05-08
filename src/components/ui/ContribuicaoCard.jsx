@@ -21,11 +21,15 @@ const ContribuicaoCard = ({ contribuicao }) => {
     status 
   } = contribuicao;
 
+  console.log("Dados do card:", { 
+    id, title, imageUrl, targetValue, collectedValue, isGoalVisible 
+  });
+
   // Use shortDescription if available, otherwise use the first part of the regular description
   const displayDescription = shortDescription || (description ? description.substring(0, 100) + (description.length > 100 ? '...' : '') : '');
 
   // Calcular a porcentagem de progresso
-  const progressPercentage = isGoalVisible && targetValue 
+  const progressPercentage = isGoalVisible !== false && targetValue 
     ? Math.min(Math.round((collectedValue / targetValue) * 100), 100)
     : null;
 
@@ -43,6 +47,8 @@ const ContribuicaoCard = ({ contribuicao }) => {
     : imageUrl 
       ? `${API_BASE_URL}${imageUrl}` 
       : '/placeholder.svg';
+      
+  console.log("URL da imagem formatada:", fullImageUrl);
 
   return (
     <Card className="h-full flex flex-col hover:shadow-md transition-shadow">
@@ -51,6 +57,10 @@ const ContribuicaoCard = ({ contribuicao }) => {
           src={fullImageUrl} 
           alt={title}
           className="w-full h-full object-cover"
+          onError={(e) => {
+            console.error("Erro ao carregar imagem:", fullImageUrl);
+            e.target.src = '/placeholder.svg';
+          }}
         />
         {status !== "ATIVA" && (
           <div className={`absolute top-2 right-2 px-3 py-1 text-xs font-medium rounded-full ${
@@ -67,7 +77,7 @@ const ContribuicaoCard = ({ contribuicao }) => {
       </CardHeader>
       
       <CardContent className="flex-grow">
-        {isGoalVisible && progressPercentage !== null && (
+        {isGoalVisible !== false && progressPercentage !== null && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Arrecadado: {formatarValor(collectedValue)}</span>
