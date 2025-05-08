@@ -1,12 +1,19 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Layout from "@/components/layout/Layout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { listarContribuicoes } from "@/services/contribuicoes";
+import ContribuicaoCard from "@/components/ui/ContribuicaoCard";
+import { Loading } from "@/components/ui/loading";
 import { 
   CreditCard, 
   BanknoteIcon, 
@@ -16,9 +23,6 @@ import {
   CheckCircle2,
   ArrowRight
 } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
 
 const schema = z.object({
   nome: z.string().min(3, { message: "Nome deve ter pelo menos 3 caracteres" }),
@@ -32,6 +36,10 @@ type FormValues = z.infer<typeof schema>;
 const Contribuicoes = () => {
   const [metodo, setMetodo] = useState<string>("pix");
   const [showInstructions, setShowInstructions] = useState(false);
+  const [activeTab, setActiveTab] = useState("geral");
+  const [campanhas, setCampanhas] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const { toast } = useToast();
   
   const form = useForm<FormValues>({
@@ -44,6 +52,26 @@ const Contribuicoes = () => {
     },
   });
 
+  // Carregar as campanhas de contribuição
+  useEffect(() => {
+    if (activeTab === "campanhas") {
+      const carregarCampanhas = async () => {
+        setLoading(true);
+        try {
+          const response = await listarContribuicoes();
+          setCampanhas(response.data);
+        } catch (err) {
+          console.error("Erro ao carregar campanhas:", err);
+          setError("Não foi possível carregar as campanhas de contribuição.");
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      carregarCampanhas();
+    }
+  }, [activeTab]);
+
   const onSubmit = (data: FormValues) => {
     // Aqui seria implementada a integração com gateway de pagamento
     console.log("Dados enviados:", { ...data, metodo });
@@ -54,6 +82,45 @@ const Contribuicoes = () => {
     });
     
     setShowInstructions(true);
+  };
+
+  const renderCaixinhasContent = () => {
+    if (loading) {
+      return <Loading />;
+    }
+
+    if (error) {
+      return (
+        <div className="text-center py-8">
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Button 
+            onClick={() => window.location.reload()}
+            variant="outline"
+          >
+            Tentar novamente
+          </Button>
+        </div>
+      );
+    }
+
+    if (campanhas.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <h3 className="text-xl font-medium mb-2">Nenhuma campanha encontrada</h3>
+          <p className="text-gray-600">
+            Não há campanhas de contribuição ativas no momento.
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {campanhas.map((campanha) => (
+          <ContribuicaoCard key={campanha.id} contribuicao={campanha} />
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -68,359 +135,381 @@ const Contribuicoes = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-12 gap-8 items-start">
-            {/* Coluna de informações */}
-            <div className="md:col-span-5 bg-white p-6 rounded-lg shadow-sm">
-              <h2 className="text-xl font-bold mb-4 text-church-900">Por que contribuir?</h2>
-              
-              <div className="space-y-4 mb-6">
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-church-700 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-medium">Manutenção da igreja</h3>
-                    <p className="text-gray-600 text-sm">Ajude a manter nossa estrutura física e funcionamento.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-church-700 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-medium">Ação social</h3>
-                    <p className="text-gray-600 text-sm">Contribua com nossos projetos sociais na comunidade.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-church-700 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-medium">Evangelismo</h3>
-                    <p className="text-gray-600 text-sm">Ajude a espalhar a palavra de Deus para mais pessoas.</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-church-700 mt-1 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-medium">Projetos missionários</h3>
-                    <p className="text-gray-600 text-sm">Apoie nossos missionários em diferentes regiões.</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-church-50 p-4 rounded-md border border-church-100">
-                <h3 className="flex items-center gap-2 font-medium text-church-900">
-                  <HelpCircle className="h-5 w-5 text-church-700" />
-                  Precisa de ajuda?
-                </h3>
-                <p className="text-sm text-gray-600 mt-2">
-                  Se tiver dúvidas sobre como contribuir, entre em contato pelo telefone 
-                  (61) 99649-9589 ou envie um email para icbcasadabencao610@gmail.com
-                </p>
-              </div>
-            </div>
+          <Tabs defaultValue="geral" className="mb-8" onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 mb-8">
+              <TabsTrigger value="geral">Contribuição Geral</TabsTrigger>
+              <TabsTrigger value="campanhas">Caixinhas de Contribuição</TabsTrigger>
+            </TabsList>
             
-            {/* Formulário de contribuição */}
-            <div className="md:col-span-7">
-              {!showInstructions ? (
-                <div className="bg-white p-6 rounded-lg shadow-sm">
-                  <h2 className="text-xl font-bold mb-6 text-church-900">Faça sua contribuição</h2>
+            <TabsContent value="geral">
+              <div className="grid md:grid-cols-12 gap-8 items-start">
+                {/* Coluna de informações */}
+                <div className="md:col-span-5 bg-white p-6 rounded-lg shadow-sm">
+                  <h2 className="text-xl font-bold mb-4 text-church-900">Por que contribuir?</h2>
                   
-                  <div className="mb-6">
-                    <Label className="text-base font-medium mb-3 block">Escolha o método de pagamento</Label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                      <Button
-                        type="button"
-                        variant={metodo === "pix" ? "default" : "outline"}
-                        className={`flex flex-col items-center justify-center h-24 gap-2 ${
-                          metodo === "pix" ? "bg-church-700 hover:bg-church-800" : ""
-                        }`}
-                        onClick={() => setMetodo("pix")}
-                      >
-                        <div className="h-8 w-8 flex items-center justify-center">
-                          <img src="https://logospng.org/download/pix/logo-pix-icone-1024.png" alt="Pix" className="h-8" />
-                        </div>
-                        <span>PIX</span>
-                      </Button>
-                      
-                      <Button
-                        type="button"
-                        variant={metodo === "cartao" ? "default" : "outline"}
-                        className={`flex flex-col items-center justify-center h-24 gap-2 ${
-                          metodo === "cartao" ? "bg-church-700 hover:bg-church-800" : ""
-                        }`}
-                        onClick={() => setMetodo("cartao")}
-                      >
-                        <CreditCard className="h-8 w-8" />
-                        <span>Cartão</span>
-                      </Button>
-                      
-                      <Button
-                        type="button"
-                        variant={metodo === "boleto" ? "default" : "outline"}
-                        className={`flex flex-col items-center justify-center h-24 gap-2 ${
-                          metodo === "boleto" ? "bg-church-700 hover:bg-church-800" : ""
-                        }`}
-                        onClick={() => setMetodo("boleto")}
-                      >
-                        <BanknoteIcon className="h-8 w-8" />
-                        <span>Boleto</span>
-                      </Button>
-                      
-                      <Button
-                        type="button"
-                        variant={metodo === "transferencia" ? "default" : "outline"}
-                        className={`flex flex-col items-center justify-center h-24 gap-2 ${
-                          metodo === "transferencia" ? "bg-church-700 hover:bg-church-800" : ""
-                        }`}
-                        onClick={() => setMetodo("transferencia")}
-                      >
-                        <Landmark className="h-8 w-8" />
-                        <span>Transferência</span>
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                      <FormField
-                        control={form.control}
-                        name="nome"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Nome completo</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Seu nome completo" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>E-mail</FormLabel>
-                            <FormControl>
-                              <Input placeholder="seu-email@exemplo.com" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="valor"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Valor da contribuição</FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <span className="absolute left-3 top-1/2 -translate-y-1/2">R$</span>
-                                <Input 
-                                  placeholder="0,00" 
-                                  className="pl-10" 
-                                  {...field} 
-                                  onChange={(e) => {
-                                    // Permite apenas números e vírgula
-                                    const value = e.target.value.replace(/[^0-9,]/g, '');
-                                    field.onChange(value);
-                                  }}
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
-                        name="mensagem"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Mensagem (opcional)</FormLabel>
-                            <FormControl>
-                              <Textarea 
-                                placeholder="Deixe uma mensagem sobre sua contribuição (dízimo, oferta, etc.)" 
-                                className="resize-none h-24" 
-                                {...field} 
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-church-700 hover:bg-church-800 mt-4"
-                      >
-                        Contribuir
-                      </Button>
-                    </form>
-                  </Form>
-                </div>
-              ) : (
-                <div className="bg-white p-6 rounded-lg shadow-sm">
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <CheckCircle2 className="h-8 w-8 text-green-500" />
-                    </div>
-                    <h2 className="text-xl font-bold text-church-900">Contribuição registrada!</h2>
-                    <p className="text-gray-600 mt-2">
-                      Obrigado por sua generosidade. Siga as instruções abaixo para finalizar.
-                    </p>
-                  </div>
-                  
-                  <div className="border rounded-lg overflow-hidden mb-6">
-                    <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
-                      <h3 className="font-medium">Informações de pagamento</h3>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="text-gray-500"
-                        onClick={() => {
-                          // Função para copiar informações
-                          toast({
-                            title: "Informações copiadas",
-                            description: "As informações de pagamento foram copiadas para a área de transferência."
-                          });
-                        }}
-                      >
-                        Copiar
-                      </Button>
+                  <div className="space-y-4 mb-6">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-church-700 mt-1 flex-shrink-0" />
+                      <div>
+                        <h3 className="font-medium">Manutenção da igreja</h3>
+                        <p className="text-gray-600 text-sm">Ajude a manter nossa estrutura física e funcionamento.</p>
+                      </div>
                     </div>
                     
-                    <div className="p-4">
-                      {metodo === "pix" && (
-                        <div className="space-y-4">
-                          <p className="text-sm text-gray-600">
-                            Escaneie o QR Code abaixo ou use a chave PIX para realizar sua contribuição:
-                          </p>
-                          
-                          <div className="flex justify-center my-4">
-                            <div className="bg-white p-4 border rounded-md inline-block">
-                              <img 
-                                src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" 
-                                alt="QR Code PIX" 
-                                className="w-48 h-48"
-                              />
-                            </div>
-                          </div>
-                          
-                          <div className="bg-gray-50 p-3 rounded-md">
-                            <p className="text-sm font-medium mb-1">Chave PIX:</p>
-                            <p className="text-sm font-mono bg-white p-2 rounded border select-all">
-                              12345678901
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                      
-                      {metodo === "cartao" && (
-                        <div className="space-y-4">
-                          <p className="text-sm text-gray-600">
-                            Você será redirecionado para a página de pagamento seguro. Clique no botão abaixo:
-                          </p>
-                          
-                          <Button className="w-full bg-church-700 hover:bg-church-800">
-                            Pagar com Cartão <ArrowRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
-                      
-                      {metodo === "boleto" && (
-                        <div className="space-y-4">
-                          <p className="text-sm text-gray-600">
-                            Seu boleto foi gerado. Você pode imprimi-lo ou copiar o código de barras:
-                          </p>
-                          
-                          <div className="bg-gray-50 p-3 rounded-md">
-                            <p className="text-sm font-medium mb-1">Código de barras:</p>
-                            <p className="text-sm font-mono bg-white p-2 rounded border break-all select-all">
-                              23790000123456789012345678901234567890123456789
-                            </p>
-                          </div>
-                          
-                          <Button className="w-full">
-                            Imprimir Boleto
-                          </Button>
-                        </div>
-                      )}
-                      
-                      {metodo === "transferencia" && (
-                        <div className="space-y-3">
-                          <p className="text-sm text-gray-600 mb-3">
-                            Utilize os dados bancários abaixo para realizar sua transferência:
-                          </p>
-                          
-                          <div className="space-y-2">
-                            <div className="grid grid-cols-3 text-sm">
-                              <span className="font-medium">Banco:</span>
-                              <span className="col-span-2">123 - Banco ICB</span>
-                            </div>
-                            
-                            <div className="grid grid-cols-3 text-sm">
-                              <span className="font-medium">Agência:</span>
-                              <span className="col-span-2">1234</span>
-                            </div>
-                            
-                            <div className="grid grid-cols-3 text-sm">
-                              <span className="font-medium">Conta:</span>
-                              <span className="col-span-2">12345-6</span>
-                            </div>
-                            
-                            <div className="grid grid-cols-3 text-sm">
-                              <span className="font-medium">CNPJ:</span>
-                              <span className="col-span-2">12.345.678/0001-90</span>
-                            </div>
-                            
-                            <div className="grid grid-cols-3 text-sm">
-                              <span className="font-medium">Favorecido:</span>
-                              <span className="col-span-2">Igreja ICB 610</span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-church-700 mt-1 flex-shrink-0" />
+                      <div>
+                        <h3 className="font-medium">Ação social</h3>
+                        <p className="text-gray-600 text-sm">Contribua com nossos projetos sociais na comunidade.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-church-700 mt-1 flex-shrink-0" />
+                      <div>
+                        <h3 className="font-medium">Evangelismo</h3>
+                        <p className="text-gray-600 text-sm">Ajude a espalhar a palavra de Deus para mais pessoas.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="h-5 w-5 text-church-700 mt-1 flex-shrink-0" />
+                      <div>
+                        <h3 className="font-medium">Projetos missionários</h3>
+                        <p className="text-gray-600 text-sm">Apoie nossos missionários em diferentes regiões.</p>
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="mt-6">
-                    <details className="group">
-                      <summary className="flex justify-between items-center text-sm font-medium cursor-pointer">
-                        Não recebemos sua contribuição? 
-                        <ChevronDown className="h-4 w-4 text-gray-500 group-open:rotate-180 transition-transform" />
-                      </summary>
-                      
-                      <div className="mt-3 text-sm text-gray-600">
-                        <p>
-                          Se você já realizou o pagamento e ele ainda não foi confirmado, entre em contato 
-                          com nossa equipe financeira pelo e-mail financeiro@icb610.org ou pelo telefone 
-                          (XX) XXXX-XXXX.
-                        </p>
-                      </div>
-                    </details>
-                  </div>
-                  
-                  <div className="border-t mt-6 pt-6">
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => {
-                        form.reset();
-                        setShowInstructions(false);
-                      }}
-                    >
-                      Fazer outra contribuição
-                    </Button>
+                  <div className="bg-church-50 p-4 rounded-md border border-church-100">
+                    <h3 className="flex items-center gap-2 font-medium text-church-900">
+                      <HelpCircle className="h-5 w-5 text-church-700" />
+                      Precisa de ajuda?
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-2">
+                      Se tiver dúvidas sobre como contribuir, entre em contato pelo telefone 
+                      (61) 99649-9589 ou envie um email para icbcasadabencao610@gmail.com
+                    </p>
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
+                
+                {/* Formulário de contribuição */}
+                <div className="md:col-span-7">
+                  {!showInstructions ? (
+                    <div className="bg-white p-6 rounded-lg shadow-sm">
+                      <h2 className="text-xl font-bold mb-6 text-church-900">Faça sua contribuição</h2>
+                      
+                      <div className="mb-6">
+                        <Label className="text-base font-medium mb-3 block">Escolha o método de pagamento</Label>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          <Button
+                            type="button"
+                            variant={metodo === "pix" ? "default" : "outline"}
+                            className={`flex flex-col items-center justify-center h-24 gap-2 ${
+                              metodo === "pix" ? "bg-church-700 hover:bg-church-800" : ""
+                            }`}
+                            onClick={() => setMetodo("pix")}
+                          >
+                            <div className="h-8 w-8 flex items-center justify-center">
+                              <img src="https://logospng.org/download/pix/logo-pix-icone-1024.png" alt="Pix" className="h-8" />
+                            </div>
+                            <span>PIX</span>
+                          </Button>
+                          
+                          <Button
+                            type="button"
+                            variant={metodo === "cartao" ? "default" : "outline"}
+                            className={`flex flex-col items-center justify-center h-24 gap-2 ${
+                              metodo === "cartao" ? "bg-church-700 hover:bg-church-800" : ""
+                            }`}
+                            onClick={() => setMetodo("cartao")}
+                          >
+                            <CreditCard className="h-8 w-8" />
+                            <span>Cartão</span>
+                          </Button>
+                          
+                          <Button
+                            type="button"
+                            variant={metodo === "boleto" ? "default" : "outline"}
+                            className={`flex flex-col items-center justify-center h-24 gap-2 ${
+                              metodo === "boleto" ? "bg-church-700 hover:bg-church-800" : ""
+                            }`}
+                            onClick={() => setMetodo("boleto")}
+                          >
+                            <BanknoteIcon className="h-8 w-8" />
+                            <span>Boleto</span>
+                          </Button>
+                          
+                          <Button
+                            type="button"
+                            variant={metodo === "transferencia" ? "default" : "outline"}
+                            className={`flex flex-col items-center justify-center h-24 gap-2 ${
+                              metodo === "transferencia" ? "bg-church-700 hover:bg-church-800" : ""
+                            }`}
+                            onClick={() => setMetodo("transferencia")}
+                          >
+                            <Landmark className="h-8 w-8" />
+                            <span>Transferência</span>
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                          <FormField
+                            control={form.control}
+                            name="nome"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Nome completo</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Seu nome completo" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>E-mail</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="seu-email@exemplo.com" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name="valor"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Valor da contribuição</FormLabel>
+                                <FormControl>
+                                  <div className="relative">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2">R$</span>
+                                    <Input 
+                                      placeholder="0,00" 
+                                      className="pl-10" 
+                                      {...field} 
+                                      onChange={(e) => {
+                                        // Permite apenas números e vírgula
+                                        const value = e.target.value.replace(/[^0-9,]/g, '');
+                                        field.onChange(value);
+                                      }}
+                                    />
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name="mensagem"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Mensagem (opcional)</FormLabel>
+                                <FormControl>
+                                  <Textarea 
+                                    placeholder="Deixe uma mensagem sobre sua contribuição (dízimo, oferta, etc.)" 
+                                    className="resize-none h-24" 
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <Button 
+                            type="submit" 
+                            className="w-full bg-church-700 hover:bg-church-800 mt-4"
+                          >
+                            Contribuir
+                          </Button>
+                        </form>
+                      </Form>
+                    </div>
+                  ) : (
+                    <div className="bg-white p-6 rounded-lg shadow-sm">
+                      <div className="text-center mb-6">
+                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <CheckCircle2 className="h-8 w-8 text-green-500" />
+                        </div>
+                        <h2 className="text-xl font-bold text-church-900">Contribuição registrada!</h2>
+                        <p className="text-gray-600 mt-2">
+                          Obrigado por sua generosidade. Siga as instruções abaixo para finalizar.
+                        </p>
+                      </div>
+                      
+                      <div className="border rounded-lg overflow-hidden mb-6">
+                        <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
+                          <h3 className="font-medium">Informações de pagamento</h3>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="text-gray-500"
+                            onClick={() => {
+                              // Função para copiar informações
+                              toast({
+                                title: "Informações copiadas",
+                                description: "As informações de pagamento foram copiadas para a área de transferência."
+                              });
+                            }}
+                          >
+                            Copiar
+                          </Button>
+                        </div>
+                        
+                        <div className="p-4">
+                          {metodo === "pix" && (
+                            <div className="space-y-4">
+                              <p className="text-sm text-gray-600">
+                                Escaneie o QR Code abaixo ou use a chave PIX para realizar sua contribuição:
+                              </p>
+                              
+                              <div className="flex justify-center my-4">
+                                <div className="bg-white p-4 border rounded-md inline-block">
+                                  <img 
+                                    src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" 
+                                    alt="QR Code PIX" 
+                                    className="w-48 h-48"
+                                  />
+                                </div>
+                              </div>
+                              
+                              <div className="bg-gray-50 p-3 rounded-md">
+                                <p className="text-sm font-medium mb-1">Chave PIX:</p>
+                                <p className="text-sm font-mono bg-white p-2 rounded border select-all">
+                                  12345678901
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {metodo === "cartao" && (
+                            <div className="space-y-4">
+                              <p className="text-sm text-gray-600">
+                                Você será redirecionado para a página de pagamento seguro. Clique no botão abaixo:
+                              </p>
+                              
+                              <Button className="w-full bg-church-700 hover:bg-church-800">
+                                Pagar com Cartão <ArrowRight className="ml-2 h-4 w-4" />
+                              </Button>
+                            </div>
+                          )}
+                          
+                          {metodo === "boleto" && (
+                            <div className="space-y-4">
+                              <p className="text-sm text-gray-600">
+                                Seu boleto foi gerado. Você pode imprimi-lo ou copiar o código de barras:
+                              </p>
+                              
+                              <div className="bg-gray-50 p-3 rounded-md">
+                                <p className="text-sm font-medium mb-1">Código de barras:</p>
+                                <p className="text-sm font-mono bg-white p-2 rounded border break-all select-all">
+                                  23790000123456789012345678901234567890123456789
+                                </p>
+                              </div>
+                              
+                              <Button className="w-full">
+                                Imprimir Boleto
+                              </Button>
+                            </div>
+                          )}
+                          
+                          {metodo === "transferencia" && (
+                            <div className="space-y-3">
+                              <p className="text-sm text-gray-600 mb-3">
+                                Utilize os dados bancários abaixo para realizar sua transferência:
+                              </p>
+                              
+                              <div className="space-y-2">
+                                <div className="grid grid-cols-3 text-sm">
+                                  <span className="font-medium">Banco:</span>
+                                  <span className="col-span-2">123 - Banco ICB</span>
+                                </div>
+                                
+                                <div className="grid grid-cols-3 text-sm">
+                                  <span className="font-medium">Agência:</span>
+                                  <span className="col-span-2">1234</span>
+                                </div>
+                                
+                                <div className="grid grid-cols-3 text-sm">
+                                  <span className="font-medium">Conta:</span>
+                                  <span className="col-span-2">12345-6</span>
+                                </div>
+                                
+                                <div className="grid grid-cols-3 text-sm">
+                                  <span className="font-medium">CNPJ:</span>
+                                  <span className="col-span-2">12.345.678/0001-90</span>
+                                </div>
+                                
+                                <div className="grid grid-cols-3 text-sm">
+                                  <span className="font-medium">Favorecido:</span>
+                                  <span className="col-span-2">Igreja ICB 610</span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6">
+                        <details className="group">
+                          <summary className="flex justify-between items-center text-sm font-medium cursor-pointer">
+                            Não recebemos sua contribuição? 
+                            <ChevronDown className="h-4 w-4 text-gray-500 group-open:rotate-180 transition-transform" />
+                          </summary>
+                          
+                          <div className="mt-3 text-sm text-gray-600">
+                            <p>
+                              Se você já realizou o pagamento e ele ainda não foi confirmado, entre em contato 
+                              com nossa equipe financeira pelo e-mail financeiro@icb610.org ou pelo telefone 
+                              (XX) XXXX-XXXX.
+                            </p>
+                          </div>
+                        </details>
+                      </div>
+                      
+                      <div className="border-t mt-6 pt-6">
+                        <Button 
+                          variant="outline" 
+                          className="w-full"
+                          onClick={() => {
+                            form.reset();
+                            setShowInstructions(false);
+                          }}
+                        >
+                          Fazer outra contribuição
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="campanhas">
+              <div className="bg-white p-8 rounded-lg shadow-sm mb-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-church-900">Caixinhas de Contribuição</h2>
+                    <p className="text-gray-600">Campanhas específicas para necessidades da igreja e projetos especiais</p>
+                  </div>
+                </div>
+                
+                {renderCaixinhasContent()}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </Layout>
