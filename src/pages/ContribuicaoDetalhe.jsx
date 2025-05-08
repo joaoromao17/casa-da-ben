@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loading } from "@/components/ui/loading";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import api from "@/services/api";
 import { 
   ArrowLeft, 
@@ -23,7 +24,7 @@ import {
   X, 
   MessageSquare, 
   Share2, 
-  Share as ShareIcon
+  ShareIcon
 } from "lucide-react";
 
 const ContribuicaoDetalhe = () => {
@@ -60,7 +61,7 @@ const ContribuicaoDetalhe = () => {
 
   // Formatar valores para exibição em reais
   const formatarValor = (valor) => {
-    return valor?.toLocaleString('pt-BR', { 
+    return Number(valor).toLocaleString('pt-BR', { 
       style: 'currency', 
       currency: 'BRL' 
     });
@@ -179,9 +180,11 @@ const ContribuicaoDetalhe = () => {
     }
   };
 
-  // Formatar data
+  // Formatar data corrigindo o dia (adiciona um dia para corrigir o problema de fuso horário)
   const formatarData = (dataString) => {
+    if (!dataString) return '';
     const data = new Date(dataString);
+    data.setDate(data.getDate() + 1); // Adiciona um dia para corrigir o problema
     return data.toLocaleDateString('pt-BR');
   };
 
@@ -192,8 +195,10 @@ const ContribuicaoDetalhe = () => {
       <Layout>
         <div className="container-church py-12">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Erro</h1>
-            <p className="text-gray-600 mb-6">{error}</p>
+            <Alert variant="destructive" className="mb-6">
+              <AlertTitle>Erro</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
             <Button onClick={() => navigate('/contribuicoes')}>
               <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para Contribuições
             </Button>
@@ -203,9 +208,22 @@ const ContribuicaoDetalhe = () => {
     );
   }
 
-  const progressPercentage = contribuicao?.isGoalVisible && contribuicao?.targetValue 
-    ? Math.min(Math.round((contribuicao.collectedValue / contribuicao.targetValue) * 100), 100)
+  // Garante que os valores são tratados como números
+  const targetValue = contribuicao?.targetValue ? Number(contribuicao.targetValue) : 0;
+  const collectedValue = contribuicao?.collectedValue ? Number(contribuicao.collectedValue) : 0;
+  
+  // Calcula a porcentagem de progresso
+  const progressPercentage = contribuicao?.isGoalVisible && targetValue > 0
+    ? Math.min(Math.round((collectedValue / targetValue) * 100), 100)
     : null;
+
+  // Obter URL completa da imagem
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+  const imageUrl = contribuicao?.imageUrl 
+    ? (contribuicao.imageUrl.startsWith('http') 
+      ? contribuicao.imageUrl 
+      : `${API_BASE_URL}${contribuicao.imageUrl}`)
+    : '/placeholder.svg';
 
   return (
     <Layout>
@@ -226,7 +244,7 @@ const ContribuicaoDetalhe = () => {
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="aspect-video overflow-hidden rounded-lg">
               <img 
-                src={contribuicao?.imageUrl || '/placeholder.svg'} 
+                src={imageUrl} 
                 alt={contribuicao?.title} 
                 className="w-full h-full object-cover"
               />
@@ -261,8 +279,8 @@ const ContribuicaoDetalhe = () => {
                 <div className="mb-6">
                   <div className="flex items-center gap-2 text-lg font-medium mb-1">
                     <DollarSign className="h-5 w-5 text-church-700" />
-                    <span>{formatarValor(contribuicao.collectedValue)}</span>
-                    <span className="text-gray-500">de {formatarValor(contribuicao.targetValue)}</span>
+                    <span>{formatarValor(collectedValue)}</span>
+                    <span className="text-gray-500">de {formatarValor(targetValue)}</span>
                   </div>
                   
                   <div className="flex items-center gap-2">

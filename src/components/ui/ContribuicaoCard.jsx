@@ -31,20 +31,24 @@ const ContribuicaoCard = ({ contribuicao }) => {
 
   // Formatar valores para exibição em reais
   const formatarValor = (valor) => {
-    return valor.toLocaleString('pt-BR', { 
+    return Number(valor).toLocaleString('pt-BR', { 
       style: 'currency', 
       currency: 'BRL' 
     });
   };
 
   // Handle image URLs: if it's a full URL, use it directly, otherwise prepend the API base URL
-  const fullImageUrl = imageUrl?.startsWith("http") ? imageUrl : `${API_BASE_URL}${imageUrl}`;
+  const fullImageUrl = imageUrl?.startsWith("http") 
+    ? imageUrl 
+    : imageUrl 
+      ? `${API_BASE_URL}${imageUrl}` 
+      : '/placeholder.svg';
 
   return (
     <Card className="h-full flex flex-col hover:shadow-md transition-shadow">
       <div className="relative w-full h-48 overflow-hidden">
         <img 
-          src={fullImageUrl || '/placeholder.svg'} 
+          src={fullImageUrl} 
           alt={title}
           className="w-full h-full object-cover"
         />

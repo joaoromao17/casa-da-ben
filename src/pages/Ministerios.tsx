@@ -1,8 +1,11 @@
+
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import MinistryCard from "@/components/ui/MinistryCard";
 import Layout from "@/components/layout/Layout";
-import api from "@/services/api"; // Usando o api.js que já configuramos!
+import MinistryCard from "@/components/ui/MinistryCard";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Loading } from "@/components/ui/loading";
+import api from "@/services/api";
 
 interface Ministry {
   id: number;
@@ -37,18 +40,8 @@ const Ministerios = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="container-church py-16 text-center text-church-700">
-          Carregando ministérios...
-        </div>
-      </Layout>
-    );
-  }
-
-  if (error) {
-    return (
-      <Layout>
-        <div className="container-church py-16 text-center text-red-500">
-          {error}
+        <div className="container-church py-16">
+          <Loading />
         </div>
       </Layout>
     );
@@ -61,14 +54,32 @@ const Ministerios = () => {
           <h1 className="text-4xl font-bold text-center text-church-800 mb-8">
             Ministérios
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto text-center mb-10">
             Confira nossos ministérios abaixo. 
             Todos são bem-vindos para crescer na fé e em comunhão.
           </p>
-          {ministries.length === 0 ? (
-            <p className="text-center text-church-700">
-              Nenhum ministério cadastrado ainda.
-            </p>
+
+          {error ? (
+            <Alert variant="destructive" className="my-8">
+              <AlertTitle>Erro ao carregar ministérios</AlertTitle>
+              <AlertDescription>
+                {error}
+                <div className="mt-4">
+                  <Button 
+                    onClick={() => window.location.reload()}
+                    variant="outline"
+                  >
+                    Tentar novamente
+                  </Button>
+                </div>
+              </AlertDescription>
+            </Alert>
+          ) : ministries.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-church-700 mb-4">
+                Nenhum ministério cadastrado ainda.
+              </p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {ministries.map((ministry) => (
