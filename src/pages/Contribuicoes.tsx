@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -10,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import ContribuicaoCard from "@/components/ui/ContribuicaoCard";
 import { Loading } from "@/components/ui/loading";
 import api from "@/services/api";
@@ -90,15 +92,20 @@ const Contribuicoes = () => {
 
     if (error) {
       return (
-        <div className="text-center py-8">
-          <p className="text-gray-600 mb-4">{error}</p>
-          <Button 
-            onClick={() => window.location.reload()}
-            variant="outline"
-          >
-            Tentar novamente
-          </Button>
-        </div>
+        <Alert variant="destructive" className="my-8">
+          <AlertTitle>Erro ao carregar campanhas</AlertTitle>
+          <AlertDescription>
+            {error}
+            <div className="mt-4">
+              <Button 
+                onClick={() => window.location.reload()}
+                variant="outline"
+              >
+                Tentar novamente
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
       );
     }
 
