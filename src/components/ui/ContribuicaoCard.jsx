@@ -6,17 +6,23 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 const ContribuicaoCard = ({ contribuicao }) => {
   const { 
     id, 
     title, 
     shortDescription, 
+    description,
     imageUrl, 
     targetValue, 
     collectedValue, 
     isGoalVisible,
     status 
   } = contribuicao;
+
+  // Use shortDescription if available, otherwise use the first part of the regular description
+  const displayDescription = shortDescription || (description ? description.substring(0, 100) + (description.length > 100 ? '...' : '') : '');
 
   // Calcular a porcentagem de progresso
   const progressPercentage = isGoalVisible && targetValue 
@@ -31,11 +37,14 @@ const ContribuicaoCard = ({ contribuicao }) => {
     });
   };
 
+  // Handle image URLs: if it's a full URL, use it directly, otherwise prepend the API base URL
+  const fullImageUrl = imageUrl?.startsWith("http") ? imageUrl : `${API_BASE_URL}${imageUrl}`;
+
   return (
     <Card className="h-full flex flex-col hover:shadow-md transition-shadow">
       <div className="relative w-full h-48 overflow-hidden">
         <img 
-          src={imageUrl} 
+          src={fullImageUrl || '/placeholder.svg'} 
           alt={title}
           className="w-full h-full object-cover"
         />
@@ -50,7 +59,7 @@ const ContribuicaoCard = ({ contribuicao }) => {
       
       <CardHeader className="pb-2">
         <CardTitle className="text-xl">{title}</CardTitle>
-        <CardDescription className="line-clamp-2">{shortDescription}</CardDescription>
+        <CardDescription className="line-clamp-2">{displayDescription}</CardDescription>
       </CardHeader>
       
       <CardContent className="flex-grow">

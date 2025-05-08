@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -11,9 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { listarContribuicoes } from "@/services/contribuicoes";
 import ContribuicaoCard from "@/components/ui/ContribuicaoCard";
 import { Loading } from "@/components/ui/loading";
+import api from "@/services/api";
 import { 
   CreditCard, 
   BanknoteIcon, 
@@ -52,13 +51,13 @@ const Contribuicoes = () => {
     },
   });
 
-  // Carregar as campanhas de contribuição
+  // Carregar as campanhas de contribuição do API
   useEffect(() => {
     if (activeTab === "campanhas") {
       const carregarCampanhas = async () => {
         setLoading(true);
         try {
-          const response = await listarContribuicoes();
+          const response = await api.get("/contribuicoes");
           setCampanhas(response.data);
         } catch (err) {
           console.error("Erro ao carregar campanhas:", err);
