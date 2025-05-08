@@ -1,6 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { obterContribuicao, registrarDoacao } from '@/services/contribuicoes';
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loading } from "@/components/ui/loading";
+import api from "@/services/api";
 import { 
   ArrowLeft, 
   Calendar, 
@@ -18,7 +19,6 @@ import {
   Copy, 
   DollarSign, 
   Percent, 
-  Share, 
   User, 
   X, 
   MessageSquare, 
@@ -45,7 +45,7 @@ const ContribuicaoDetalhe = () => {
   useEffect(() => {
     const carregarContribuicao = async () => {
       try {
-        const response = await obterContribuicao(id);
+        const response = await api.get(`/contribuicoes/${id}`);
         setContribuicao(response.data);
       } catch (error) {
         console.error("Erro ao carregar contribuição:", error);
@@ -129,7 +129,7 @@ const ContribuicaoDetalhe = () => {
         contribuicaoId: id
       };
       
-      await registrarDoacao(id, dados);
+      await api.post(`/contribuicoes/${id}/doacoes`, dados);
       
       toast({
         title: "Contribuição registrada!",
@@ -311,9 +311,12 @@ const ContribuicaoDetalhe = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="prose max-w-none">
-                    {contribuicao?.fullDescription.split('\n').map((paragraph, index) => (
+                    {contribuicao?.fullDescription && contribuicao.fullDescription.split('\n').map((paragraph, index) => (
                       <p key={index} className="mb-4">{paragraph}</p>
                     ))}
+                    {!contribuicao?.fullDescription && contribuicao?.description && (
+                      <p className="mb-4">{contribuicao.description}</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -344,7 +347,7 @@ const ContribuicaoDetalhe = () => {
                       <p className="text-sm font-medium mb-1">Chave PIX:</p>
                       <div className="flex">
                         <p className="text-sm font-mono bg-white p-2 rounded-l border flex-1 truncate">
-                          {contribuicao?.pixKey}
+                          {contribuicao?.pixKey || '12345678901'}
                         </p>
                         <Button 
                           variant="outline" 
