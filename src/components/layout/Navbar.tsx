@@ -10,7 +10,6 @@ import {
   CalendarDays,
   Instagram,
 } from "lucide-react";
-import { ministeriosData } from "@/data/ministeriosData";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -77,19 +76,6 @@ const Navbar = () => {
                 <summary className="nav-link py-2 flex cursor-pointer items-center justify-between">
                   Ministérios <ChevronDown className="h-4 w-4" />
                 </summary>
-                <div className="pl-4 mt-2 space-y-2">
-                  {Object.entries(ministeriosData)
-                    .filter(([slug]) => slug !== "modelo")
-                    .map(([slug, ministerio]) => (
-                      <Link
-                        key={slug}
-                        to={`/ministerios/${slug}`}
-                        className="block py-2 hover:text-church-900"
-                      >
-                        {ministerio.title}
-                      </Link>
-                    ))}
-                </div>
               </details>
               <Link to="/estudos" className="nav-link py-2">Estudos</Link>
               <Link to="/eventos" className="nav-link py-2">Eventos</Link>
