@@ -15,7 +15,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
+import InputMask from "react-input-mask";
 import { toast } from "@/components/ui/use-toast";
+import { Eye, EyeOff } from "lucide-react";
 import { User, UserCheck, Mail, Phone, MessageSquareText, Loader2, Lock } from "lucide-react";
 import api from "@/services/api";
 
@@ -23,9 +25,10 @@ import api from "@/services/api";
 const cadastroSchema = z.object({
   name: z.string().min(3, { message: "Nome deve ter pelo menos 3 caracteres" }),
   email: z.string().email({ message: "Digite um e-mail válido" }),
-  phone: z.string().optional(),
-  password: z.string().min(6, { message: "Senha deve ter pelo menos 6 caracteres" }),
-  member: z.enum(["sim", "nao"]),
+  phone: z.string().min(14, { message: "Telefone deve estar no formato (XX) XXXXX-XXXX" }),
+  password: z.string().min(8, { message: "Senha deve ter pelo menos 8 caracteres" }),
+  confirmPassword: z.string(),
+  member: z.enum(["sim", "nao"], { message: "Informe se é membro ou não" }),
   roles: z.string().optional(),
   address: z.string().optional(),
   birthDate: z.string().optional(),
@@ -35,15 +38,20 @@ const cadastroSchema = z.object({
   acceptedTerms: z.boolean().refine(val => val === true, {
     message: "Você precisa aceitar os termos para continuar.",
   }),
-}).refine((data) => {
-  if (data.member === "sim" && (!data.ministries || data.ministries.length === 0)) {
-    return false;
-  }
-  return true;
-}, {
-  message: "Selecione pelo menos um ministério",
-  path: ["ministries"],
-});
+})
+  .refine((data) => {
+    if (data.member === "sim" && (!data.ministries || data.ministries.length === 0)) {
+      return false;
+    }
+    return true;
+  }, {
+    message: "Selecione pelo menos um ministério",
+    path: ["ministries"],
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "As senhas não coincidem",
+    path: ["confirmPassword"],
+  });
 
 type CadastroValues = z.infer<typeof cadastroSchema>;
 
@@ -51,6 +59,8 @@ const Cadastro = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [step, setStep] = useState(1);
   const [ministerios, setMinisterios] = useState<{ id: number; name: string }[]>([]);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<CadastroValues>({
     resolver: zodResolver(cadastroSchema),
@@ -59,7 +69,14 @@ const Cadastro = () => {
       email: "",
       phone: "",
       password: "",
+      confirmPassword: "",
       member: "nao",
+      roles: "",
+      address: "",
+      birthDate: "",
+      maritalStatus: "",
+      baptized: false,
+      ministries: [],
       acceptedTerms: false
     }
   });
@@ -91,6 +108,23 @@ const Cadastro = () => {
     };
     fetchMinisterios();
   }, []);
+
+  // Função para abrir WhatsApp
+  const openWhatsApp = () => {
+    const name = form.getValues("name");
+    const message = `Olá! Meu nome é ${name}. Acabei de me cadastrar no site da Igreja Casa da Benção e gostaria de receber mais informações.`;
+    window.open(`https://wa.me/5561986149855?text=${encodeURIComponent(message)}`, "_blank");
+  };
+
+  // Avançar para o próximo passo
+  const nextStep = async () => {
+    const isValid = await form.trigger(["name", "email", "member"]);
+    if (isValid) setStep(2);
+  };
+
+  const previousStep = () => setStep(1);
+
+  const navigate = useNavigate();
 
 
   // Função para lidar com o envio do formulário
@@ -141,35 +175,26 @@ const Cadastro = () => {
         openWhatsApp();
       }
     } catch (error) {
-      console.error("Erro ao cadastrar:", error);
-      toast({
-        title: "Erro no cadastro",
-        description: "Ocorreu um erro ao processar seu cadastro. Por favor, tente novamente.",
-        variant: "destructive",
-      });
+      const errMsg = error?.response?.data;
+
+      if (error?.response?.status === 409) {
+        toast({
+          title: "E-mail já cadastrado",
+          description: "Este e-mail já está em uso. Faça login ou recupere sua senha.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Erro no cadastro",
+          description: errMsg || "Ocorreu um erro ao processar seu cadastro. Por favor, tente novamente.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
-  };
 
-
-
-  // Função para abrir WhatsApp
-  const openWhatsApp = () => {
-    const name = form.getValues("name");
-    const message = `Olá! Meu nome é ${name}. Acabei de me cadastrar no site da Igreja Casa da Benção e gostaria de receber mais informações.`;
-    window.open(`https://wa.me/5561986149855?text=${encodeURIComponent(message)}`, "_blank");
-  };
-
-  // Avançar para o próximo passo
-  const nextStep = async () => {
-    const isValid = await form.trigger(["name", "email", "member"]);
-    if (isValid) setStep(2);
-  };
-
-  const previousStep = () => setStep(1);
-
-  const navigate = useNavigate();
+  }
 
   return (
     <Layout>
@@ -227,7 +252,7 @@ const Cadastro = () => {
                       )}
                     />
 
-
+                    {/* Campo de Senha */}
                     <FormField
                       control={form.control}
                       name="password"
@@ -237,7 +262,52 @@ const Cadastro = () => {
                           <FormControl>
                             <div className="flex items-center relative">
                               <Lock className="absolute left-3 text-gray-500" size={18} />
-                              <Input placeholder="Digite uma senha" className="pl-10" {...field} />
+                              <Input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Digite uma senha"
+                                className="pl-10 pr-10"
+                                {...field}
+                              />
+                              <button
+                                type="button"
+                                className="absolute right-3 text-gray-500"
+                                onClick={() => setShowPassword((prev) => !prev)}
+                                tabIndex={-1}
+                              >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+
+                    {/* Campo de Confirmação de Senha */}
+                    <FormField
+                      control={form.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirmar Senha</FormLabel>
+                          <FormControl>
+                            <div className="flex items-center relative">
+                              <Lock className="absolute left-3 text-gray-500" size={18} />
+                              <Input
+                                type={showConfirmPassword ? "text" : "password"}
+                                placeholder="Confirme sua senha"
+                                className="pl-10 pr-10"
+                                {...field}
+                              />
+                              <button
+                                type="button"
+                                className="absolute right-3 text-gray-500"
+                                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                tabIndex={-1}
+                              >
+                                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                              </button>
                             </div>
                           </FormControl>
                           <FormMessage />
@@ -254,13 +324,26 @@ const Cadastro = () => {
                           <FormControl>
                             <div className="flex items-center relative">
                               <Phone className="absolute left-3 text-gray-500" size={18} />
-                              <Input placeholder="(XX) XXXXX-XXXX" className="pl-10" {...field} />
+                              <InputMask
+                                mask="(99) 99999-9999"
+                                value={field.value}
+                                onChange={field.onChange}
+                              >
+                                {(inputProps) => (
+                                  <Input
+                                    {...inputProps}
+                                    placeholder="(XX) XXXXX-XXXX"
+                                    className="pl-10"
+                                  />
+                                )}
+                              </InputMask>
                             </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+
 
                     <FormField
                       control={form.control}
@@ -313,34 +396,6 @@ const Cadastro = () => {
                   <>
                     {isMembro && (
                       <>
-                        <FormField
-                          control={form.control}
-                          name="roles"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Qual seu cargo na igreja?</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Selecione seu cargo" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="pastor">Pastor(a)</SelectItem>
-                                  <SelectItem value="presbitero">Presbítero(a)</SelectItem>
-                                  <SelectItem value="obreiro">Obreiro(a)</SelectItem>
-                                  <SelectItem value="evangelista">Evangelista</SelectItem>
-                                  <SelectItem value="diacono">Diácono</SelectItem>
-                                  <SelectItem value="missionario">Missionário(a)</SelectItem>
-                                  <SelectItem value="professor">Professor(a)</SelectItem>
-                                  <SelectItem value="lider">Líder</SelectItem>
-                                  <SelectItem value="membro">Membro(a)</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
                         <FormField
                           control={form.control}
                           name="ministries"
