@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { toast } from "@/components/ui/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Mail, Lock, Loader2 } from "lucide-react";
+import api from "@/services/api";
 
 // Schema para validação do login
 const loginSchema = z.object({
@@ -24,7 +25,7 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Formulário de login por email/senha
   const loginForm = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -38,26 +39,35 @@ const Login = () => {
   // Função para lidar com o envio do formulário de login
   const onLoginSubmit = async (data: LoginValues) => {
     setIsSubmitting(true);
-    
+
     try {
-      // Simulando uma chamada à API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log("Login com:", data);
-      
+      const response = await api.post("/auth/login", {
+        email: data.email,
+        password: data.senha, // o backend espera "password"
+      });
+
+      const token = response.data.token;
+
+      // Salva o token localmente
+      if (data.lembrar) {
+        localStorage.setItem("authToken", token);
+      } else {
+        sessionStorage.setItem("authToken", token);
+      }
+
       toast({
         title: "Login realizado com sucesso!",
         description: "Você será redirecionado para a área de membros.",
       });
 
-      // Redirecionar para a área de membros
       window.location.href = "/area-membro";
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao fazer login:", error);
       toast({
         title: "Erro no login",
-        description: "Email ou senha incorretos. Por favor, tente novamente.",
-        variant: "destructive"
+        description:
+          error.response?.data?.message || "Email ou senha incorretos. Por favor, tente novamente.",
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -100,7 +110,7 @@ const Login = () => {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={loginForm.control}
                   name="senha"
@@ -110,11 +120,11 @@ const Login = () => {
                       <FormControl>
                         <div className="flex items-center relative">
                           <Lock className="absolute left-3 text-gray-500" size={18} />
-                          <Input 
-                            type="password" 
-                            placeholder="Digite sua senha" 
-                            className="pl-10" 
-                            {...field} 
+                          <Input
+                            type="password"
+                            placeholder="Digite sua senha"
+                            className="pl-10"
+                            {...field}
                           />
                         </div>
                       </FormControl>
@@ -122,7 +132,7 @@ const Login = () => {
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={loginForm.control}
                   name="lembrar"
@@ -142,9 +152,9 @@ const Login = () => {
                     </FormItem>
                   )}
                 />
-                
-                <Button 
-                  type="submit" 
+
+                <Button
+                  type="submit"
                   className="w-full btn-primary"
                   disabled={isSubmitting}
                 >
@@ -159,7 +169,7 @@ const Login = () => {
                 </Button>
               </form>
             </Form>
-            
+
             <div className="text-center mt-4">
               <Link to="/redefinir-senha" className="text-church-600 hover:text-church-800">
                 Esqueceu a senha? Redefina agora
