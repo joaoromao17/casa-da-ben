@@ -60,7 +60,7 @@ const Login = () => {
         description: "Você será redirecionado para a área de membros.",
       });
 
-      window.location.href = "/area-membro";
+      window.location.href = "/minha-conta";
     } catch (error: any) {
       console.error("Erro ao fazer login:", error);
       toast({
