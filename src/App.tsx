@@ -11,6 +11,7 @@ import Sobre from "./pages/Sobre";
 import Cadastro from "./pages/Cadastro";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
+import NewPassword from "./pages/NewPassword";
 import MinhaConta from "./pages/MinhaConta";
 import Estudos from "./pages/Estudos";
 import Eventos from "./pages/Eventos";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/login" element={<Login />} />
           <Route path="/redefinir-senha" element={<ResetPassword />} />
+          <Route path="/nova-senha" element={<NewPassword />} />
           <Route path="/minha-conta" element={<MinhaConta />} />
           <Route path="/estudos" element={<Estudos />} />
           <Route path="/eventos" element={<Eventos />} />
