@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { toast } from "@/components/ui/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Mail, Lock, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import api from "@/services/api";
 
 // Schema para validação do login
@@ -25,6 +26,8 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   // Formulário de login por email/senha
   const loginForm = useForm<LoginValues>({
@@ -46,7 +49,7 @@ const Login = () => {
         password: data.senha, // o backend espera "password"
       });
 
-      const token = response.data.token;
+      const token = response.data; // CORREÇÃO AQUI!
 
       // Salva o token localmente
       if (data.lembrar) {
@@ -73,6 +76,7 @@ const Login = () => {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <Layout>
@@ -118,14 +122,21 @@ const Login = () => {
                     <FormItem>
                       <FormLabel>Senha</FormLabel>
                       <FormControl>
-                        <div className="flex items-center relative">
+                        <div className="relative flex items-center">
                           <Lock className="absolute left-3 text-gray-500" size={18} />
                           <Input
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             placeholder="Digite sua senha"
-                            className="pl-10"
+                            className="pl-10 pr-10"
                             {...field}
                           />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="absolute right-3 text-gray-500 hover:text-gray-800"
+                          >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </button>
                         </div>
                       </FormControl>
                       <FormMessage />

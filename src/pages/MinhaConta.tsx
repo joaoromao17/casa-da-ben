@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Pencil, Key, LogOut } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import api from "@/services/api";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Eye, EyeOff } from "lucide-react";
+
+interface Ministry {
+  id: number;
+  name: string;
+}
 
 interface UserData {
   name: string;
@@ -21,18 +31,70 @@ interface UserData {
   maritalStatus: string;
   baptized: boolean;
   acceptedTerms: boolean;
-  ministries: string[];
-  profilePicture?: string;
+  ministries: Ministry[];
+  profileImageUrl: string;
 }
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 
 const MinhaConta = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editData, setEditData] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    email: "",
+    birthDate: "",
+    maritalStatus: "",
+    baptized: false,
+    ministries: [] as number[],
+    member: false,
+    acceptedTerms: true,
+    profileImageUrl: "",
+    roles: [] as string[]
+  });
+
+  const handleSelectPhoto = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const [ministriesOptions, setMinistriesOptions] = useState<Ministry[]>([]);
+
   useEffect(() => {
-    // Verificar se o usuário está autenticado
+    const fetchMinistries = async () => {
+      try {
+        const response = await api.get("/ministerios");
+        setMinistriesOptions(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar ministérios", error);
+      }
+    };
+    fetchMinistries();
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+
     if (!token) {
       toast({
         title: "Acesso negado",
@@ -43,39 +105,25 @@ const MinhaConta = () => {
       return;
     }
 
-    // Carregar dados do usuário
     const fetchUserData = async () => {
       try {
         setLoading(true);
-        // Em um cenário real, você buscaria os dados do usuário da API
-        // const response = await api.get("/user/profile");
-        // setUserData(response.data);
-
-        // Mock de dados para demonstração
-        setTimeout(() => {
-          setUserData({
-            name: "Maria da Silva",
-            email: "maria@exemplo.com",
-            phone: "(11) 98765-4321",
-            member: true,
-            roles: ["MEMBRO", "LIDER_LOUVOR"],
-            address: "Av. Principal, 123 - São Paulo, SP",
-            birthDate: "1985-05-20",
-            maritalStatus: "Casado(a)",
-            baptized: true,
-            acceptedTerms: true,
-            ministries: ["Louvor", "Acolhimento", "Escola Bíblica"],
-            profilePicture: "https://i.pravatar.cc/150?img=32"
-          });
-          setLoading(false);
-        }, 800);
-      } catch (error) {
+        const response = await api.get("/users/profile");
+        setUserData(response.data);
+      } catch (error: any) {
         console.error("Erro ao carregar dados do usuário:", error);
         toast({
           title: "Erro",
           description: "Não foi possível carregar seus dados. Tente novamente.",
           variant: "destructive",
         });
+
+        if (error.response?.status === 401) {
+          localStorage.removeItem("authToken");
+          sessionStorage.removeItem("authToken");
+          navigate("/login");
+        }
+      } finally {
         setLoading(false);
       }
     };
@@ -84,26 +132,68 @@ const MinhaConta = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    // Remover o token de autenticação
     localStorage.removeItem("authToken");
     sessionStorage.removeItem("authToken");
-    
+
     toast({
       title: "Logout realizado",
       description: "Você foi desconectado com sucesso.",
     });
-    
+
     navigate("/login");
   };
 
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return new Intl.DateTimeFormat('pt-BR').format(date);
+      return new Intl.DateTimeFormat("pt-BR").format(date);
     } catch (e) {
       return dateString;
     }
   };
+
+  const getProfileImageUrl = (url: string | null | undefined) => {
+    if (!url) return "/default-profile.jpg";
+    const baseUrl = url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
+    return `${baseUrl}?t=${Date.now()}`; // força atualização
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setUploading(true);
+      await api.put("/users/profile/image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast({
+        title: "Imagem atualizada",
+        description: "Sua foto de perfil foi atualizada com sucesso!",
+      });
+
+      // Recarrega os dados do usuário
+      const response = await api.get("/users/profile");
+      setUserData(response.data);
+
+    } catch (error) {
+      console.error("Erro ao enviar imagem:", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível enviar a imagem. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
 
   return (
     <Layout>
@@ -119,9 +209,16 @@ const MinhaConta = () => {
             <Card>
               <CardHeader className="flex flex-row items-center gap-4 md:gap-8">
                 <Avatar className="h-24 w-24 border-2 border-church-500">
-                  <AvatarImage src={userData.profilePicture} alt={userData.name} />
+                  <AvatarImage
+                    src={getProfileImageUrl(userData.profileImageUrl)}
+                    alt={userData.name}
+                  />
                   <AvatarFallback className="text-2xl bg-church-100 text-church-700">
-                    {userData.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    {userData.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div>
@@ -131,9 +228,23 @@ const MinhaConta = () => {
                     <p className="mt-1">{userData.phone}</p>
                   </div>
                   <div className="mt-3">
-                    <Button variant="outline" size="sm" className="mr-2">
-                      Alterar Foto
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mr-2"
+                      onClick={handleSelectPhoto}
+                      disabled={uploading}
+                    >
+                      {uploading ? "Enviando..." : "Alterar Foto"}
                     </Button>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
+                      onChange={handleImageUpload}
+                    />
                   </div>
                 </div>
               </CardHeader>
@@ -169,11 +280,15 @@ const MinhaConta = () => {
                     <TableRow>
                       <TableCell className="font-medium">Funções</TableCell>
                       <TableCell>
-                        {userData.roles.map((role, index) => (
-                          <span key={index} className="inline-block bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs mr-2 mb-2">
-                            {role.replace("_", " ")}
-                          </span>
-                        ))}
+                        {Array.isArray(userData.roles) ? (
+                          userData.roles.map((role, index) => (
+                            <span key={index} className="inline-block bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs mr-2 mb-2">
+                              {role.replace("_", " ")}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-gray-500 text-sm">Nenhuma função atribuída</span>
+                        )}
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -208,9 +323,9 @@ const MinhaConta = () => {
                       <TableCell className="font-medium">Ministérios</TableCell>
                       <TableCell>
                         <div className="flex flex-wrap gap-2">
-                          {userData.ministries.map((ministry, index) => (
-                            <span key={index} className="bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs">
-                              {ministry}
+                          {userData.ministries.map((ministry) => (
+                            <span key={ministry.id} className="bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs">
+                              {ministry.name}
                             </span>
                           ))}
                         </div>
@@ -222,16 +337,39 @@ const MinhaConta = () => {
             </Card>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Button className="flex items-center gap-2">
+              <Button
+                className="flex items-center gap-2"
+                onClick={() => {
+                  if (userData) {
+                    setEditData({
+                      name: userData.name,
+                      phone: userData.phone,
+                      address: userData.address,
+                      email: userData.email,
+                      birthDate: userData.birthDate?.split("T")[0] || "",
+                      maritalStatus: userData.maritalStatus || "",
+                      baptized: userData.baptized,
+                      ministries: userData.ministries?.map(min => min.id) || [],
+                      member: userData.member,
+                      acceptedTerms: userData.acceptedTerms,
+                      profileImageUrl: userData.profileImageUrl || "",
+                      roles: userData.roles
+                    });
+                    setIsEditModalOpen(true);
+                  }
+                }}
+              >
                 <Pencil size={18} />
                 Editar Informações
               </Button>
-              <Button variant="outline" className="flex items-center gap-2">
+
+              <Button variant="outline" className="flex items-center gap-2" onClick={() => setIsPasswordModalOpen(true)}>
                 <Key size={18} />
                 Alterar Senha
               </Button>
-              <Button 
-                variant="destructive" 
+
+              <Button
+                variant="destructive"
                 className="flex items-center gap-2"
                 onClick={handleLogout}
               >
@@ -246,6 +384,237 @@ const MinhaConta = () => {
           </div>
         )}
       </div>
+
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Informações</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+            <div>
+              <Label>Nome</Label>
+              <Input
+                value={editData.name}
+                onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Email</Label>
+              <Input
+                type="email"
+                value={editData.email}
+                onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Telefone</Label>
+              <Input
+                value={editData.phone}
+                onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Endereço</Label>
+              <Input
+                value={editData.address}
+                onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Data de Nascimento</Label>
+              <Input
+                type="date"
+                value={editData.birthDate}
+                onChange={(e) => setEditData({ ...editData, birthDate: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>Estado Civil</Label>
+              <select
+                className="w-full border rounded px-2 py-1"
+                value={editData.maritalStatus}
+                onChange={(e) => setEditData({ ...editData, maritalStatus: e.target.value })}
+              >
+                <option value="">Selecione...</option>
+                <option value="Solteiro(a)">Solteiro(a)</option>
+                <option value="Casado(a)">Casado(a)</option>
+                <option value="Divorciado(a)">Divorciado(a)</option>
+                <option value="Viúvo(a)">Viúvo(a)</option>
+              </select>
+            </div>
+            <div>
+              <Label>Batizado</Label>
+              <select
+                className="w-full border rounded px-2 py-1"
+                value={editData.baptized ? "true" : "false"}
+                onChange={(e) => setEditData({ ...editData, baptized: e.target.value === "true" })}
+              >
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
+              </select>
+            </div>
+            <div>
+              <Label>Ministérios</Label>
+              <div className="space-y-2 border rounded px-3 py-2">
+                {ministriesOptions.map((min) => (
+                  <div key={min.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`edit-min-${min.id}`}
+                      checked={editData.ministries.includes(min.id)}
+                      onCheckedChange={(checked) => {
+                        const current = editData.ministries;
+                        if (checked) {
+                          setEditData({ ...editData, ministries: [...current, min.id] });
+                        } else {
+                          setEditData({ ...editData, ministries: current.filter((id) => id !== min.id) });
+                        }
+                      }}
+                    />
+                    <label htmlFor={`edit-min-${min.id}`} className="text-sm">
+                      {min.name}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="mt-4">
+            <Button
+              onClick={async () => {
+                try {
+                  const dataToSend = {
+                    ...editData,
+                    ministries: editData.ministries.map((id: number) => ({ id })), // transforma número em objeto
+                  };
+
+                  console.log("editData enviado:", dataToSend);
+
+                  await api.put("/users/profile", dataToSend);
+
+                  toast({ title: "Sucesso", description: "Dados atualizados com sucesso!" });
+
+                  const response = await api.get("/users/profile");
+                  setUserData(response.data);
+                  setIsEditModalOpen(false);
+                } catch (error) {
+                  console.error("Erro ao atualizar:", error.response?.data || error);
+                  toast({
+                    title: "Erro",
+                    description: "Não foi possível atualizar os dados.",
+                    variant: "destructive",
+                  });
+                }
+              }}
+            >
+              Salvar Alterações
+            </Button>
+
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Alterar Senha</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Senha Atual</Label>
+              <div className="relative">
+                <Input
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-2 top-2.5 text-gray-500 hover:text-gray-800"
+                >
+                  {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <Label>Nova Senha</Label>
+              <div className="relative">
+                <Input
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-2 top-2.5 text-gray-500 hover:text-gray-800"
+                >
+                  {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <Label>Confirme a Nova Senha</Label>
+              <div className="relative">
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-2 top-2.5 text-gray-500 hover:text-gray-800"
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              onClick={async () => {
+                if (newPassword !== confirmPassword) {
+                  toast({
+                    title: "Erro",
+                    description: "As senhas não coincidem.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+
+                try {
+                  await api.put("/users/password", {
+                    currentPassword,
+                    newPassword,
+                  });
+
+                  toast({ title: "Sucesso", description: "Senha alterada com sucesso!" });
+
+                  // limpa e fecha o modal
+                  setCurrentPassword("");
+                  setNewPassword("");
+                  setConfirmPassword("");
+                  setIsPasswordModalOpen(false);
+                } catch (error: any) {
+                  console.error("Erro ao alterar senha:", error);
+                  toast({
+                    title: "Erro",
+                    description: error.response?.data || "Não foi possível alterar a senha.",
+                    variant: "destructive",
+                  });
+                }
+              }}
+            >
+              Alterar Senha
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </Layout>
   );
 };

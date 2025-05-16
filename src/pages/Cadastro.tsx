@@ -28,19 +28,18 @@ const cadastroSchema = z.object({
   phone: z.string().min(14, { message: "Telefone deve estar no formato (XX) XXXXX-XXXX" }),
   password: z.string().min(8, { message: "Senha deve ter pelo menos 8 caracteres" }),
   confirmPassword: z.string(),
-  member: z.enum(["sim", "nao"], { message: "Informe se é membro ou não" }),
-  roles: z.string().optional(),
+  member: z.boolean({ required_error: "Informe se é membro ou não" }),
   address: z.string().optional(),
   birthDate: z.string().optional(),
   maritalStatus: z.string().optional(),
   baptized: z.boolean().optional(),
-  ministries: z.array(z.number()).optional(), // <-- alterado aqui
+  ministries: z.array(z.number()).optional(),
   acceptedTerms: z.boolean().refine(val => val === true, {
     message: "Você precisa aceitar os termos para continuar.",
   }),
 })
   .refine((data) => {
-    if (data.member === "sim" && (!data.ministries || data.ministries.length === 0)) {
+    if (data.member === true && (!data.ministries || data.ministries.length === 0)) {
       return false;
     }
     return true;
@@ -70,8 +69,7 @@ const Cadastro = () => {
       phone: "",
       password: "",
       confirmPassword: "",
-      member: "nao",
-      roles: "",
+      member: false,
       address: "",
       birthDate: "",
       maritalStatus: "",
@@ -81,7 +79,9 @@ const Cadastro = () => {
     }
   });
 
-  const isMembro = form.watch("member") === "sim";
+
+  const isMembro = form.watch("member") === true;
+
 
   const verificarEmailReal = async (email: string): Promise<boolean> => {
     try {
@@ -145,13 +145,14 @@ const Cadastro = () => {
     }
 
     try {
+      const roles = data.member === true ? ["MEMBRO"] : ["VISITANTE"];
       const payload = {
         name: data.name,
         email: data.email,
         phone: data.phone || null,
         password: data.password,
-        member: data.member === "sim" ? "sim" : "nao",
-        roles: data.member === "sim" ? "membro" : "visitante",
+        member: data.member,
+        roles,
         address: data.address || null,
         birthDate: data.birthDate ? `${data.birthDate}T00:00:00` : null,
         maritalStatus: data.maritalStatus || null,
@@ -353,8 +354,8 @@ const Cadastro = () => {
                           <FormLabel>Você já é membro da Igreja Casa da Benção?</FormLabel>
                           <FormControl>
                             <RadioGroup
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              onValueChange={(val) => field.onChange(val === "sim")}
+                              value={field.value ? "sim" : "nao"} // controla o valor visual
                               className="flex flex-col space-y-1"
                             >
                               <FormItem className="flex items-center space-x-3 space-y-0">
@@ -379,7 +380,7 @@ const Cadastro = () => {
                         </FormItem>
                       )}
                     />
-
+                    
                     <div className="flex justify-end">
                       <Button
                         type="button"

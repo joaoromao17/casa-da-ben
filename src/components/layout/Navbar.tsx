@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,19 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  useEffect(() => {
+    const token =
+      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+  localStorage.removeItem("authToken");
+  sessionStorage.removeItem("authToken");
+  window.location.reload();
+};
+
 
   return (
     <nav className="bg-white shadow-md">
@@ -43,7 +56,12 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-4 pr-2">
             {isLoggedIn ? (
-              <Button className="btn-primary">Área do Membro</Button>
+                  <>
+                    <Link to="/minha-conta" className="w-full">
+                      <Button className="btn-primary w-full">Minha Conta</Button>
+                    </Link>
+                    <Button onClick={handleLogout} className="btn-danger">Sair</Button>
+                  </>
             ) : (
               <>
                 <Link to="/cadastro">
@@ -85,7 +103,12 @@ const Navbar = () => {
               <Link to="/contato" className="nav-link py-2">Contato</Link>
               <div className="flex flex-col space-y-2 pt-2">
                 {isLoggedIn ? (
-                  <Button className="btn-primary w-full">Área do Membro</Button>
+                  <>
+                    <Link to="/minha-conta" className="w-full">
+                      <Button className="btn-primary w-full">Minha Conta</Button>
+                    </Link>
+                    <Button onClick={handleLogout} className="btn-danger">Sair</Button>
+                  </>
                 ) : (
                   <>
                     <Link to="/cadastro" className="w-full">
