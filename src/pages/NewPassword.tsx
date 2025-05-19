@@ -50,8 +50,12 @@ const NewPassword = () => {
         description: "Link de redefinição de senha inválido ou expirado.",
         variant: "destructive"
       });
+       // Redireciona para a página de solicitação após um tempo
+    setTimeout(() => {
+      navigate("/reset-password");
+    }, 4000);
     }
-  }, [token]);
+  }, [token, navigate]);
 
   // Função para lidar com o envio do formulário
   const onSubmit = async (data: NewPasswordValues) => {
@@ -68,7 +72,7 @@ const NewPassword = () => {
     
     try {
       // Enviando requisição para API
-      await api.put("/auth/reset-password", {
+      await api.post("/users/reset-password", {
         token,
         newPassword: data.novaSenha
       });

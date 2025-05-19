@@ -22,7 +22,7 @@ type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 const ResetPassword = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-  
+
   const form = useForm<ResetPasswordValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -30,24 +30,28 @@ const ResetPassword = () => {
     }
   });
 
+  const [emailSentTo, setEmailSentTo] = useState("");
+
   // Função para lidar com o envio do formulário
   const onSubmit = async (data: ResetPasswordValues) => {
     setIsSubmitting(true);
-    
+
     try {
-      // Simulando uma chamada à API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log("Solicitação de redefinição para:", data.email);
-      
+      const response = await fetch("http://localhost:8080/api/users/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email }),
+      });
+
+      if (!response.ok) throw new Error("Erro ao solicitar redefinição de senha");
+
+      setEmailSentTo(data.email); // <- salvando email
+      setEmailSent(true);
       toast({
         title: "Email enviado!",
         description: "Instruções de redefinição de senha foram enviadas para seu email.",
       });
-
-      setEmailSent(true);
     } catch (error) {
-      console.error("Erro ao enviar email:", error);
       toast({
         title: "Erro ao enviar email",
         description: "Não foi possível enviar o email de redefinição. Tente novamente.",
@@ -72,8 +76,8 @@ const ResetPassword = () => {
           <CardHeader>
             <CardTitle>Esqueceu sua senha?</CardTitle>
             <CardDescription>
-              {!emailSent 
-                ? "Informe seu email e enviaremos instruções para redefinir sua senha" 
+              {!emailSent
+                ? "Informe seu email e enviaremos instruções para redefinir sua senha"
                 : "Email enviado com sucesso!"}
             </CardDescription>
           </CardHeader>
@@ -97,9 +101,9 @@ const ResetPassword = () => {
                       </FormItem>
                     )}
                   />
-                  
-                  <Button 
-                    type="submit" 
+
+                  <Button
+                    type="submit"
                     className="w-full btn-primary"
                     disabled={isSubmitting}
                   >
@@ -120,12 +124,12 @@ const ResetPassword = () => {
                   <Check className="h-6 w-6 text-green-600" />
                 </div>
                 <p className="text-gray-600">
-                  Enviamos um email para <span className="font-medium">{form.getValues().email}</span> com instruções para redefinir sua senha.
+                  Enviamos um email para <span className="font-medium">{emailSentTo}</span> com instruções...
                 </p>
                 <p className="text-sm text-gray-500">
                   Verifique sua caixa de entrada e a pasta de spam. O link de redefinição é válido por 24 horas.
                 </p>
-                <Button 
+                <Button
                   onClick={() => {
                     form.reset();
                     setEmailSent(false);
