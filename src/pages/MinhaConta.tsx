@@ -282,33 +282,16 @@ const MinhaConta = () => {
                       <TableCell>
                         {Array.isArray(userData.roles) ? (
                           userData.roles.map((role, index) => (
-                            <span key={index} className="inline-block bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs mr-2 mb-2">
+                            <span
+                              key={index}
+                              className="inline-block bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs mr-2 mb-2"
+                            >
                               {role.replace("_", " ")}
                             </span>
                           ))
                         ) : (
                           <span className="text-gray-500 text-sm">Nenhuma função atribuída</span>
                         )}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Endereço</TableCell>
-                      <TableCell>{userData.address}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Data de Nascimento</TableCell>
-                      <TableCell>{formatDate(userData.birthDate)}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Estado Civil</TableCell>
-                      <TableCell>{userData.maritalStatus}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Batizado</TableCell>
-                      <TableCell>
-                        <span className={userData.baptized ? "text-green-600" : "text-gray-500"}>
-                          {userData.baptized ? "Sim" : "Não"}
-                        </span>
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -319,18 +302,47 @@ const MinhaConta = () => {
                         </span>
                       </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Ministérios</TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-2">
-                          {userData.ministries.map((ministry) => (
-                            <span key={ministry.id} className="bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs">
-                              {ministry.name}
+
+                    {/* CAMPOS EXTRAS SE NÃO FOR VISITANTE */}
+                    {!userData.roles.includes("VISITANTE") && (
+                      <>
+                        <TableRow>
+                          <TableCell className="font-medium">Endereço</TableCell>
+                          <TableCell>{userData.address}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium">Data de Nascimento</TableCell>
+                          <TableCell>{formatDate(userData.birthDate)}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium">Estado Civil</TableCell>
+                          <TableCell>{userData.maritalStatus}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium">Batizado</TableCell>
+                          <TableCell>
+                            <span className={userData.baptized ? "text-green-600" : "text-gray-500"}>
+                              {userData.baptized ? "Sim" : "Não"}
                             </span>
-                          ))}
-                        </div>
-                      </TableCell>
-                    </TableRow>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell className="font-medium">Ministérios</TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-2">
+                              {userData.ministries.map((ministry) => (
+                                <span
+                                  key={ministry.id}
+                                  className="bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs"
+                                >
+                                  {ministry.name}
+                                </span>
+                              ))}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    )}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -341,20 +353,41 @@ const MinhaConta = () => {
                 className="flex items-center gap-2"
                 onClick={() => {
                   if (userData) {
-                    setEditData({
+                    const baseData = {
                       name: userData.name,
                       phone: userData.phone,
-                      address: userData.address,
                       email: userData.email,
+                      member: userData.member,
+                    };
+
+                    const fullData = {
+                      ...baseData,
+                      address: userData.address || "",
                       birthDate: userData.birthDate?.split("T")[0] || "",
                       maritalStatus: userData.maritalStatus || "",
                       baptized: userData.baptized,
-                      ministries: userData.ministries?.map(min => min.id) || [],
-                      member: userData.member,
+                      ministries: userData.ministries?.map((min) => min.id) || [],
                       acceptedTerms: userData.acceptedTerms,
                       profileImageUrl: userData.profileImageUrl || "",
-                      roles: userData.roles
-                    });
+                      roles: userData.roles,
+                    };
+
+                    setEditData(
+                      userData.member
+                        ? fullData
+                        : {
+                            ...editData,
+                            ...baseData,
+                            address: "",
+                            birthDate: "",
+                            maritalStatus: "",
+                            baptized: false,
+                            ministries: [],
+                            acceptedTerms: userData.acceptedTerms ?? true,
+                            profileImageUrl: userData.profileImageUrl || "",
+                            roles: userData.roles || [],
+                          }
+                    );
                     setIsEditModalOpen(true);
                   }
                 }}
@@ -368,11 +401,7 @@ const MinhaConta = () => {
                 Alterar Senha
               </Button>
 
-              <Button
-                variant="destructive"
-                className="flex items-center gap-2"
-                onClick={handleLogout}
-              >
+              <Button variant="destructive" className="flex items-center gap-2" onClick={handleLogout}>
                 <LogOut size={18} />
                 Sair
               </Button>
@@ -413,78 +442,87 @@ const MinhaConta = () => {
                 onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
               />
             </div>
-            <div>
-              <Label>Endereço</Label>
-              <Input
-                value={editData.address}
-                onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label>Data de Nascimento</Label>
-              <Input
-                type="date"
-                value={editData.birthDate}
-                onChange={(e) => setEditData({ ...editData, birthDate: e.target.value })}
-              />
-            </div>
-            <div>
-              <Label>Estado Civil</Label>
-              <select
-                className="w-full border rounded px-2 py-1"
-                value={editData.maritalStatus}
-                onChange={(e) => setEditData({ ...editData, maritalStatus: e.target.value })}
-              >
-                <option value="">Selecione...</option>
-                <option value="Solteiro(a)">Solteiro(a)</option>
-                <option value="Casado(a)">Casado(a)</option>
-                <option value="Divorciado(a)">Divorciado(a)</option>
-                <option value="Viúvo(a)">Viúvo(a)</option>
-              </select>
-            </div>
-            <div>
-              <Label>Batizado</Label>
-              <select
-                className="w-full border rounded px-2 py-1"
-                value={editData.baptized ? "true" : "false"}
-                onChange={(e) => setEditData({ ...editData, baptized: e.target.value === "true" })}
-              >
-                <option value="true">Sim</option>
-                <option value="false">Não</option>
-              </select>
-            </div>
-            <div>
-              <Label>Ministérios</Label>
-              <div className="space-y-2 border rounded px-3 py-2">
-                {ministriesOptions.map((min) => (
-                  <div key={min.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`edit-min-${min.id}`}
-                      checked={editData.ministries.includes(min.id)}
-                      onCheckedChange={(checked) => {
-                        const current = editData.ministries;
-                        if (checked) {
-                          setEditData({ ...editData, ministries: [...current, min.id] });
-                        } else {
-                          setEditData({ ...editData, ministries: current.filter((id) => id !== min.id) });
-                        }
-                      }}
-                    />
-                    <label htmlFor={`edit-min-${min.id}`} className="text-sm">
-                      {min.name}
-                    </label>
+
+            {/* Campos exclusivos para membros */}
+            {editData.member && (
+              <>
+                <div>
+                  <Label>Endereço</Label>
+                  <Input
+                    value={editData.address}
+                    onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Data de Nascimento</Label>
+                  <Input
+                    type="date"
+                    value={editData.birthDate}
+                    onChange={(e) => setEditData({ ...editData, birthDate: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>Estado Civil</Label>
+                  <select
+                    className="w-full border rounded px-2 py-1"
+                    value={editData.maritalStatus}
+                    onChange={(e) => setEditData({ ...editData, maritalStatus: e.target.value })}
+                  >
+                    <option value="">Selecione...</option>
+                    <option value="Solteiro(a)">Solteiro(a)</option>
+                    <option value="Casado(a)">Casado(a)</option>
+                    <option value="Divorciado(a)">Divorciado(a)</option>
+                    <option value="Viúvo(a)">Viúvo(a)</option>
+                  </select>
+                </div>
+                <div>
+                  <Label>Batizado</Label>
+                  <select
+                    className="w-full border rounded px-2 py-1"
+                    value={editData.baptized ? "true" : "false"}
+                    onChange={(e) => setEditData({ ...editData, baptized: e.target.value === "true" })}
+                  >
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                  </select>
+                </div>
+                <div>
+                  <Label>Ministérios</Label>
+                  <div className="space-y-2 border rounded px-3 py-2">
+                    {ministriesOptions.map((min) => (
+                      <div key={min.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`edit-min-${min.id}`}
+                          checked={editData.ministries?.includes(min.id)}
+                          onCheckedChange={(checked) => {
+                            const current = editData.ministries || [];
+                            if (checked) {
+                              setEditData({ ...editData, ministries: [...current, min.id] });
+                            } else {
+                              setEditData({ ...editData, ministries: current.filter((id) => id !== min.id) });
+                            }
+                          }}
+                        />
+                        <label htmlFor={`edit-min-${min.id}`} className="text-sm">
+                          {min.name}
+                        </label>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              </>
+            )}
           </div>
+
           <DialogFooter className="mt-4">
             <Button
               onClick={async () => {
                 try {
                   const dataToSend = {
                     ...editData,
-                    ministries: editData.ministries.map((id: number) => ({ id })), // transforma número em objeto
+                    ministries: editData.member
+                      ? editData.ministries?.map((id: number) => ({ id }))
+                      : [], // visitantes não têm ministérios
                   };
 
                   console.log("editData enviado:", dataToSend);
@@ -508,10 +546,10 @@ const MinhaConta = () => {
             >
               Salvar Alterações
             </Button>
-
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
 
       <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
         <DialogContent>
