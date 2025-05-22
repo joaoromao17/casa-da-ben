@@ -21,12 +21,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue 
+  SelectValue
 } from "@/components/ui/select";
 import { format } from "date-fns";
 
@@ -51,10 +51,10 @@ const StudiesTab = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   // Fetch studies
-  const { 
-    data: studies = [], 
-    isLoading, 
-    error 
+  const {
+    data: studies = [],
+    isLoading,
+    error
   } = useQuery({
     queryKey: ['studies'],
     queryFn: async () => {
@@ -79,22 +79,22 @@ const StudiesTab = () => {
   const createStudyMutation = useMutation({
     mutationFn: async (data: StudyFormData) => {
       let response;
-      
+
       // First create the study
       response = await api.post('/estudos', data);
-      
+
       // If there's a file, upload it
       if (pdfFile && response.data.id) {
         const formData = new FormData();
         formData.append('file', pdfFile);
-        
+
         await api.post(`/estudos/${response.data.id}/upload-pdf`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
       }
-      
+
       return response;
     },
     onSuccess: () => {
@@ -120,19 +120,19 @@ const StudiesTab = () => {
     mutationFn: async (data: StudyFormData & { id: string }) => {
       const { id, ...studyData } = data;
       let response = await api.put(`/estudos/${id}`, studyData);
-      
+
       // If there's a file, upload it
       if (pdfFile) {
         const formData = new FormData();
         formData.append('file', pdfFile);
-        
+
         await api.post(`/estudos/${id}/upload-pdf`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
       }
-      
+
       return response;
     },
     onSuccess: () => {
@@ -193,7 +193,7 @@ const StudiesTab = () => {
     setIsCreating(false);
     setSelectedStudy(study);
     setPdfFile(null);
-    
+
     // Reset form with study data
     form.reset({
       title: study.title,
@@ -202,7 +202,7 @@ const StudiesTab = () => {
       category: study.category,
       pdfUrl: study.pdfUrl || "",
     });
-    
+
     setIsModalOpen(true);
   };
 
@@ -255,21 +255,21 @@ const StudiesTab = () => {
 
   const columns = [
     { key: "title", title: "Título" },
-    { 
-      key: "author", 
+    {
+      key: "author",
       title: "Autor",
     },
-    { 
-      key: "category", 
+    {
+      key: "category",
       title: "Categoria",
     },
-    { 
-      key: "createdAt", 
+    {
+      key: "createdAt",
       title: "Data",
       render: (date: string) => date ? format(new Date(date), 'dd/MM/yyyy') : "-"
     },
-    { 
-      key: "pdfUrl", 
+    {
+      key: "pdfUrl",
       title: "PDF",
       render: (url: string) => url ? "Disponível" : "Não disponível"
     },
@@ -280,14 +280,13 @@ const StudiesTab = () => {
   }
 
   const categories = [
-    "Novo Testamento", "Velho Testamento", "Estudo Bíblico", "Devocionais", 
-    "Teologia", "Vida Cristã", "Evangelismo", "Apologética", "Outros"
+    "Todos", "Bíblia", "Doutrina", "Família", "Evangelismo", "Vida Cristã", "Finanças"
   ];
 
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Estudos</h2>
-      
+
       <AdminTable
         data={studies}
         columns={columns}
@@ -329,10 +328,10 @@ const StudiesTab = () => {
                 <FormItem>
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Breve descrição sobre o estudo" 
-                      rows={4} 
-                      {...field} 
+                    <Textarea
+                      placeholder="Breve descrição sobre o estudo"
+                      rows={4}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -360,8 +359,8 @@ const StudiesTab = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Categoria</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
+                  <Select
+                    onValueChange={field.onChange}
                     defaultValue={field.value}
                     value={field.value}
                   >
@@ -383,9 +382,9 @@ const StudiesTab = () => {
 
             <div className="space-y-2">
               <FormLabel>Arquivo PDF</FormLabel>
-              <Input 
-                type="file" 
-                accept=".pdf" 
+              <Input
+                type="file"
+                accept=".pdf"
                 onChange={handleFileChange}
               />
               {pdfFile && (

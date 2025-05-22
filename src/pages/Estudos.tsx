@@ -174,27 +174,27 @@ const Estudos = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent>
-  <DialogHeader>
-    <DialogTitle>{uploadSuccess ? "Estudo publicado ✅" : "Novo Estudo"}</DialogTitle>
-  </DialogHeader>
-  
-  <div className="py-4">
-    {uploadSuccess ? (
-      <Button 
-        onClick={() => {
-          setOpenDialog(false);
-          setUploadSuccess(false);
-          window.location.reload(); // Atualiza a página
-        }}
-        className="bg-church-900 text-white hover:bg-church-700"
-      >
-        Ok
-      </Button>
-    ) : (
-      <UploadEstudoForm onUploadSuccess={() => setUploadSuccess(true)} />
-    )}
-  </div>
-</DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{uploadSuccess ? "Estudo publicado ✅" : "Novo Estudo"}</DialogTitle>
+                </DialogHeader>
+
+                <div className="py-4">
+                  {uploadSuccess ? (
+                    <Button
+                      onClick={() => {
+                        setOpenDialog(false);
+                        setUploadSuccess(false);
+                        window.location.reload(); // Atualiza a página
+                      }}
+                      className="bg-church-900 text-white hover:bg-church-700"
+                    >
+                      Ok
+                    </Button>
+                  ) : (
+                    <UploadEstudoForm onUploadSuccess={() => setUploadSuccess(true)} />
+                  )}
+                </div>
+              </DialogContent>
 
 
             </Dialog>
