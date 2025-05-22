@@ -265,7 +265,7 @@ const UsersTab = () => {
                 <SelectValue placeholder="Filtrar por função" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Todas as funções</SelectItem>
+                <SelectItem value="todas">Todas as funções</SelectItem>
                 {availableRoles.map((role) => (
                   <SelectItem key={role.id} value={role.id}>{role.label}</SelectItem>
                 ))}
