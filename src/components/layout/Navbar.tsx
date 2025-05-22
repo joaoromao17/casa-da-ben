@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,11 +10,13 @@ import {
   BookOpen,
   CalendarDays,
   Instagram,
+  Settings,
 } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -23,13 +26,29 @@ const Navbar = () => {
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     setIsLoggedIn(!!token);
+    
+    if (token) {
+      try {
+        // Decodificar o payload do token JWT
+        const payload = token.split(".")[1];
+        const decodedPayload = JSON.parse(atob(payload));
+        setUserRoles(decodedPayload.roles || []);
+      } catch (error) {
+        console.error("Erro ao decodificar token:", error);
+        setUserRoles([]);
+      }
+    }
   }, []);
 
+  const hasAdminAccess = userRoles.some(role => 
+    role === "ADMIN" || role === "PASTOR"
+  );
+
   const handleLogout = () => {
-  localStorage.removeItem("authToken");
-  sessionStorage.removeItem("authToken");
-  window.location.reload();
-};
+    localStorage.removeItem("authToken");
+    sessionStorage.removeItem("authToken");
+    window.location.reload();
+  };
 
 
   return (
@@ -51,6 +70,12 @@ const Navbar = () => {
               <Link to="/testemunhos" className="nav-link">Testemunhos</Link>
               <Link to="/oracao" className="nav-link">Orações</Link>
               <Link to="/contato" className="nav-link">Contato</Link>
+              {hasAdminAccess && (
+                <Link to="/admin" className="nav-link flex items-center gap-1">
+                  <Settings size={16} />
+                  Admin
+                </Link>
+              )}
             </div>
           </div>
 
@@ -101,6 +126,12 @@ const Navbar = () => {
               <Link to="/testemunhos" className="nav-link py-2">Testemunhos</Link>
               <Link to="/oracao" className="nav-link py-2">Orações</Link>
               <Link to="/contato" className="nav-link py-2">Contato</Link>
+              {hasAdminAccess && (
+                <Link to="/admin" className="nav-link py-2 flex items-center gap-1">
+                  <Settings size={16} />
+                  Painel de Administração
+                </Link>
+              )}
               <div className="flex flex-col space-y-2 pt-2">
                 {isLoggedIn ? (
                   <>
