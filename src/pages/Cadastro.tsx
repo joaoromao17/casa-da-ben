@@ -380,7 +380,7 @@ const Cadastro = () => {
                         </FormItem>
                       )}
                     />
-                    
+
                     <div className="flex justify-end">
                       <Button
                         type="button"
@@ -468,7 +468,7 @@ const Cadastro = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Estado Civil</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select value={field.value} onValueChange={field.onChange}>
                                   <FormControl>
                                     <SelectTrigger>
                                       <SelectValue placeholder="Selecione" />

@@ -11,7 +11,10 @@ export default defineConfig(({ mode }) => ({
   ].filter(Boolean),
   server: {
     host: "::",
-    port: 8080
+    port: 3000,
+        proxy: {
+      '/images': 'http://localhost:3000',
+    },
   },
   resolve: {
     alias: {

@@ -218,7 +218,13 @@ const UsersTab = () => {
     { id: "PASTOR", label: "Pastor" },
     { id: "LIDER", label: "Líder" },
     { id: "MEMBRO", label: "Membro" },
-    { id: "USER", label: "Usuário" },
+    { id: "PROFESSOR", label: "Professor" },
+    { id: "PASTORAUXILIAR", label: "Pastor Auxiliar" },
+    { id: "EVANGELISTA", label: "Evangelista" },
+    { id: "DIACONO", label: "Diácono" },
+    { id: "MISSIONARIO", label: "Missionário" },
+    { id: "PRESBITERO", label: "Presbítero" },
+    { id: "VISITANTE", label: "Visitante" },
   ];
 
   return (
