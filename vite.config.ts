@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 3000,
-        proxy: {
+    proxy: {
       '/images': 'http://localhost:3000',
     },
   },
