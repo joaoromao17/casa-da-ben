@@ -28,6 +28,8 @@ import {
   SelectTrigger,
   SelectValue 
 } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // Form schema for ministry
 const ministryFormSchema = z.object({
@@ -47,6 +49,7 @@ const MinistriesTab = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedMinistry, setSelectedMinistry] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [viewMinistryOpen, setViewMinistryOpen] = useState(false);
 
   // Fetch ministries
   const { 
@@ -189,8 +192,8 @@ const MinistriesTab = () => {
   };
 
   const handleViewMinistry = (ministry: any) => {
-    // Redirect to ministry details page
-    window.location.href = `/ministerios/${ministry.id}`;
+    setSelectedMinistry(ministry);
+    setViewMinistryOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -309,7 +312,7 @@ const MinistriesTab = () => {
                   <Select 
                     onValueChange={field.onChange} 
                     defaultValue={field.value}
-                    value={field.value}
+                    value={field.value || ""}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -317,7 +320,7 @@ const MinistriesTab = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">Não definido</SelectItem>
+                      <SelectItem value="none">Não definido</SelectItem>
                       {weekdays.map((day, index) => (
                         <SelectItem key={index} value={day}>{day}</SelectItem>
                       ))}
@@ -363,7 +366,7 @@ const MinistriesTab = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">Não definido</SelectItem>
+                      <SelectItem value="none">Não definido</SelectItem>
                       {users.map((user: any) => (
                         <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
                       ))}
@@ -395,6 +398,72 @@ const MinistriesTab = () => {
           </div>
         </Form>
       </AdminFormModal>
+
+      {/* View Ministry Dialog */}
+      <Dialog open={viewMinistryOpen} onOpenChange={setViewMinistryOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Detalhes do Ministério</DialogTitle>
+          </DialogHeader>
+          
+          {selectedMinistry && (
+            <div className="py-4 space-y-4">
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Nome</h3>
+                <p className="mt-1 text-lg font-semibold">{selectedMinistry.name}</p>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Descrição</h3>
+                <p className="mt-1">{selectedMinistry.description}</p>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Dia de Reunião</h3>
+                  <p className="mt-1">{selectedMinistry.meetingDay || "-"}</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Líder</h3>
+                  <p className="mt-1">{selectedMinistry.leader?.name || "-"}</p>
+                </div>
+              </div>
+              
+              {selectedMinistry.imageUrl && (
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Imagem</h3>
+                  <div className="mt-2 max-w-md">
+                    <img 
+                      src={selectedMinistry.imageUrl} 
+                      alt={selectedMinistry.name} 
+                      className="rounded-md"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "https://via.placeholder.com/300x200?text=Imagem+não+disponível";
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+              
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Atividades</h3>
+                <p className="mt-1">{selectedMinistry.activities || "-"}</p>
+              </div>
+              
+              <div className="pt-4 flex justify-end">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setViewMinistryOpen(false)}
+                >
+                  Fechar
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog

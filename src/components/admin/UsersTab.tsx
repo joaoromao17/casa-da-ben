@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/components/ui/use-toast";
 import api from "@/services/api";
+import { Search } from "lucide-react";
 
 import AdminTable from "./AdminTable";
 import AdminFormModal from "./AdminFormModal";
@@ -28,6 +29,8 @@ import {
   SelectTrigger,
   SelectValue 
 } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 // Form schema for user edit
 const userFormSchema = z.object({
@@ -47,6 +50,9 @@ const UsersTab = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [viewUserOpen, setViewUserOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string | null>(null);
 
   // Fetch users
   const { 
@@ -154,8 +160,8 @@ const UsersTab = () => {
   };
 
   const handleViewUser = (user: any) => {
-    // Redirect to user details page or show a read-only modal
-    console.log("View user:", user);
+    setSelectedUser(user);
+    setViewUserOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -177,6 +183,16 @@ const UsersTab = () => {
       deleteUserMutation.mutate(selectedUser.id);
     }
   };
+
+  // Filter users based on search term and role filter
+  const filteredUsers = users.filter((user: any) => {
+    const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          user.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesRoleFilter = !roleFilter || (user.roles && user.roles.includes(roleFilter));
+    
+    return matchesSearch && matchesRoleFilter;
+  });
 
   const columns = [
     { key: "name", title: "Nome" },
@@ -231,8 +247,36 @@ const UsersTab = () => {
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Usuários</h2>
       
+      {/* Search and Filter */}
+      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-grow relative">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
+            <Input
+              placeholder="Pesquisar usuários..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="w-full md:w-64">
+            <Select value={roleFilter || ""} onValueChange={(value) => setRoleFilter(value || null)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filtrar por função" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Todas as funções</SelectItem>
+                {availableRoles.map((role) => (
+                  <SelectItem key={role.id} value={role.id}>{role.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+      
       <AdminTable
-        data={users}
+        data={filteredUsers}
         columns={columns}
         isLoading={isLoading}
         onView={handleViewUser}
@@ -410,6 +454,93 @@ const UsersTab = () => {
           </div>
         </Form>
       </AdminFormModal>
+
+      {/* View User Dialog */}
+      <Dialog open={viewUserOpen} onOpenChange={setViewUserOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Detalhes do Usuário</DialogTitle>
+          </DialogHeader>
+          
+          {selectedUser && (
+            <div className="py-4 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Nome</h3>
+                  <p className="mt-1">{selectedUser.name}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Email</h3>
+                  <p className="mt-1">{selectedUser.email}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Telefone</h3>
+                  <p className="mt-1">{selectedUser.phone || "-"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Status</h3>
+                  <p className="mt-1">
+                    {selectedUser.active !== false ? (
+                      <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                        Ativo
+                      </span>
+                    ) : (
+                      <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                        Inativo
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Funções</h3>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {selectedUser.roles && selectedUser.roles.length > 0 ? (
+                    selectedUser.roles.map((role: string) => (
+                      <span 
+                        key={role} 
+                        className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800"
+                      >
+                        {availableRoles.find(r => r.id === role)?.label || role}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-gray-500">-</span>
+                  )}
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">Ministérios</h3>
+                <div className="mt-1 flex flex-wrap gap-1">
+                  {selectedUser.ministries && selectedUser.ministries.length > 0 ? (
+                    selectedUser.ministries.map((ministry: any) => (
+                      <span 
+                        key={ministry.id || ministry} 
+                        className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800"
+                      >
+                        {ministry.name || ministries.find((m: any) => m.id === ministry)?.name || ministry}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-gray-500">-</span>
+                  )}
+                </div>
+              </div>
+              
+              <div className="pt-4 flex justify-end">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setViewUserOpen(false)}
+                >
+                  Fechar
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog

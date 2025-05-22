@@ -21,23 +21,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
+import { 
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue 
 } from "@/components/ui/select";
-import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 
 // Form schema for study
 const studyFormSchema = z.object({
   title: z.string().min(3, "Título deve ter pelo menos 3 caracteres"),
   description: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
-  author: z.string().min(3, "Nome do autor é obrigatório"),
-  category: z.string().min(2, "Categoria é obrigatória"),
+  author: z.string().min(2, "Autor deve ter pelo menos 2 caracteres"),
+  category: z.string().min(1, "Categoria é obrigatória"),
   pdfUrl: z.string().url("URL do PDF inválida").optional().nullable(),
-  // File upload will be handled separately
 });
 
 type StudyFormData = z.infer<typeof studyFormSchema>;
@@ -48,13 +47,12 @@ const StudiesTab = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedStudy, setSelectedStudy] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   // Fetch studies
-  const {
-    data: studies = [],
-    isLoading,
-    error
+  const { 
+    data: studies = [], 
+    isLoading, 
+    error 
   } = useQuery({
     queryKey: ['studies'],
     queryFn: async () => {
@@ -78,30 +76,13 @@ const StudiesTab = () => {
   // Create study mutation
   const createStudyMutation = useMutation({
     mutationFn: async (data: StudyFormData) => {
-      let response;
-
-      // First create the study
-      response = await api.post('/estudos', data);
-
-      // If there's a file, upload it
-      if (pdfFile && response.data.id) {
-        const formData = new FormData();
-        formData.append('file', pdfFile);
-
-        await api.post(`/estudos/${response.data.id}/upload-pdf`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-      }
-
-      return response;
+      return await api.post('/estudos', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['studies'] });
       toast({
         title: "Sucesso",
-        description: "Estudo bíblico criado com sucesso",
+        description: "Estudo criado com sucesso",
       });
       handleCloseModal();
     },
@@ -119,27 +100,13 @@ const StudiesTab = () => {
   const updateStudyMutation = useMutation({
     mutationFn: async (data: StudyFormData & { id: string }) => {
       const { id, ...studyData } = data;
-      let response = await api.put(`/estudos/${id}`, studyData);
-
-      // If there's a file, upload it
-      if (pdfFile) {
-        const formData = new FormData();
-        formData.append('file', pdfFile);
-
-        await api.post(`/estudos/${id}/upload-pdf`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-      }
-
-      return response;
+      return await api.put(`/estudos/${id}`, studyData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['studies'] });
       toast({
         title: "Sucesso",
-        description: "Estudo bíblico atualizado com sucesso",
+        description: "Estudo atualizado com sucesso",
       });
       handleCloseModal();
     },
@@ -162,7 +129,7 @@ const StudiesTab = () => {
       queryClient.invalidateQueries({ queryKey: ['studies'] });
       toast({
         title: "Sucesso",
-        description: "Estudo bíblico removido com sucesso",
+        description: "Estudo removido com sucesso",
       });
       setIsDeleteDialogOpen(false);
     },
@@ -178,7 +145,6 @@ const StudiesTab = () => {
 
   const handleAddStudy = () => {
     setIsCreating(true);
-    setPdfFile(null);
     form.reset({
       title: "",
       description: "",
@@ -192,8 +158,7 @@ const StudiesTab = () => {
   const handleEditStudy = (study: any) => {
     setIsCreating(false);
     setSelectedStudy(study);
-    setPdfFile(null);
-
+    
     // Reset form with study data
     form.reset({
       title: study.title,
@@ -202,7 +167,7 @@ const StudiesTab = () => {
       category: study.category,
       pdfUrl: study.pdfUrl || "",
     });
-
+    
     setIsModalOpen(true);
   };
 
@@ -218,7 +183,7 @@ const StudiesTab = () => {
     } else {
       toast({
         title: "Informação",
-        description: "Este estudo não possui um PDF anexado.",
+        description: "Este estudo não tem PDF disponível.",
       });
     }
   };
@@ -227,7 +192,6 @@ const StudiesTab = () => {
     setIsModalOpen(false);
     setSelectedStudy(null);
     setIsCreating(false);
-    setPdfFile(null);
   };
 
   const onSubmit = (data: StudyFormData) => {
@@ -241,12 +205,6 @@ const StudiesTab = () => {
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setPdfFile(event.target.files[0]);
-    }
-  };
-
   const confirmDelete = () => {
     if (selectedStudy) {
       deleteStudyMutation.mutate(selectedStudy.id);
@@ -255,23 +213,17 @@ const StudiesTab = () => {
 
   const columns = [
     { key: "title", title: "Título" },
-    {
-      key: "author",
-      title: "Autor",
+    { 
+      key: "description", 
+      title: "Descrição",
+      render: (desc: string) => desc?.length > 50 ? `${desc.substring(0, 50)}...` : desc
     },
-    {
-      key: "category",
-      title: "Categoria",
-    },
-    {
-      key: "createdAt",
+    { key: "author", title: "Autor" },
+    { key: "category", title: "Categoria" },
+    { 
+      key: "date", 
       title: "Data",
-      render: (date: string) => date ? format(new Date(date), 'dd/MM/yyyy') : "-"
-    },
-    {
-      key: "pdfUrl",
-      title: "PDF",
-      render: (url: string) => url ? "Disponível" : "Não disponível"
+      render: (date: string) => new Date(date).toLocaleDateString('pt-BR')
     },
   ];
 
@@ -279,14 +231,12 @@ const StudiesTab = () => {
     return <div className="text-center text-red-500">Erro ao carregar estudos.</div>;
   }
 
-  const categories = [
-    "Todos", "Bíblia", "Doutrina", "Família", "Evangelismo", "Vida Cristã", "Finanças"
-  ];
+  const categories = ["Bíblia", "Doutrina", "Família", "Evangelismo", "Vida Cristã", "Finanças", "Outro"];
 
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Estudos</h2>
-
+      
       <AdminTable
         data={studies}
         columns={columns}
@@ -328,10 +278,10 @@ const StudiesTab = () => {
                 <FormItem>
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Breve descrição sobre o estudo"
-                      rows={4}
-                      {...field}
+                    <Textarea 
+                      placeholder="Breve descrição do conteúdo do estudo" 
+                      rows={3} 
+                      {...field} 
                     />
                   </FormControl>
                   <FormMessage />
@@ -359,14 +309,14 @@ const StudiesTab = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Categoria</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
+                  <Select 
+                    onValueChange={field.onChange} 
                     defaultValue={field.value}
                     value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione a categoria" />
+                        <SelectValue placeholder="Selecione uma categoria" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -380,24 +330,23 @@ const StudiesTab = () => {
               )}
             />
 
-            <div className="space-y-2">
-              <FormLabel>Arquivo PDF</FormLabel>
-              <Input
-                type="file"
-                accept=".pdf"
-                onChange={handleFileChange}
-              />
-              {pdfFile && (
-                <p className="text-sm text-muted-foreground">
-                  Arquivo selecionado: {pdfFile.name}
-                </p>
+            <FormField
+              control={form.control}
+              name="pdfUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL do PDF</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="https://exemplo.com/arquivo.pdf" 
+                      {...field} 
+                      value={field.value || ""} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-              {!pdfFile && selectedStudy?.pdfUrl && (
-                <p className="text-sm text-muted-foreground">
-                  PDF atual: <a href={selectedStudy.pdfUrl} target="_blank" rel="noreferrer" className="text-primary underline">Visualizar</a>
-                </p>
-              )}
-            </div>
+            />
           </div>
         </Form>
       </AdminFormModal>
