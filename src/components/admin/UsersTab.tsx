@@ -40,7 +40,7 @@ const userFormSchema = z.object({
   roles: z.array(z.string()),
   member: z.boolean().optional(),
   active: z.boolean().default(true),
-  ministries: z.array(z.string()).optional(),
+  ministries: z.array(z.string()).optional().default([]),
 });
 
 type UserFormData = z.infer<typeof userFormSchema>;
@@ -140,6 +140,11 @@ const UsersTab = () => {
   const handleEditUser = (user: any) => {
     setSelectedUser(user);
     
+    // Garantindo que ministries seja sempre um array de strings
+    const userMinistries = user.ministries 
+      ? user.ministries.map((m: any) => typeof m === 'object' ? m.id : m)
+      : [];
+    
     // Reset form with user data
     form.reset({
       name: user.name,
@@ -148,7 +153,7 @@ const UsersTab = () => {
       roles: user.roles || [],
       member: user.member || false,
       active: user.active !== false,
-      ministries: user.ministries?.map((m: any) => m.id || m) || [],
+      ministries: userMinistries,
     });
     
     setIsModalOpen(true);
@@ -189,7 +194,8 @@ const UsersTab = () => {
     const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           user.email?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesRoleFilter = !roleFilter || (user.roles && user.roles.includes(roleFilter));
+    const matchesRoleFilter = !roleFilter || roleFilter === 'todas' || 
+                              (user.roles && user.roles.includes(roleFilter));
     
     return matchesSearch && matchesRoleFilter;
   });
@@ -260,7 +266,10 @@ const UsersTab = () => {
             />
           </div>
           <div className="w-full md:w-64">
-            <Select value={roleFilter || ""} onValueChange={(value) => setRoleFilter(value || null)}>
+            <Select 
+              value={roleFilter || "todas"} 
+              onValueChange={(value) => setRoleFilter(value)}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Filtrar por função" />
               </SelectTrigger>
@@ -420,31 +429,26 @@ const UsersTab = () => {
                   <FormLabel>Ministérios</FormLabel>
                   <div className="space-y-2">
                     {ministries.map((ministry: any) => (
-                      <FormField
-                        key={ministry.id}
-                        control={form.control}
-                        name="ministries"
-                        render={({ field: ministriesField }) => (
-                          <div className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`ministry-${ministry.id}`}
-                              checked={ministriesField.value?.includes(ministry.id)}
-                              onCheckedChange={(checked) => {
-                                const updatedMinistries = checked
-                                  ? [...ministriesField.value, ministry.id]
-                                  : ministriesField.value.filter((m: string) => m !== ministry.id);
-                                ministriesField.onChange(updatedMinistries);
-                              }}
-                            />
-                            <label 
-                              htmlFor={`ministry-${ministry.id}`}
-                              className="text-sm font-medium leading-none"
-                            >
-                              {ministry.name}
-                            </label>
-                          </div>
-                        )}
-                      />
+                      <div key={ministry.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`ministry-${ministry.id}`}
+                          checked={field.value?.includes(ministry.id)}
+                          onCheckedChange={(checked) => {
+                            const current = Array.isArray(field.value) ? field.value : [];
+                            if (checked) {
+                              field.onChange([...current, ministry.id]);
+                            } else {
+                              field.onChange(current.filter((id) => id !== ministry.id));
+                            }
+                          }}
+                        />
+                        <label 
+                          htmlFor={`ministry-${ministry.id}`}
+                          className="text-sm font-medium leading-none"
+                        >
+                          {ministry.name}
+                        </label>
+                      </div>
                     ))}
                   </div>
                   <FormMessage />
@@ -515,14 +519,21 @@ const UsersTab = () => {
                 <h3 className="text-sm font-medium text-gray-500">Ministérios</h3>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {selectedUser.ministries && selectedUser.ministries.length > 0 ? (
-                    selectedUser.ministries.map((ministry: any) => (
-                      <span 
-                        key={ministry.id || ministry} 
-                        className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800"
-                      >
-                        {ministry.name || ministries.find((m: any) => m.id === ministry)?.name || ministry}
-                      </span>
-                    ))
+                    selectedUser.ministries.map((ministry: any) => {
+                      const ministryId = ministry.id || ministry;
+                      const ministryName = ministry.name || 
+                        ministries.find((m: any) => m.id === ministryId)?.name || 
+                        "Ministério";
+                      
+                      return (
+                        <span 
+                          key={ministryId} 
+                          className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800"
+                        >
+                          {ministryName}
+                        </span>
+                      );
+                    })
                   ) : (
                     <span className="text-gray-500">-</span>
                   )}
