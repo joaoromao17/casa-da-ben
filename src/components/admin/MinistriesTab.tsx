@@ -22,22 +22,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
 
 // Form schema for ministry
 const ministryFormSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   description: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
   meetingDay: z.string().optional(),
-  imageUrl: z.any().optional(),
+  image: z.any().optional(),
   leaderIds: z.array(z.string()).default([]),
   viceLeaders: z.array(z.string()).default([]),
   activities: z.array(z.string()).optional(),
@@ -82,7 +75,7 @@ const MinistriesTab = () => {
       name: "",
       description: "",
       meetingDay: "",
-      imageUrl: "",
+      image: undefined,
       leaderIds: [],
       activities: [''],
       viceLeaders: [],
@@ -98,17 +91,51 @@ const MinistriesTab = () => {
   const createMinistryMutation = useMutation({
     mutationFn: async (data: MinistryFormData) => {
       const formData = new FormData();
+      
+      // Campos obrigatórios
       formData.append("name", data.name);
       formData.append("description", data.description);
-      if (data.meetingDay) formData.append("meetingDay", data.meetingDay);
-      if (data.imageUrl instanceof File) {
-        formData.append("image", data.imageUrl); // use "image" se o backend espera isso
+      
+      // Campos opcionais
+      if (data.meetingDay) {
+        formData.append("meetingDay", data.meetingDay);
       }
-      if (data.leaderIds) data.leaderIds.forEach((id) => formData.append("leaderId", id));
-      if (data.activities) data.activities.forEach((a, i) => formData.append(`activities[${i}]`, a));
-      if (data.viceLeaders) data.viceLeaders.forEach((v, i) => formData.append(`viceLeaders[${i}]`, v));
+      
+      // Imagem - nome correto: 'image'
+      if (data.image instanceof File) {
+        formData.append("image", data.image);
+      }
+      
+      // Arrays - enviar como múltiplos campos com o mesmo nome
+      if (data.leaderIds && data.leaderIds.length > 0) {
+        data.leaderIds.forEach(id => {
+          formData.append("leaderIds", id.toString());
+        });
+      }
+      
+      if (data.viceLeaders && data.viceLeaders.length > 0) {
+        data.viceLeaders.forEach(id => {
+          formData.append("viceLeaders", id.toString());
+        });
+      }
+      
+      if (data.activities && data.activities.length > 0) {
+        data.activities.forEach(activity => {
+          if (activity && activity.trim() !== "") {
+            formData.append("activities", activity.trim());
+          }
+        });
+      }
+
+      console.log("Enviando FormData:");
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+      
       return await api.post('/ministerios', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 
+          'Content-Type': 'multipart/form-data' 
+        },
       });
     },
     onSuccess: () => {
@@ -133,18 +160,52 @@ const MinistriesTab = () => {
   const updateMinistryMutation = useMutation({
     mutationFn: async (data: MinistryFormData & { id: string }) => {
       const formData = new FormData();
+      
+      // Campos obrigatórios
       formData.append("name", data.name);
       formData.append("description", data.description);
-      if (data.meetingDay) formData.append("meetingDay", data.meetingDay);
-      if (data.imageUrl instanceof File) {
-        formData.append("image", data.imageUrl); // use "image" se o backend espera isso
+      
+      // Campos opcionais
+      if (data.meetingDay) {
+        formData.append("meetingDay", data.meetingDay);
       }
-      if (data.leaderIds) data.leaderIds.forEach((id) => formData.append("leaderId", id));
-      if (data.activities) data.activities.forEach((a, i) => formData.append(`activities[${i}]`, a));
-      if (data.viceLeaders) data.viceLeaders.forEach((v, i) => formData.append(`viceLeaders[${i}]`, v));
+      
+      // Imagem - nome correto: 'image'
+      if (data.image instanceof File) {
+        formData.append("image", data.image);
+      }
+      
+      // Arrays - enviar como múltiplos campos com o mesmo nome
+      if (data.leaderIds && data.leaderIds.length > 0) {
+        data.leaderIds.forEach(id => {
+          formData.append("leaderIds", id.toString());
+        });
+      }
+      
+      if (data.viceLeaders && data.viceLeaders.length > 0) {
+        data.viceLeaders.forEach(id => {
+          formData.append("viceLeaders", id.toString());
+        });
+      }
+      
+      if (data.activities && data.activities.length > 0) {
+        data.activities.forEach(activity => {
+          if (activity && activity.trim() !== "") {
+            formData.append("activities", activity.trim());
+          }
+        });
+      }
+
+      console.log("Atualizando FormData:");
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+      
       const { id } = data;
       return await api.put(`/ministerios/${id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { 
+          'Content-Type': 'multipart/form-data' 
+        },
       });
     },
     onSuccess: () => {
@@ -194,7 +255,7 @@ const MinistriesTab = () => {
       name: "",
       description: "",
       meetingDay: "",
-      imageUrl: "",
+      image: undefined,
       leaderIds: [],
       viceLeaders: [],
       activities: [''],
@@ -211,9 +272,9 @@ const MinistriesTab = () => {
       name: ministry.name,
       description: ministry.description,
       meetingDay: ministry.meetingDay || "",
-      imageUrl: ministry.imageUrl || "",
-      leaderIds: ministry.leaders?.map((l: any) => l.id) || [],
-      viceLeaders: ministry.viceLeaders?.map((v: any) => v.id) || [],
+      image: undefined, // Para edição, não resetamos a imagem
+      leaderIds: ministry.leaders?.map((l: any) => l.id.toString()) || [],
+      viceLeaders: ministry.viceLeaders?.map((v: any) => v.id.toString()) || [],
       activities: ministry.activities || [''],
     });
 
@@ -237,20 +298,14 @@ const MinistriesTab = () => {
   };
 
   const onSubmit = (data: MinistryFormData) => {
-    console.log("Dados enviados:", data);
-    const sanitizedData = {
-      ...data,
-      imageUrl: data.imageUrl || null,
-      meetingDay: data.meetingDay || null,
-      leaderIds: data.leaderIds || [],
-    };
-
+    console.log("Dados do formulário:", data);
+    
     if (isCreating) {
-      createMinistryMutation.mutate(sanitizedData);
+      createMinistryMutation.mutate(data);
     } else if (selectedMinistry) {
       updateMinistryMutation.mutate({
         id: selectedMinistry.id,
-        ...sanitizedData,
+        ...data,
       });
     }
   };
@@ -284,11 +339,6 @@ const MinistriesTab = () => {
     return <div className="text-center text-red-500">Erro ao carregar ministérios.</div>;
   }
 
-  const weekdays = [
-    "Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira",
-    "Quinta-feira", "Sexta-feira", "Sábado"
-  ];
-
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Ministérios</h2>
@@ -309,148 +359,148 @@ const MinistriesTab = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         isSubmitting={createMinistryMutation.isPending || updateMinistryMutation.isPending}
-         onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit)}
       >
         <Form {...form}>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome do Ministério" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nome</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nome do Ministério" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descrição</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Descreva o propósito e visão deste ministério"
-                      rows={4}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="meetingDay"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Dia e horário de reunião</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Ex: 17h aos Domingos para ensaio"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Imagem do Ministério</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => field.onChange(e.target.files?.[0])}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <Controller
-              control={form.control}
-              name="leaderIds"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Líder(es) do Ministério</FormLabel>
-                  <Select
-                    isMulti
-                    options={users.map((user) => ({ label: user.name, value: user.id }))}
-                    value={users
-                      .filter((u) => field.value?.includes(u.id))
-                      .map((u) => ({ label: u.name, value: u.id }))}
-                    onChange={(selected) =>
-                      field.onChange(selected ? selected.map((option) => option.value) : [])
-                    }
-                    className="text-black"
-                    placeholder="Selecione líder(es)"
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Descrição</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Descreva o propósito e visão deste ministério"
+                    rows={4}
+                    {...field}
                   />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            <Controller
-              control={form.control}
-              name="viceLeaders"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Vice-líder(es)</FormLabel>
-                  <Select
-                    isMulti
-                    options={users.map((user) => ({ label: user.name, value: user.id }))}
-                    value={users
-                      .filter((u) => field.value?.includes(u.id))
-                      .map((u) => ({ label: u.name, value: u.id }))}
-                    onChange={(selected) =>
-                      field.onChange(selected ? selected.map((option) => option.value) : [])
-                    }
-                    className="text-black"
-                    placeholder="Selecione vice-líder(es)"
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormLabel>Atividades</FormLabel>
-            <div className="space-y-2">
-              {fields.map((field, index) => (
-                <div key={field.id} className="flex gap-2 items-center">
+          <FormField
+            control={form.control}
+            name="meetingDay"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Dia e horário de reunião</FormLabel>
+                <FormControl>
                   <Input
-                    {...form.register(`activities.${index}`)}
-                    placeholder={`Atividade ${index + 1}`}
+                    placeholder="Ex: 17h aos Domingos para ensaio"
+                    {...field}
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => remove(index)}
-                  >
-                    ❌
-                  </Button>
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => append("")}
-              >
-                + Adicionar atividade
-              </Button>
-            </div>
-            <FormMessage />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Imagem do Ministério</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => field.onChange(e.target.files?.[0])}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="leaderIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Líder(es) do Ministério</FormLabel>
+                <Select
+                  isMulti
+                  options={users.map((user) => ({ label: user.name, value: user.id.toString() }))}
+                  value={users
+                    .filter((u) => field.value?.includes(u.id.toString()))
+                    .map((u) => ({ label: u.name, value: u.id.toString() }))}
+                  onChange={(selected) =>
+                    field.onChange(selected ? selected.map((option) => option.value) : [])
+                  }
+                  className="text-black"
+                  placeholder="Selecione líder(es)"
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="viceLeaders"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Vice-líder(es)</FormLabel>
+                <Select
+                  isMulti
+                  options={users.map((user) => ({ label: user.name, value: user.id.toString() }))}
+                  value={users
+                    .filter((u) => field.value?.includes(u.id.toString()))
+                    .map((u) => ({ label: u.name, value: u.id.toString() }))}
+                  onChange={(selected) =>
+                    field.onChange(selected ? selected.map((option) => option.value) : [])
+                  }
+                  className="text-black"
+                  placeholder="Selecione vice-líder(es)"
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormLabel>Atividades</FormLabel>
+          <div className="space-y-2">
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex gap-2 items-center">
+                <Input
+                  {...form.register(`activities.${index}`)}
+                  placeholder={`Atividade ${index + 1}`}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => remove(index)}
+                >
+                  ❌
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => append("")}
+            >
+              + Adicionar atividade
+            </Button>
+          </div>
+          <FormMessage />
         </Form>
       </AdminFormModal>
 
