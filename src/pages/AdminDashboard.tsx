@@ -41,7 +41,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const roles = getUserRoles();
     const hasAccess = roles.some(role => 
-      role === "ADMIN" || role === "PASTOR"
+      role === "ROLE_ADMIN" || role === "ROLE_PASTOR"
     );
     
     if (!hasAccess) {

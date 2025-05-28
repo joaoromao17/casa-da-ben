@@ -25,7 +25,19 @@ const Ministerios = () => {
     const fetchMinistries = async () => {
       try {
         const response = await api.get("/ministerios");
-        setMinistries(response.data);
+
+        let data = response.data;
+
+        // Se for string, parseia
+        if (typeof data === "string") {
+          data = JSON.parse(data);
+        }
+
+        if (Array.isArray(data)) {
+          setMinistries(data);
+        } else {
+          throw new Error("Resposta inesperada da API.");
+        }
       } catch (error) {
         console.error("Erro ao buscar ministérios:", error);
         setError("Erro ao carregar ministérios. Tente novamente mais tarde.");
@@ -55,7 +67,7 @@ const Ministerios = () => {
             Ministérios
           </h1>
           <p className="text-gray-600 max-w-2xl mx-auto text-center mb-10">
-            Confira nossos ministérios abaixo. 
+            Confira nossos ministérios abaixo.
             Todos são bem-vindos para crescer na fé e em comunhão.
           </p>
 
@@ -65,7 +77,7 @@ const Ministerios = () => {
               <AlertDescription>
                 {error}
                 <div className="mt-4">
-                  <Button 
+                  <Button
                     onClick={() => window.location.reload()}
                     variant="outline"
                   >

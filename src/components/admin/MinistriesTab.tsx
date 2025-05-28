@@ -2,10 +2,11 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/components/ui/use-toast";
 import api from "@/services/api";
+import Select from "react-select";
 
 import AdminTable from "./AdminTable";
 import AdminFormModal from "./AdminFormModal";
@@ -21,24 +22,25 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  Select,
+import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue 
+  SelectValue
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+
 
 // Form schema for ministry
 const ministryFormSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   description: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
   meetingDay: z.string().optional(),
-  imageUrl: z.string().url("URL de imagem inválida").optional().nullable(),
-  leaderId: z.string().optional().nullable(),
-  activities: z.string().optional(),
+  imageUrl: z.any().optional(),
+  leaderIds: z.array(z.string()).default([]),
+  viceLeaders: z.array(z.string()).default([]),
+  activities: z.array(z.string()).optional(),
 });
 
 type MinistryFormData = z.infer<typeof ministryFormSchema>;
@@ -52,10 +54,10 @@ const MinistriesTab = () => {
   const [viewMinistryOpen, setViewMinistryOpen] = useState(false);
 
   // Fetch ministries
-  const { 
-    data: ministries = [], 
-    isLoading, 
-    error 
+  const {
+    data: ministries = [],
+    isLoading,
+    error
   } = useQuery({
     queryKey: ['ministries'],
     queryFn: async () => {
@@ -81,15 +83,33 @@ const MinistriesTab = () => {
       description: "",
       meetingDay: "",
       imageUrl: "",
-      leaderId: "",
-      activities: "",
+      leaderIds: [],
+      activities: [''],
+      viceLeaders: [],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "activities",
   });
 
   // Create ministry mutation
   const createMinistryMutation = useMutation({
     mutationFn: async (data: MinistryFormData) => {
-      return await api.post('/ministerios', data);
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      if (data.meetingDay) formData.append("meetingDay", data.meetingDay);
+      if (data.imageUrl instanceof File) {
+        formData.append("image", data.imageUrl); // use "image" se o backend espera isso
+      }
+      if (data.leaderIds) data.leaderIds.forEach((id) => formData.append("leaderId", id));
+      if (data.activities) data.activities.forEach((a, i) => formData.append(`activities[${i}]`, a));
+      if (data.viceLeaders) data.viceLeaders.forEach((v, i) => formData.append(`viceLeaders[${i}]`, v));
+      return await api.post('/ministerios', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ministries'] });
@@ -112,8 +132,20 @@ const MinistriesTab = () => {
   // Update ministry mutation
   const updateMinistryMutation = useMutation({
     mutationFn: async (data: MinistryFormData & { id: string }) => {
-      const { id, ...ministryData } = data;
-      return await api.put(`/ministerios/${id}`, ministryData);
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("description", data.description);
+      if (data.meetingDay) formData.append("meetingDay", data.meetingDay);
+      if (data.imageUrl instanceof File) {
+        formData.append("image", data.imageUrl); // use "image" se o backend espera isso
+      }
+      if (data.leaderIds) data.leaderIds.forEach((id) => formData.append("leaderId", id));
+      if (data.activities) data.activities.forEach((a, i) => formData.append(`activities[${i}]`, a));
+      if (data.viceLeaders) data.viceLeaders.forEach((v, i) => formData.append(`viceLeaders[${i}]`, v));
+      const { id } = data;
+      return await api.put(`/ministerios/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ministries'] });
@@ -163,8 +195,9 @@ const MinistriesTab = () => {
       description: "",
       meetingDay: "",
       imageUrl: "",
-      leaderId: "",
-      activities: "",
+      leaderIds: [],
+      viceLeaders: [],
+      activities: [''],
     });
     setIsModalOpen(true);
   };
@@ -172,17 +205,18 @@ const MinistriesTab = () => {
   const handleEditMinistry = (ministry: any) => {
     setIsCreating(false);
     setSelectedMinistry(ministry);
-    
+
     // Reset form with ministry data
     form.reset({
       name: ministry.name,
       description: ministry.description,
       meetingDay: ministry.meetingDay || "",
       imageUrl: ministry.imageUrl || "",
-      leaderId: ministry.leader?.id || "",
-      activities: ministry.activities || "",
+      leaderIds: ministry.leaders?.map((l: any) => l.id) || [],
+      viceLeaders: ministry.viceLeaders?.map((v: any) => v.id) || [],
+      activities: ministry.activities || [''],
     });
-    
+
     setIsModalOpen(true);
   };
 
@@ -203,12 +237,20 @@ const MinistriesTab = () => {
   };
 
   const onSubmit = (data: MinistryFormData) => {
+    console.log("Dados enviados:", data);
+    const sanitizedData = {
+      ...data,
+      imageUrl: data.imageUrl || null,
+      meetingDay: data.meetingDay || null,
+      leaderIds: data.leaderIds || [],
+    };
+
     if (isCreating) {
-      createMinistryMutation.mutate(data);
+      createMinistryMutation.mutate(sanitizedData);
     } else if (selectedMinistry) {
       updateMinistryMutation.mutate({
         id: selectedMinistry.id,
-        ...data,
+        ...sanitizedData,
       });
     }
   };
@@ -221,18 +263,18 @@ const MinistriesTab = () => {
 
   const columns = [
     { key: "name", title: "Nome" },
-    { 
-      key: "description", 
+    {
+      key: "description",
       title: "Descrição",
       render: (desc: string) => desc?.length > 50 ? `${desc.substring(0, 50)}...` : desc
     },
-    { 
-      key: "meetingDay", 
+    {
+      key: "meetingDay",
       title: "Dia de Reunião",
       render: (day: string) => day || "-"
     },
-    { 
-      key: "leader", 
+    {
+      key: "leader",
       title: "Líder",
       render: (leader: any) => leader?.name || "-"
     },
@@ -243,14 +285,14 @@ const MinistriesTab = () => {
   }
 
   const weekdays = [
-    "Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", 
+    "Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira",
     "Quinta-feira", "Sexta-feira", "Sábado"
   ];
 
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Ministérios</h2>
-      
+
       <AdminTable
         data={ministries}
         columns={columns}
@@ -267,10 +309,9 @@ const MinistriesTab = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         isSubmitting={createMinistryMutation.isPending || updateMinistryMutation.isPending}
-        onSubmit={form.handleSubmit(onSubmit)}
+         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Form {...form}>
-          <div className="space-y-4">
             <FormField
               control={form.control}
               name="name"
@@ -292,10 +333,10 @@ const MinistriesTab = () => {
                 <FormItem>
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Descreva o propósito e visão deste ministério" 
-                      rows={4} 
-                      {...field} 
+                    <Textarea
+                      placeholder="Descreva o propósito e visão deste ministério"
+                      rows={4}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -308,24 +349,13 @@ const MinistriesTab = () => {
               name="meetingDay"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Dia de Reunião</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                    value={field.value || ""}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o dia" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="none">Não definido</SelectItem>
-                      {weekdays.map((day, index) => (
-                        <SelectItem key={index} value={day}>{day}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Dia e horário de reunião</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ex: 17h aos Domingos para ensaio"
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -336,12 +366,12 @@ const MinistriesTab = () => {
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL da Imagem</FormLabel>
+                  <FormLabel>Imagem do Ministério</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="https://exemplo.com/imagem.jpg" 
-                      {...field} 
-                      value={field.value || ""} 
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => field.onChange(e.target.files?.[0])}
                     />
                   </FormControl>
                   <FormMessage />
@@ -349,53 +379,78 @@ const MinistriesTab = () => {
               )}
             />
 
-            <FormField
+            <Controller
               control={form.control}
-              name="leaderId"
+              name="leaderIds"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Líder do Ministério</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                    value={field.value || ""}
+                  <FormLabel>Líder(es) do Ministério</FormLabel>
+                  <Select
+                    isMulti
+                    options={users.map((user) => ({ label: user.name, value: user.id }))}
+                    value={users
+                      .filter((u) => field.value?.includes(u.id))
+                      .map((u) => ({ label: u.name, value: u.id }))}
+                    onChange={(selected) =>
+                      field.onChange(selected ? selected.map((option) => option.value) : [])
+                    }
+                    className="text-black"
+                    placeholder="Selecione líder(es)"
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name="viceLeaders"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Vice-líder(es)</FormLabel>
+                  <Select
+                    isMulti
+                    options={users.map((user) => ({ label: user.name, value: user.id }))}
+                    value={users
+                      .filter((u) => field.value?.includes(u.id))
+                      .map((u) => ({ label: u.name, value: u.id }))}
+                    onChange={(selected) =>
+                      field.onChange(selected ? selected.map((option) => option.value) : [])
+                    }
+                    className="text-black"
+                    placeholder="Selecione vice-líder(es)"
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormLabel>Atividades</FormLabel>
+            <div className="space-y-2">
+              {fields.map((field, index) => (
+                <div key={field.id} className="flex gap-2 items-center">
+                  <Input
+                    {...form.register(`activities.${index}`)}
+                    placeholder={`Atividade ${index + 1}`}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => remove(index)}
                   >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o líder" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="none">Não definido</SelectItem>
-                      {users.map((user: any) => (
-                        <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="activities"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Atividades</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Liste as principais atividades do ministério" 
-                      rows={3} 
-                      {...field} 
-                      value={field.value || ""} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                    ❌
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => append("")}
+              >
+                + Adicionar atividade
+              </Button>
+            </div>
+            <FormMessage />
         </Form>
       </AdminFormModal>
 
@@ -405,38 +460,38 @@ const MinistriesTab = () => {
           <DialogHeader>
             <DialogTitle>Detalhes do Ministério</DialogTitle>
           </DialogHeader>
-          
+
           {selectedMinistry && (
             <div className="py-4 space-y-4">
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Nome</h3>
                 <p className="mt-1 text-lg font-semibold">{selectedMinistry.name}</p>
               </div>
-              
+
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Descrição</h3>
                 <p className="mt-1">{selectedMinistry.description}</p>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Dia de Reunião</h3>
                   <p className="mt-1">{selectedMinistry.meetingDay || "-"}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Líder</h3>
                   <p className="mt-1">{selectedMinistry.leader?.name || "-"}</p>
                 </div>
               </div>
-              
+
               {selectedMinistry.imageUrl && (
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Imagem</h3>
                   <div className="mt-2 max-w-md">
-                    <img 
-                      src={selectedMinistry.imageUrl} 
-                      alt={selectedMinistry.name} 
+                    <img
+                      src={selectedMinistry.imageUrl}
+                      alt={selectedMinistry.name}
                       className="rounded-md"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
@@ -446,15 +501,15 @@ const MinistriesTab = () => {
                   </div>
                 </div>
               )}
-              
+
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Atividades</h3>
                 <p className="mt-1">{selectedMinistry.activities || "-"}</p>
               </div>
-              
+
               <div className="pt-4 flex justify-end">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setViewMinistryOpen(false)}
                 >
                   Fechar

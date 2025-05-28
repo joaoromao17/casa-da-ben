@@ -28,7 +28,7 @@ const AdminFormModal = ({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <div className="py-4">
-          <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+          <form onSubmit={onSubmit}>
             {children}
             <div className="flex justify-end gap-2 mt-6">
               <Button 

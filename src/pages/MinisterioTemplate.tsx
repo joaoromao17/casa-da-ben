@@ -4,29 +4,63 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Phone, Mail, Clock, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import api from "@/services/api";
+import { useEffect, useState } from "react";
+
+interface Usuario {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  profileImageUrl?: string;
+}
+
+interface UsuarioComRoles extends Usuario {
+  roles: string[];
+}
 
 interface MinisterioTemplateProps {
   title: string;
   description: string;
   imageUrl: string;
   activities: string[];
-  schedule: string[];
-  leaders: string[];
+  schedule: string; // Era string[], agora é string
+  leaders: Usuario[];
+  viceLeaders: Usuario[];
+  wall: string;
+  members: UsuarioComRoles[];
 }
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 const MinisterioTemplate = ({
-
   title,
   description,
   imageUrl,
   activities,
   schedule,
-  leaders
+  leaders,
+  viceLeaders,
+  wall,
+  members: _
 }: MinisterioTemplateProps) => {
+  const [members, setMembers] = useState<UsuarioComRoles[]>([]);
   const fullImageUrl = imageUrl.startsWith("http")
     ? imageUrl
     : `${API_BASE_URL}${imageUrl}`;
+
+  // Extraímos o ID do ministério da URL (ajuste conforme seu roteamento)
+  const ministerioId = window.location.pathname.split("/").pop(); // ou use useParams() do react-router-dom
+
+  useEffect(() => {
+    if (ministerioId) {
+      api
+        .get(`/users/ministerios/${ministerioId}/membros`)
+        .then((res) => setMembers(res.data))
+        .catch((err) => console.error("Erro ao buscar membros:", err));
+    }
+  }, [ministerioId]);
+
   return (
     <Layout>
       <div className="relative h-[300px] overflow-hidden">
@@ -48,7 +82,7 @@ const MinisterioTemplate = ({
       {/* Tabs de Conteúdo */}
       <section className="py-12 bg-white">
         <div className="container-church">
-          <Tabs defaultValue="historia" className="w-full">
+          <Tabs defaultValue="sobre" className="w-full">
             <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-6">
               <TabsTrigger value="sobre">Sobre o Ministério</TabsTrigger>
               <TabsTrigger value="mural">Mural</TabsTrigger>
@@ -56,7 +90,7 @@ const MinisterioTemplate = ({
             </TabsList>
 
             <TabsContent value="sobre">
-            <div className="text-center mb-12">
+              <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold text-church-900 mb-4">Sobre nós</h2>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                   Aqui está detalhes sobre o nosso ministério
@@ -78,28 +112,52 @@ const MinisterioTemplate = ({
                     </section>
 
                     <section>
-                      <h2 className="text-2xl font-bold text-church-900 mb-4">Horários</h2>
-                      <ul className="space-y-2">
-                        {(schedule ?? []).map((time, index) => (
-                          <li key={index} className="flex items-start">
-                            <span className="inline-block w-2 h-2 mt-2 mr-2 bg-church-700 rounded-full" />
-                            {time}
-                          </li>
-                        ))}
-                      </ul>
+                      <h2 className="text-2xl font-bold text-church-900 mb-4">Horário de Reunião</h2>
+                      <p className="text-lg text-gray-700">{schedule}</p>
                     </section>
                   </div>
 
+
+                  {/* Liderança */}
                   <div className="lg:col-span-1">
-                    <div className="bg-church-50 rounded-xl p-6">
-                      <h2 className="text-xl font-bold text-church-900 mb-4">Liderança</h2>
-                      <div className="space-y-4">
-                        {(leaders ?? []).map((leader, index) => (
-                          <div key={index} className="border-b border-church-200 last:border-0 pb-4 last:pb-0">
-                            <h3 className="font-semibold text-church-800">{leader}</h3>
-                          </div>
-                        ))}
+                    <div className="bg-church-50 rounded-xl p-6 space-y-6">
+                      <div>
+                        <h2 className="text-xl font-bold text-church-900 mb-2">Liderança</h2>
+                        <div className="space-y-3">
+                          {leaders.map((leader) => (
+                            <div key={leader.id} className="text-sm border-b pb-2">
+                              <img
+                                src={`${API_BASE_URL}${leader.profileImageUrl || '/uploads/profiles/default.jpg'}`}
+                                alt={leader.name}
+                                className="w-12 h-12 rounded-full object-cover"
+                              />
+                              <p className="font-semibold text-church-800">{leader.name}</p>
+                              {leader.email && <p className="text-gray-500">{leader.email}</p>}
+                              {leader.phone && <p className="text-gray-500">{leader.phone}</p>}
+                            </div>
+                          ))}
+                        </div>
                       </div>
+
+                      {viceLeaders.length > 0 && (
+                        <div>
+                          <h2 className="text-xl font-bold text-church-900 mb-2">Vice-liderança</h2>
+                          <div className="space-y-3">
+                            {viceLeaders.map((vice) => (
+                              <div key={vice.id} className="text-sm border-b pb-2">
+                                <img
+                                  src={`${API_BASE_URL}${vice.profileImageUrl || '/uploads/profiles/default.jpg'}`}
+                                  alt={vice.name}
+                                  className="w-12 h-12 rounded-full object-cover"
+                                />
+                                <p className="font-semibold text-church-800">{vice.name}</p>
+                                {vice.email && <p className="text-gray-500">{vice.email}</p>}
+                                {vice.phone && <p className="text-gray-500">{vice.phone}</p>}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="mt-6">
                         <Link to="/contato">
@@ -115,21 +173,49 @@ const MinisterioTemplate = ({
               </div>
             </TabsContent>
 
-            {/* Aba de Liderança */}
+            {/* Aba Mural */}
             <TabsContent value="mural">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold text-church-900 mb-4">Mural</h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  Este mural serve para avisos do Líder para os membros
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto whitespace-pre-line">
+                  {wall || "Nenhum aviso postado ainda."}
                 </p>
               </div>
             </TabsContent>
+
+
+            {/* Aba Membros */}
             <TabsContent value="membros">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold text-church-900 mb-4">Membros</h2>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  Aqui está os membros desse ministério
+                  Aqui estão os membros deste ministério
                 </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                {members.map((member) => {
+                  const imageUrl = member.profileImageUrl?.startsWith("http")
+                    ? member.profileImageUrl
+                    : `${API_BASE_URL}${member.profileImageUrl || "/uploads/profiles/default.jpg"}`;
+                  return (
+                    <div
+                      key={member.id}
+                      className="bg-white rounded-lg shadow p-4 flex flex-col items-center"
+                    >
+                      <img
+                        src={imageUrl}
+                        alt={member.name}
+                        className="w-32 h-32 object-cover rounded-lg mx-auto shadow"
+                      />
+                      <h3 className="text-lg font-semibold text-church-800">{member.name}</h3>
+                      <p className="text-sm text-gray-500">{member.email}</p>
+                      <p className="text-sm text-gray-500">{member.phone}</p>
+                      <p className="text-sm text-gray-500">
+                        {member.roles.join(", ")}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </TabsContent>
           </Tabs>

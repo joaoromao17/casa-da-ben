@@ -145,7 +145,7 @@ const Cadastro = () => {
     }
 
     try {
-      const roles = data.member === true ? ["MEMBRO"] : ["VISITANTE"];
+      const roles = data.member === true ? ["ROLE_MEMBRO"] : ["ROLE_VISITANTE"];
       const payload = {
         name: data.name,
         email: data.email,

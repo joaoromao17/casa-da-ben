@@ -41,7 +41,7 @@ const Navbar = () => {
   }, []);
 
   const hasAdminAccess = userRoles.some(role => 
-    role === "ADMIN" || role === "PASTOR"
+    role === "ROLE_ADMIN" || role === "ROLE_PASTOR"
   );
 
   const handleLogout = () => {
