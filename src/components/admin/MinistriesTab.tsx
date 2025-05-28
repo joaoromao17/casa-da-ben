@@ -269,15 +269,17 @@ const MinistriesTab = () => {
     setIsCreating(false);
     setSelectedMinistry(ministry);
 
-    // Reset form with ministry data - corrigindo o erro
+    console.log("Ministry data for edit:", ministry);
+
+    // Reset form with ministry data - corrigindo todos os campos
     form.reset({
-      name: ministry.name,
-      description: ministry.description,
+      name: ministry.name || "",
+      description: ministry.description || "",
       meetingDay: ministry.meetingDay || "",
-      image: undefined,
+      image: undefined, // Imagem não pode ser resetada para exibição
       leaderIds: ministry.leaders?.map((l: any) => l.id?.toString() || '') || [],
       viceLeaders: ministry.viceLeaders?.map((v: any) => v.id?.toString() || '') || [],
-      activities: ministry.activities || [''],
+      activities: (ministry.activities && ministry.activities.length > 0) ? ministry.activities : [''],
     });
 
     setIsModalOpen(true);
@@ -432,6 +434,24 @@ const MinistriesTab = () => {
                     onChange={(e) => field.onChange(e.target.files?.[0])}
                   />
                 </FormControl>
+                {/* Mostrar imagem atual se estiver editando */}
+                {!isCreating && selectedMinistry?.imageUrl && (
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-600">Imagem atual:</p>
+                    <img 
+                      src={selectedMinistry.imageUrl.startsWith('http') 
+                        ? selectedMinistry.imageUrl 
+                        : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}${selectedMinistry.imageUrl}`
+                      } 
+                      alt="Imagem atual" 
+                      className="w-32 h-32 object-cover rounded"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = "https://via.placeholder.com/128x128?text=Sem+imagem";
+                      }}
+                    />
+                  </div>
+                )}
                 <FormMessage />
               </FormItem>
             )}
