@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 import api from "@/services/api";
 import Select from "react-select";
 
@@ -40,6 +41,7 @@ type MinistryFormData = z.infer<typeof ministryFormSchema>;
 
 const MinistriesTab = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedMinistry, setSelectedMinistry] = useState<any>(null);
@@ -267,14 +269,14 @@ const MinistriesTab = () => {
     setIsCreating(false);
     setSelectedMinistry(ministry);
 
-    // Reset form with ministry data
+    // Reset form with ministry data - corrigindo o erro
     form.reset({
       name: ministry.name,
       description: ministry.description,
       meetingDay: ministry.meetingDay || "",
-      image: undefined, // Para edição, não resetamos a imagem
-      leaderIds: ministry.leaders?.map((l: any) => l.id.toString()) || [],
-      viceLeaders: ministry.viceLeaders?.map((v: any) => v.id.toString()) || [],
+      image: undefined,
+      leaderIds: ministry.leaders?.map((l: any) => l.id?.toString() || '') || [],
+      viceLeaders: ministry.viceLeaders?.map((v: any) => v.id?.toString() || '') || [],
       activities: ministry.activities || [''],
     });
 
@@ -287,8 +289,8 @@ const MinistriesTab = () => {
   };
 
   const handleViewMinistry = (ministry: any) => {
-    setSelectedMinistry(ministry);
-    setViewMinistryOpen(true);
+    // Navegar para a página do ministério
+    navigate(`/ministerios/${ministry.id}`);
   };
 
   const handleCloseModal = () => {
@@ -324,14 +326,20 @@ const MinistriesTab = () => {
       render: (desc: string) => desc?.length > 50 ? `${desc.substring(0, 50)}...` : desc
     },
     {
-      key: "meetingDay",
-      title: "Dia de Reunião",
-      render: (day: string) => day || "-"
+      key: "leaders",
+      title: "Líder",
+      render: (leaders: any[]) => {
+        if (!leaders || leaders.length === 0) return "-";
+        return leaders.map(leader => leader.name).join(", ");
+      }
     },
     {
-      key: "leader",
-      title: "Líder",
-      render: (leader: any) => leader?.name || "-"
+      key: "viceLeaders",
+      title: "Vice-Líder",
+      render: (viceLeaders: any[]) => {
+        if (!viceLeaders || viceLeaders.length === 0) return "-";
+        return viceLeaders.map(vice => vice.name).join(", ");
+      }
     },
   ];
 
