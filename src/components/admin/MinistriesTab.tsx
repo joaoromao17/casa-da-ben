@@ -271,14 +271,26 @@ const MinistriesTab = () => {
 
     console.log("Ministry data for edit:", ministry);
 
-    // Reset form with ministry data - corrigindo todos os campos
+    // Encontrar os IDs dos líderes baseado nos nomes
+    const leaderIds = ministry.leaders?.map((leaderName: string) => {
+      const user = users.find(u => u.name === leaderName);
+      return user ? user.id?.toString() : '';
+    }).filter(Boolean) || [];
+
+    // Encontrar os IDs dos vice-líderes baseado nos nomes
+    const viceLeaderIds = ministry.viceLeaders?.map((viceLeaderName: string) => {
+      const user = users.find(u => u.name === viceLeaderName);
+      return user ? user.id?.toString() : '';
+    }).filter(Boolean) || [];
+
+    // Reset form with ministry data
     form.reset({
       name: ministry.name || "",
       description: ministry.description || "",
-      meetingDay: ministry.meetingDay || ministry.schedule || "", // Adicionar fallback para schedule
+      meetingDay: ministry.meetingDay || ministry.schedule || "", 
       image: undefined, // Imagem não pode ser resetada para exibição
-      leaderIds: ministry.leaders?.map((l: any) => l.id?.toString()) || [],
-      viceLeaders: ministry.viceLeaders?.map((v: any) => v.id?.toString()) || [],
+      leaderIds: leaderIds,
+      viceLeaders: viceLeaderIds,
       activities: (ministry.activities && ministry.activities.length > 0) ? ministry.activities : [''],
     });
 
