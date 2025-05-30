@@ -74,7 +74,6 @@ const MinisterioTemplate = ({
         <div className="container-church relative h-full flex items-center justify-center text-center">
           <div>
             <h1 className="text-4xl font-bold text-white mb-4">{title}</h1>
-            <p className="text-xl text-white/90 max-w-2xl">{description}</p>
           </div>
         </div>
       </div>
@@ -99,6 +98,10 @@ const MinisterioTemplate = ({
               <div className="container-church py-12">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                   <div className="lg:col-span-2 space-y-8">
+                    <section>
+                      <h2 className="text-2xl font-bold text-church-900 mb-4">Descrição</h2>
+                      <p className="text-lg text-gray-700">{description}</p>
+                    </section>
                     <section>
                       <h2 className="text-2xl font-bold text-church-900 mb-4">Nossas Atividades</h2>
                       <ul className="space-y-2">
