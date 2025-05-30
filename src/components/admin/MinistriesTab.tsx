@@ -275,10 +275,10 @@ const MinistriesTab = () => {
     form.reset({
       name: ministry.name || "",
       description: ministry.description || "",
-      meetingDay: ministry.meetingDay || "",
+      meetingDay: ministry.meetingDay || ministry.schedule || "", // Adicionar fallback para schedule
       image: undefined, // Imagem não pode ser resetada para exibição
-      leaderIds: ministry.leaders?.map((l: any) => l.id?.toString() || '') || [],
-      viceLeaders: ministry.viceLeaders?.map((v: any) => v.id?.toString() || '') || [],
+      leaderIds: ministry.leaders?.map((l: any) => l.id?.toString()) || [],
+      viceLeaders: ministry.viceLeaders?.map((v: any) => v.id?.toString()) || [],
       activities: (ministry.activities && ministry.activities.length > 0) ? ministry.activities : [''],
     });
 
