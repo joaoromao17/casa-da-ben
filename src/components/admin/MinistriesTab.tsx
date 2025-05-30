@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
@@ -163,44 +162,29 @@ const MinistriesTab = () => {
     mutationFn: async (data: MinistryFormData & { id: string }) => {
       const formData = new FormData();
       
-      // Campos obrigatórios
-      formData.append("name", data.name);
-      formData.append("description", data.description);
+      // Criar o DTO no formato esperado pelo backend
+      const dto = {
+        name: data.name,
+        description: data.description,
+        meetingDay: data.meetingDay || null,
+        leaderIds: data.leaderIds?.map(id => parseInt(id)) || [],
+        viceLeaderIds: data.viceLeaders?.map(id => parseInt(id)) || [],
+        activities: data.activities?.filter(activity => activity && activity.trim() !== "") || [],
+        wall: null // pode ser adicionado depois se necessário
+      };
+
+      // Adicionar o DTO como JSON string
+      formData.append("dto", JSON.stringify(dto));
       
-      // Campos opcionais
-      if (data.meetingDay) {
-        formData.append("meetingDay", data.meetingDay);
-      }
-      
-      // Imagem - nome correto: 'image'
+      // Adicionar imagem apenas se foi selecionada uma nova
       if (data.image instanceof File) {
         formData.append("image", data.image);
       }
-      
-      // Arrays - enviar como múltiplos campos com o mesmo nome
-      if (data.leaderIds && data.leaderIds.length > 0) {
-        data.leaderIds.forEach(id => {
-          formData.append("leaderIds", id.toString());
-        });
-      }
-      
-      if (data.viceLeaders && data.viceLeaders.length > 0) {
-        data.viceLeaders.forEach(id => {
-          formData.append("viceLeaders", id.toString());
-        });
-      }
-      
-      if (data.activities && data.activities.length > 0) {
-        data.activities.forEach(activity => {
-          if (activity && activity.trim() !== "") {
-            formData.append("activities", activity.trim());
-          }
-        });
-      }
 
-      console.log("Atualizando FormData:");
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
+      console.log("DTO sendo enviado:", dto);
+      console.log("FormData entries:");
+      for (const pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
       }
       
       const { id } = data;
