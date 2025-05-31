@@ -157,43 +157,45 @@ const MinistriesTab = () => {
     }
   });
 
-  // Update ministry mutation
-  const updateMinistryMutation = useMutation({
-    mutationFn: async (data: MinistryFormData & { id: string }) => {
-      const formData = new FormData();
-      
-      // Criar o DTO no formato esperado pelo backend
-      const dto = {
-        name: data.name,
-        description: data.description,
-        meetingDay: data.meetingDay || null,
-        leaderIds: data.leaderIds?.map(id => parseInt(id)) || [],
-        viceLeaderIds: data.viceLeaders?.map(id => parseInt(id)) || [],
-        activities: data.activities?.filter(activity => activity && activity.trim() !== "") || [],
-        wall: null // pode ser adicionado depois se necessário
-      };
+// Update ministry mutation
+const updateMinistryMutation = useMutation({
+  mutationFn: async (data: MinistryFormData & { id: string }) => {
+    const formData = new FormData();
 
-      // Adicionar o DTO como JSON string
-      formData.append("dto", JSON.stringify(dto));
-      
-      // Adicionar imagem apenas se foi selecionada uma nova
-      if (data.image instanceof File) {
-        formData.append("image", data.image);
-      }
+    // Criar o DTO no formato esperado pelo backend
+    const dto = {
+      name: data.name,
+      description: data.description,
+      meetingDay: data.meetingDay || null,
+      leaderIds: data.leaderIds?.map(id => parseInt(id)) || [],
+      viceLeaderIds: data.viceLeaders?.map(id => parseInt(id)) || [],
+      activities: data.activities?.filter(activity => activity && activity.trim() !== "") || [],
+      wall: null, // pode ser adicionado depois se necessário
+    };
 
-      console.log("DTO sendo enviado:", dto);
-      console.log("FormData entries:");
-      for (const pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-      
-      const { id } = data;
-      return await api.put(`/ministerios/${id}`, formData, {
-        headers: { 
-          'Content-Type': 'multipart/form-data' 
-        },
-      });
-    },
+    // Adiciona o dto como Blob com Content-Type 'application/json'
+    formData.append(
+      "dto",
+      new Blob([JSON.stringify(dto)], { type: "application/json" })
+    );
+
+    // Adicionar imagem apenas se for um File válido
+    if (data.image instanceof File) {
+      formData.append("image", data.image);
+    }
+
+    console.log("DTO sendo enviado:", dto);
+    console.log("FormData entries:");
+    for (const pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    const { id } = data;
+    
+    return await api.post(`/ministerios/${id}`, formData);
+  },
+
+    
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ministries'] });
       toast({
