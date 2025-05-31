@@ -2,10 +2,13 @@
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Phone, Mail, Clock, ChevronRight } from "lucide-react";
+import { Users, Phone, Mail, Clock, ChevronRight, Edit } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "@/services/api";
 import { useEffect, useState } from "react";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import MinistryEditModal from "@/components/ministry/MinistryEditModal";
+import { useQuery } from "@tanstack/react-query";
 
 interface Usuario {
   id: number;
@@ -24,11 +27,12 @@ interface MinisterioTemplateProps {
   description: string;
   imageUrl: string;
   activities: string[];
-  schedule: string; // Era string[], agora é string
+  schedule: string;
   leaders: Usuario[];
   viceLeaders: Usuario[];
   wall: string;
   members: UsuarioComRoles[];
+  ministryId?: string;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
@@ -42,24 +46,55 @@ const MinisterioTemplate = ({
   leaders,
   viceLeaders,
   wall,
-  members: _
+  members: _,
+  ministryId
 }: MinisterioTemplateProps) => {
   const [members, setMembers] = useState<UsuarioComRoles[]>([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { currentUser } = useCurrentUser();
+  
   const fullImageUrl = imageUrl.startsWith("http")
     ? imageUrl
     : `${API_BASE_URL}${imageUrl}`;
 
-  // Extraímos o ID do ministério da URL (ajuste conforme seu roteamento)
-  const ministerioId = window.location.pathname.split("/").pop(); // ou use useParams() do react-router-dom
+  // Fetch users for the edit modal
+  const { data: users = [] } = useQuery({
+    queryKey: ['users'],
+    queryFn: async () => {
+      const response = await api.get('/users');
+      return response.data;
+    },
+    enabled: isEditModalOpen // Only fetch when modal is open
+  });
+
+  // Check if current user is a leader of this ministry
+  const isCurrentUserLeader = currentUser && leaders.some(leader => leader.id === currentUser.id);
 
   useEffect(() => {
-    if (ministerioId) {
+    if (ministryId) {
       api
-        .get(`/users/ministerios/${ministerioId}/membros`)
+        .get(`/users/ministerios/${ministryId}/membros`)
         .then((res) => setMembers(res.data))
         .catch((err) => console.error("Erro ao buscar membros:", err));
     }
-  }, [ministerioId]);
+  }, [ministryId]);
+
+  const handleEditSuccess = () => {
+    // Refresh the page to show updated data
+    window.location.reload();
+  };
+
+  const ministryData = {
+    id: ministryId,
+    name: title,
+    description,
+    imageUrl,
+    activities,
+    meetingDay: schedule,
+    leaders,
+    viceLeaders,
+    wall
+  };
 
   return (
     <Layout>
@@ -74,6 +109,15 @@ const MinisterioTemplate = ({
         <div className="container-church relative h-full flex items-center justify-center text-center">
           <div>
             <h1 className="text-4xl font-bold text-white mb-4">{title}</h1>
+            {isCurrentUserLeader && (
+              <Button
+                onClick={() => setIsEditModalOpen(true)}
+                className="bg-church-700 hover:bg-church-800 text-white"
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Editar Ministério
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -119,7 +163,6 @@ const MinisterioTemplate = ({
                       <p className="text-lg text-gray-700">{schedule}</p>
                     </section>
                   </div>
-
 
                   {/* Liderança */}
                   <div className="lg:col-span-1">
@@ -186,7 +229,6 @@ const MinisterioTemplate = ({
               </div>
             </TabsContent>
 
-
             {/* Aba Membros */}
             <TabsContent value="membros">
               <div className="text-center mb-12">
@@ -224,6 +266,15 @@ const MinisterioTemplate = ({
           </Tabs>
         </div>
       </section>
+
+      {/* Edit Modal */}
+      <MinistryEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        ministry={ministryData}
+        users={users}
+        onSuccess={handleEditSuccess}
+      />
     </Layout>
   );
 };

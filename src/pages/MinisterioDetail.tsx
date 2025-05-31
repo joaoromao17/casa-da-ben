@@ -1,3 +1,4 @@
+
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MinisterioTemplate from "@/pages/MinisterioTemplate";
@@ -63,7 +64,6 @@ export default function MinisterioDetail() {
 
   const [membros, setMembros] = useState([]);
 
-
   if (loading) {
     return <Loading />;
   }
@@ -82,7 +82,8 @@ export default function MinisterioDetail() {
       leaders={ministerio.lideres}
       viceLeaders={ministerio.viceLideres}
       wall={ministerio.mural}
-       members={membros}
+      members={membros}
+      ministryId={id}
     />
   );
 }
