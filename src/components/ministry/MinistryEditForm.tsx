@@ -1,5 +1,5 @@
 
-import { Controller, useFieldArray, UseFormReturn } from "react-hook-form";
+import { useFieldArray, UseFormReturn } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 interface MinistryEditFormData {
   name: string;
   description: string;
-  meetingDay: string;
+  meetingDay?: string;
   image?: File;
   activities: string[];
 }
@@ -121,9 +121,15 @@ const MinistryEditForm = ({ form, selectedMinistry }: MinistryEditFormProps) => 
       <div className="space-y-2">
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2 items-center">
-            <Input
-              {...form.register(`activities.${index}`)}
-              placeholder={`Atividade ${index + 1}`}
+            <Controller
+              control={form.control}
+              name={`activities.${index}` as const}
+              render={({ field: controllerField }) => (
+                <Input
+                  {...controllerField}
+                  placeholder={`Atividade ${index + 1}`}
+                />
+              )}
             />
             <Button
               type="button"

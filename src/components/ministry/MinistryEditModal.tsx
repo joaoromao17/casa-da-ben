@@ -39,7 +39,7 @@ const MinistryEditModal = ({ isOpen, onClose, ministry, users, onSuccess }: Mini
       description: ministry?.description || "",
       meetingDay: ministry?.meetingDay || ministry?.schedule || "",
       image: undefined,
-      activities: (ministry?.activities && ministry?.activities.length > 0) ? ministry?.activities : [''],
+      activities: (ministry?.activities && ministry?.activities.length > 0) ? ministry?.activities : [""],
     },
   });
 
