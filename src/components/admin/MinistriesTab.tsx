@@ -64,15 +64,31 @@ const MinistriesTab = () => {
 
     console.log("Ministry data for edit:", ministry);
 
-    // Encontrar os IDs dos líderes baseado nos nomes
-    const leaderIds = ministry.leaders?.map((leaderName: string) => {
-      const user = users.find(u => u.name === leaderName);
+    // Buscar IDs dos líderes pelos emails
+    const leaderIds = ministry.leaders?.map((leader: any) => {
+      // Se o leader já tem um ID, use-o diretamente
+      if (typeof leader === 'object' && leader.id) {
+        return leader.id.toString();
+      }
+      // Caso contrário, busque pelo email ou nome
+      const user = users.find(u => 
+        u.email === leader.email || 
+        u.name === (typeof leader === 'string' ? leader : leader.name)
+      );
       return user ? user.id?.toString() : '';
     }).filter(Boolean) || [];
 
-    // Encontrar os IDs dos vice-líderes baseado nos nomes
-    const viceLeaderIds = ministry.viceLeaders?.map((viceLeaderName: string) => {
-      const user = users.find(u => u.name === viceLeaderName);
+    // Buscar IDs dos vice-líderes pelos emails
+    const viceLeaderIds = ministry.viceLeaders?.map((viceLeader: any) => {
+      // Se o viceLeader já tem um ID, use-o diretamente
+      if (typeof viceLeader === 'object' && viceLeader.id) {
+        return viceLeader.id.toString();
+      }
+      // Caso contrário, busque pelo email ou nome
+      const user = users.find(u => 
+        u.email === viceLeader.email || 
+        u.name === (typeof viceLeader === 'string' ? viceLeader : viceLeader.name)
+      );
       return user ? user.id?.toString() : '';
     }).filter(Boolean) || [];
 
@@ -142,7 +158,18 @@ const MinistriesTab = () => {
       title: "Líder",
       render: (leaders: any[]) => {
         if (!leaders || leaders.length === 0) return "-";
-        return leaders.map(leader => leader.name).join(", ");
+        // Buscar os nomes dos líderes pelos emails ou usar nomes já existentes
+        return leaders.map(leader => {
+          if (typeof leader === 'object' && leader.name) {
+            return leader.name;
+          }
+          if (typeof leader === 'string') {
+            // Se for string, pode ser email ou nome
+            const user = users.find(u => u.email === leader || u.name === leader);
+            return user ? user.name : leader;
+          }
+          return leader;
+        }).join(", ");
       }
     },
     {
@@ -150,7 +177,18 @@ const MinistriesTab = () => {
       title: "Vice-Líder",
       render: (viceLeaders: any[]) => {
         if (!viceLeaders || viceLeaders.length === 0) return "-";
-        return viceLeaders.map(vice => vice.name).join(", ");
+        // Buscar os nomes dos vice-líderes pelos emails ou usar nomes já existentes
+        return viceLeaders.map(viceLeader => {
+          if (typeof viceLeader === 'object' && viceLeader.name) {
+            return viceLeader.name;
+          }
+          if (typeof viceLeader === 'string') {
+            // Se for string, pode ser email ou nome
+            const user = users.find(u => u.email === viceLeader || u.name === viceLeader);
+            return user ? user.name : viceLeader;
+          }
+          return viceLeader;
+        }).join(", ");
       }
     },
   ];

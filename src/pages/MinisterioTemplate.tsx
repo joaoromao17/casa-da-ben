@@ -1,3 +1,4 @@
+
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -217,7 +218,7 @@ const MinisterioTemplate = ({
                         <div className="pt-4">
                           <Button
                             onClick={() => setIsEditModalOpen(true)}
-                            className="w-full bg-church-600 hover:bg-church-700 text-white mb-4"
+                            className="w-full bg-green-700 hover:bg-green-800 text-white mb-4"
                           >
                             <Edit className="w-4 h-4 mr-2" />
                             Editar Ministério

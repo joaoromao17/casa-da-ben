@@ -2,13 +2,24 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { toast } from "@/components/ui/use-toast";
-import { ministryFormSchema, MinistryFormData } from "@/components/admin/ministries/ministryFormSchema";
-import MinistryForm from "@/components/admin/ministries/MinistryForm";
+import { toast } from "@/hooks/use-toast";
+import MinistryEditForm from "./MinistryEditForm";
 import api from "@/services/api";
+
+// Schema simplificado para edição por líderes
+const ministryEditSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
+  description: z.string().min(1, "Descrição é obrigatória"),
+  meetingDay: z.string().optional(),
+  image: z.instanceof(File).optional(),
+  activities: z.array(z.string()).default([]),
+});
+
+type MinistryEditFormData = z.infer<typeof ministryEditSchema>;
 
 interface MinistryEditModalProps {
   isOpen: boolean;
@@ -21,26 +32,18 @@ interface MinistryEditModalProps {
 const MinistryEditModal = ({ isOpen, onClose, ministry, users, onSuccess }: MinistryEditModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<MinistryFormData>({
-    resolver: zodResolver(ministryFormSchema),
+  const form = useForm<MinistryEditFormData>({
+    resolver: zodResolver(ministryEditSchema),
     defaultValues: {
       name: ministry?.name || "",
       description: ministry?.description || "",
       meetingDay: ministry?.meetingDay || ministry?.schedule || "",
       image: undefined,
-      leaderIds: ministry?.leaders?.map((leader: any) => {
-        const user = users.find(u => u.name === leader.name);
-        return user ? user.id?.toString() : '';
-      }).filter(Boolean) || [],
-      viceLeaders: ministry?.viceLeaders?.map((vice: any) => {
-        const user = users.find(u => u.name === vice.name);
-        return user ? user.id?.toString() : '';
-      }).filter(Boolean) || [],
       activities: (ministry?.activities && ministry?.activities.length > 0) ? ministry?.activities : [''],
     },
   });
 
-  const onSubmit = async (data: MinistryFormData) => {
+  const onSubmit = async (data: MinistryEditFormData) => {
     setIsSubmitting(true);
     
     try {
@@ -50,9 +53,10 @@ const MinistryEditModal = ({ isOpen, onClose, ministry, users, onSuccess }: Mini
         name: data.name,
         description: data.description,
         meetingDay: data.meetingDay || null,
-        leaderIds: data.leaderIds?.map(id => parseInt(id)) || [],
-        viceLeaderIds: data.viceLeaders?.map(id => parseInt(id)) || [],
         activities: data.activities?.filter(activity => activity && activity.trim() !== "") || [],
+        // Manter os líderes e vice-líderes existentes
+        leaderIds: ministry?.leaders?.map((leader: any) => leader.id) || [],
+        viceLeaderIds: ministry?.viceLeaders?.map((vice: any) => vice.id) || [],
         wall: ministry?.wall || null,
       };
 
@@ -94,10 +98,8 @@ const MinistryEditModal = ({ isOpen, onClose, ministry, users, onSuccess }: Mini
         </DialogHeader>
         <div className="py-4">
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <MinistryForm
+            <MinistryEditForm
               form={form}
-              users={users}
-              isCreating={false}
               selectedMinistry={ministry}
             />
             <div className="flex justify-end gap-2 mt-6">
