@@ -123,7 +123,7 @@ const MinistryEditForm = ({ form, selectedMinistry }: MinistryEditFormProps) => 
           <div key={field.id} className="flex gap-2 items-center">
             <Controller
               control={form.control}
-              name={`activities.${index}` as const}
+              name={`activities.${index}`}
               render={({ field: controllerField }) => (
                 <Input
                   {...controllerField}
@@ -148,7 +148,6 @@ const MinistryEditForm = ({ form, selectedMinistry }: MinistryEditFormProps) => 
           + Adicionar atividade
         </Button>
       </div>
-      <FormMessage />
     </Form>
   );
 };
