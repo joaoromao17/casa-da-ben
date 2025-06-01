@@ -24,12 +24,25 @@ export const useCurrentUser = () => {
       const payload = token.split(".")[1];
       const decodedPayload = JSON.parse(atob(payload));
       
+      console.log('Decoded JWT payload:', decodedPayload);
+      
+      // Tenta diferentes campos onde o ID pode estar no token
+      const userId = decodedPayload.userId || decodedPayload.id || decodedPayload.sub;
+      
       setCurrentUser({
-        id: decodedPayload.userId || decodedPayload.id,
+        id: Number(userId), // Garante que é um número
         name: decodedPayload.name || "",
         email: decodedPayload.email || "",
         roles: decodedPayload.roles || []
       });
+      
+      console.log('Current user set to:', {
+        id: Number(userId),
+        name: decodedPayload.name || "",
+        email: decodedPayload.email || "",
+        roles: decodedPayload.roles || []
+      });
+      
     } catch (error) {
       console.error("Error decoding token:", error);
     } finally {
