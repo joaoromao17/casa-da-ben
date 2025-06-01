@@ -1,5 +1,5 @@
 
-import { useFieldArray, UseFormReturn } from "react-hook-form";
+import { Controller, useFieldArray, UseFormReturn } from "react-hook-form";
 import {
   Form,
   FormControl,
