@@ -1,4 +1,3 @@
-
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -51,7 +50,7 @@ const MinisterioTemplate = ({
 }: MinisterioTemplateProps) => {
   const [members, setMembers] = useState<UsuarioComRoles[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const { currentUser } = useCurrentUser();
+  const { currentUser, isLoading } = useCurrentUser();
   
   const fullImageUrl = imageUrl.startsWith("http")
     ? imageUrl
@@ -67,8 +66,24 @@ const MinisterioTemplate = ({
     enabled: isEditModalOpen // Only fetch when modal is open
   });
 
-  // Check if current user is a leader of this ministry
-  const isCurrentUserLeader = currentUser && leaders.some(leader => leader.id === currentUser.id);
+  // Debug: Log current user and leaders to check the comparison
+  console.log('Current user:', currentUser);
+  console.log('Leaders:', leaders);
+  console.log('Vice leaders:', viceLeaders);
+
+  // Check if current user is a leader or vice-leader of this ministry
+  const isCurrentUserLeader = currentUser && (
+    leaders.some(leader => {
+      console.log(`Comparing leader ID ${leader.id} with current user ID ${currentUser.id}`);
+      return Number(leader.id) === Number(currentUser.id);
+    }) ||
+    viceLeaders.some(viceLeader => {
+      console.log(`Comparing vice-leader ID ${viceLeader.id} with current user ID ${currentUser.id}`);
+      return Number(viceLeader.id) === Number(currentUser.id);
+    })
+  );
+
+  console.log('Is current user leader:', isCurrentUserLeader);
 
   useEffect(() => {
     if (ministryId) {
@@ -109,15 +124,6 @@ const MinisterioTemplate = ({
         <div className="container-church relative h-full flex items-center justify-center text-center">
           <div>
             <h1 className="text-4xl font-bold text-white mb-4">{title}</h1>
-            {isCurrentUserLeader && (
-              <Button
-                onClick={() => setIsEditModalOpen(true)}
-                className="bg-church-700 hover:bg-church-800 text-white"
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Editar Ministério
-              </Button>
-            )}
           </div>
         </div>
       </div>
@@ -202,6 +208,19 @@ const MinisterioTemplate = ({
                               </div>
                             ))}
                           </div>
+                        </div>
+                      )}
+
+                      {/* Botão de edição para líderes */}
+                      {!isLoading && isCurrentUserLeader && (
+                        <div className="mb-4">
+                          <Button
+                            onClick={() => setIsEditModalOpen(true)}
+                            className="w-full bg-church-600 hover:bg-church-700 text-white"
+                          >
+                            <Edit className="w-4 h-4 mr-2" />
+                            Editar Ministério
+                          </Button>
                         </div>
                       )}
 
