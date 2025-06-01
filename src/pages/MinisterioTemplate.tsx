@@ -71,15 +71,15 @@ const MinisterioTemplate = ({
   console.log('Leaders:', leaders);
   console.log('Vice leaders:', viceLeaders);
 
-  // Check if current user is a leader or vice-leader of this ministry
-  const isCurrentUserLeader = currentUser && (
+  // Check if current user is a leader or vice-leader of this ministry using email
+  const isCurrentUserLeader = currentUser && currentUser.email && (
     leaders.some(leader => {
-      console.log(`Comparing leader ID ${leader.id} with current user ID ${currentUser.id}`);
-      return Number(leader.id) === Number(currentUser.id);
+      console.log(`Comparing leader email ${leader.email} with current user email ${currentUser.email}`);
+      return leader.email === currentUser.email;
     }) ||
     viceLeaders.some(viceLeader => {
-      console.log(`Comparing vice-leader ID ${viceLeader.id} with current user ID ${currentUser.id}`);
-      return Number(viceLeader.id) === Number(currentUser.id);
+      console.log(`Comparing vice-leader email ${viceLeader.email} with current user email ${currentUser.email}`);
+      return viceLeader.email === currentUser.email;
     })
   );
 
@@ -113,6 +113,7 @@ const MinisterioTemplate = ({
 
   return (
     <Layout>
+      {/* Hero Section */}
       <div className="relative h-[300px] overflow-hidden">
         <img
           src={fullImageUrl}
@@ -211,12 +212,12 @@ const MinisterioTemplate = ({
                         </div>
                       )}
 
-                      {/* Botão de edição para líderes */}
+                      {/* Botão de edição para líderes - posicionado após as lideranças */}
                       {!isLoading && isCurrentUserLeader && (
-                        <div className="mb-4">
+                        <div className="pt-4">
                           <Button
                             onClick={() => setIsEditModalOpen(true)}
-                            className="w-full bg-church-600 hover:bg-church-700 text-white"
+                            className="w-full bg-church-600 hover:bg-church-700 text-white mb-4"
                           >
                             <Edit className="w-4 h-4 mr-2" />
                             Editar Ministério

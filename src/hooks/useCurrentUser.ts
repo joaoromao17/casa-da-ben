@@ -26,20 +26,21 @@ export const useCurrentUser = () => {
       
       console.log('Decoded JWT payload:', decodedPayload);
       
-      // Tenta diferentes campos onde o ID pode estar no token
-      const userId = decodedPayload.userId || decodedPayload.id || decodedPayload.sub;
+      // Extrai o email do campo 'sub' e outros dados disponíveis
+      const userEmail = decodedPayload.sub || decodedPayload.email || "";
+      const userId = decodedPayload.userId || decodedPayload.id || 0;
       
       setCurrentUser({
-        id: Number(userId), // Garante que é um número
+        id: Number(userId) || 0,
         name: decodedPayload.name || "",
-        email: decodedPayload.email || "",
+        email: userEmail,
         roles: decodedPayload.roles || []
       });
       
       console.log('Current user set to:', {
-        id: Number(userId),
+        id: Number(userId) || 0,
         name: decodedPayload.name || "",
-        email: decodedPayload.email || "",
+        email: userEmail,
         roles: decodedPayload.roles || []
       });
       
