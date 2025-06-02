@@ -123,7 +123,7 @@ const MinistryEditForm = ({ form, selectedMinistry }: MinistryEditFormProps) => 
           <div key={field.id} className="flex gap-2 items-center">
             <Controller
               control={form.control}
-              name={`activities.${index}`}
+              name={`activities.${index}` as `activities.${number}`}
               render={({ field: controllerField }) => (
                 <Input
                   {...controllerField}

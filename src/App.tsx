@@ -14,6 +14,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NewPassword from "./pages/NewPassword";
 import MinhaConta from "./pages/MinhaConta";
 import Estudos from "./pages/Estudos";
+import EstudosGerenciar from "./pages/EstudosGerenciar";
 import Eventos from "./pages/Eventos";
 import Contribuicoes from "./pages/Contribuicoes";
 import ContribuicaoDetalhe from "./pages/ContribuicaoDetalhe";
@@ -44,6 +45,7 @@ const App = () => (
           <Route path="/reset-password" element={<NewPassword />} />
           <Route path="/minha-conta" element={<MinhaConta />} />
           <Route path="/estudos" element={<Estudos />} />
+          <Route path="/estudos/gerenciar" element={<EstudosGerenciar />} />
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/contribuicoes" element={<Contribuicoes />} />
           <Route path="/contribuicoes/:id" element={<ContribuicaoDetalhe />} />

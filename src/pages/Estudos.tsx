@@ -1,19 +1,14 @@
+
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import StudyCard from "@/components/ui/StudyCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Search } from "lucide-react";
+import { BookOpen, Search, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import UploadEstudoForm from "@/components/ui/UploadEstudoForm";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const categories = ["Todos", "Bíblia", "Doutrina", "Família", "Evangelismo", "Vida Cristã", "Finanças"];
 
@@ -31,16 +26,7 @@ const Estudos = () => {
   const [studies, setStudies] = useState<Study[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todos");
-  const [openDialog, setOpenDialog] = useState(false);
-  const [newStudy, setNewStudy] = useState({
-    title: "",
-    description: "",
-    author: "",
-    category: "",
-  });
-  const [uploadSuccess, setUploadSuccess] = useState(false); // <- Novo estado
-
-  const { toast } = useToast();
+  const { currentUser } = useCurrentUser();
 
   const fetchStudies = () => {
     axios.get("http://localhost:8080/api/estudos")
@@ -52,18 +38,6 @@ const Estudos = () => {
     fetchStudies();
   }, []);
 
-  const handleCreateStudy = async () => {
-    try {
-      await axios.post("http://localhost:8080/api/estudos", newStudy);
-      toast({ title: "Estudo criado com sucesso!" });
-      setOpenDialog(false);
-      fetchStudies();
-      setNewStudy({ title: "", description: "", author: "", category: "" });
-    } catch (error) {
-      toast({ title: "Erro ao criar estudo", variant: "destructive" });
-    }
-  };
-
   const filteredStudies = studies.filter((study) => {
     const matchesSearch =
       study.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -73,6 +47,9 @@ const Estudos = () => {
 
     return matchesSearch && matchesCategory;
   });
+
+  // Verificar se o usuário pode gerenciar estudos
+  const canManageStudies = currentUser?.roles?.includes("ROLE_ADMIN") || currentUser?.roles?.includes("ROLE_PROFESSOR");
 
   return (
     <Layout>
@@ -126,9 +103,21 @@ const Estudos = () => {
 
         {/* Main Content */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-church-900 mb-6 flex items-center">
-            <BookOpen className="mr-2" /> Materiais de Estudo
-          </h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-church-900 flex items-center">
+              <BookOpen className="mr-2" /> Materiais de Estudo
+            </h2>
+            
+            {/* Botão Ações Estudos - visível apenas para ADMIN e PROFESSOR */}
+            {canManageStudies && (
+              <Link to="/estudos/gerenciar">
+                <Button className="bg-church-900 text-white hover:bg-church-700 flex items-center gap-2">
+                  <Settings size={18} />
+                  Ações Estudos
+                </Button>
+              </Link>
+            )}
+          </div>
 
           {filteredStudies.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -162,43 +151,11 @@ const Estudos = () => {
           )}
         </div>
 
-        {/* Call to Action + Dialog */}
+        {/* Call to Action */}
         <div className="bg-church-900 text-white p-8 rounded-lg text-center">
           <h2 className="text-2xl font-bold mb-4">Escola Bíblica</h2>
           <p className="mb-6">Participe de nossa Escola Bíblica todas as quartas-feiras às 20h e aprofunde seu conhecimento da Palavra.</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-              <DialogTrigger asChild>
-                <Button className="bg-white text-church-900 hover:bg-gray-200">
-                  Adicionar Estudo
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>{uploadSuccess ? "Estudo publicado ✅" : "Novo Estudo"}</DialogTitle>
-                </DialogHeader>
-
-                <div className="py-4">
-                  {uploadSuccess ? (
-                    <Button
-                      onClick={() => {
-                        setOpenDialog(false);
-                        setUploadSuccess(false);
-                        window.location.reload(); // Atualiza a página
-                      }}
-                      className="bg-church-900 text-white hover:bg-church-700"
-                    >
-                      Ok
-                    </Button>
-                  ) : (
-                    <UploadEstudoForm onUploadSuccess={() => setUploadSuccess(true)} />
-                  )}
-                </div>
-              </DialogContent>
-
-
-            </Dialog>
-
             <Link to="/cultos">
               <Button className="bg-white text-church-900 hover:bg-gray-200">
                 Ver Horários

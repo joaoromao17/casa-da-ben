@@ -19,7 +19,7 @@ const ministryEditSchema = z.object({
   activities: z.array(z.string()).default([]),
 });
 
-type MinistryEditFormData = z.infer<typeof ministryEditSchema>;
+export type MinistryEditFormData = z.infer<typeof ministryEditSchema>;
 
 interface MinistryEditModalProps {
   isOpen: boolean;
