@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import MinistryEditForm from "./MinistryEditForm";
+import MinistryEditForm, { MinistryEditFormData } from "./MinistryEditForm";
 import api from "@/services/api";
 
 // Schema simplificado para edição por líderes
@@ -18,8 +18,6 @@ const ministryEditSchema = z.object({
   image: z.instanceof(File).optional(),
   activities: z.array(z.string()).default([]),
 });
-
-export type MinistryEditFormData = z.infer<typeof ministryEditSchema>;
 
 interface MinistryEditModalProps {
   isOpen: boolean;

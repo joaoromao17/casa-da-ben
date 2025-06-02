@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-interface MinistryEditFormData {
+export interface MinistryEditFormData {
   name: string;
   description: string;
   meetingDay?: string;
