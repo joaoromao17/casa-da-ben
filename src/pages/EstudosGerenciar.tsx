@@ -10,6 +10,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useToast } from "@/hooks/use-toast";
 import UploadEstudoForm from "@/components/ui/UploadEstudoForm";
 import axios from "axios";
+import api from "@/services/api";
 
 interface Study {
   id: string;
@@ -25,7 +26,7 @@ const EstudosGerenciar = () => {
   const navigate = useNavigate();
   const { currentUser, isLoading } = useCurrentUser();
   const { toast } = useToast();
-  
+
   const [studies, setStudies] = useState<Study[]>([]);
   const [loadingStudies, setLoadingStudies] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -90,11 +91,14 @@ const EstudosGerenciar = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:8080/api/estudos/${study.id}`);
+      // Usar api que já adiciona o token no header
+      await api.delete(`/estudos/${study.id}`);
+
       toast({
         title: "Sucesso",
         description: "Estudo excluído com sucesso.",
       });
+
       fetchStudies();
     } catch (error) {
       console.error("Erro ao excluir estudo:", error);
@@ -105,6 +109,7 @@ const EstudosGerenciar = () => {
       });
     }
   };
+
 
   const handleUploadSuccess = () => {
     setShowAddModal(false);
@@ -195,8 +200,8 @@ const EstudosGerenciar = () => {
                     <TableRow key={study.id}>
                       <TableCell className="font-medium">{study.title}</TableCell>
                       <TableCell className="max-w-xs truncate">
-                        {study.description.length > 50 
-                          ? `${study.description.substring(0, 50)}...` 
+                        {study.description.length > 50
+                          ? `${study.description.substring(0, 50)}...`
                           : study.description
                         }
                       </TableCell>
@@ -262,8 +267,9 @@ const EstudosGerenciar = () => {
             </DialogHeader>
             <div className="py-4">
               {selectedStudy && (
-                <UploadEstudoForm 
+                <UploadEstudoForm
                   onUploadSuccess={handleUploadSuccess}
+                  initialData={selectedStudy} // <-- esta é a parte que estava faltando
                 />
               )}
             </div>
