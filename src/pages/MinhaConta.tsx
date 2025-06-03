@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
@@ -194,6 +193,9 @@ const MinhaConta = () => {
     }
   };
 
+  const formatRoleName = (role: string) => {
+    return role.replace('ROLE_', '').toLowerCase().replace('_', ' ');
+  };
 
   return (
     <Layout>
@@ -286,7 +288,7 @@ const MinhaConta = () => {
                               key={index}
                               className="inline-block bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs mr-2 mb-2"
                             >
-                              {role.replace("_", " ")}
+                              {formatRoleName(role)}
                             </span>
                           ))
                         ) : (

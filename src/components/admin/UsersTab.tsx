@@ -45,10 +45,15 @@ const userFormSchema = z.object({
   roles: z.array(z.string()),
   member: z.boolean().optional(),
   active: z.boolean().default(true),
-  ministries: z.array(z.string()).optional().default([]),
+  ministries: z.array(z.number()).optional().default([]),
 });
 
 type UserFormData = z.infer<typeof userFormSchema>;
+
+// Helper function to format role names
+const formatRoleName = (role: string) => {
+  return role.replace('ROLE_', '').toLowerCase().replace('_', ' ');
+};
 
 const UsersTab = () => {
   const queryClient = useQueryClient();
@@ -102,8 +107,19 @@ const UsersTab = () => {
   // Update user mutation
   const updateUserMutation = useMutation({
     mutationFn: async (data: UserFormData & { id: string }) => {
-      const { id, ...userData } = data;
-      return await api.put(`/users/${id}`, userData);
+      const { id, ministries: selectedMinistries, ...userData } = data;
+      
+      // Convert ministry IDs to ministry objects for backend
+      const ministryObjects = selectedMinistries?.map(id => ({ id })) || [];
+      
+      const payload = {
+        ...userData,
+        ministries: ministryObjects
+      };
+      
+      console.log('Sending user data:', payload);
+      
+      return await api.put(`/users/${id}`, payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -196,7 +212,7 @@ const UsersTab = () => {
   const handleEditUser = (user: any) => {
     setSelectedUser(user);
     
-    // Garantindo que ministries seja sempre um array de strings
+    // Garantindo que ministries seja sempre um array de números (IDs)
     const userMinistries = user.ministries 
       ? user.ministries.map((m: any) => typeof m === 'object' ? m.id : m)
       : [];
@@ -207,7 +223,7 @@ const UsersTab = () => {
       email: user.email,
       phone: user.phone || "",
       address: user.address || "",
-      birthDate: user.birthDate || "",
+      birthDate: user.birthDate?.split('T')[0] || "",
       maritalStatus: user.maritalStatus || "",
       baptized: user.baptized || false,
       roles: user.roles || [],
@@ -279,7 +295,7 @@ const UsersTab = () => {
     { 
       key: "roles", 
       title: "Funções",
-      render: (roles: string[]) => roles?.join(", ") || "-"
+      render: (roles: string[]) => roles?.map(formatRoleName).join(", ") || "-"
     },
     { 
       key: "member", 
@@ -735,7 +751,7 @@ const UsersTab = () => {
                         key={role} 
                         className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800"
                       >
-                        {availableRoles.find(r => r.id === role)?.label || role}
+                        {formatRoleName(role)}
                       </span>
                     ))
                   ) : (
