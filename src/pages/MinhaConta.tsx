@@ -304,7 +304,7 @@ const MinhaConta = () => {
                     </TableRow>
 
                     {/* CAMPOS EXTRAS SE NÃO FOR VISITANTE */}
-                    {!userData.roles.includes("VISITANTE") && (
+                    {!userData.roles.includes("ROLE_VISITANTE") && (
                       <>
                         <TableRow>
                           <TableCell className="font-medium">Endereço</TableCell>

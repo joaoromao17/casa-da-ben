@@ -183,7 +183,7 @@ const MinisterioTemplate = ({
                               <img
                                 src={`${API_BASE_URL}${leader.profileImageUrl || '/uploads/profiles/default.jpg'}`}
                                 alt={leader.name}
-                                className="w-12 h-12 rounded-full object-cover"
+                                className="w-55 h-20 rounded-full object-cover"
                               />
                               <p className="font-semibold text-church-800">{leader.name}</p>
                               {leader.email && <p className="text-gray-500">{leader.email}</p>}
@@ -271,7 +271,7 @@ const MinisterioTemplate = ({
                       <img
                         src={imageUrl}
                         alt={member.name}
-                        className="w-32 h-32 object-cover rounded-lg mx-auto shadow"
+                        className="w-55 h-40 object-cover rounded-lg mx-auto shadow"
                       />
                       <h3 className="text-lg font-semibold text-church-800">{member.name}</h3>
                       <p className="text-sm text-gray-500">{member.email}</p>
