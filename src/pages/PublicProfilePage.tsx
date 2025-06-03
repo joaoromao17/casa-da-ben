@@ -5,7 +5,7 @@ import Layout from "@/components/layout/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowLeft, Phone } from "lucide-react";
+import { ArrowLeft, Phone, MessageCircle } from "lucide-react";
 import { Loading } from "@/components/ui/loading";
 import api from "@/services/api";
 
@@ -77,6 +77,25 @@ const PublicProfilePage = () => {
     return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
   };
 
+  /**
+   * Gera link do WhatsApp com mensagem personalizada
+   */
+  const handleWhatsAppClick = () => {
+    if (!userData?.phone) return;
+    
+    // Remove caracteres não numéricos do telefone
+    const cleanPhone = userData.phone.replace(/\D/g, '');
+    
+    // Adiciona código do país se não tiver (assumindo Brasil +55)
+    const phoneWithCountry = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+    
+    const message = `Olá ${userData.name}, vim através do site da ICB 610, com o intuito de:`;
+    const encodedMessage = encodeURIComponent(message);
+    
+    const whatsappUrl = `https://wa.me/${phoneWithCountry}?text=${encodedMessage}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -128,12 +147,12 @@ const PublicProfilePage = () => {
           <div className="lg:col-span-1">
             <Card>
               <CardContent className="pt-6 text-center">
-                <Avatar className="h-32 w-32 mx-auto mb-4 border-4 border-church-200">
+                <Avatar className="h-40 w-40 mx-auto mb-4 border-4 border-church-200">
                   <AvatarImage
                     src={getProfileImageUrl(userData.profileImageUrl)}
                     alt={userData.name}
                   />
-                  <AvatarFallback className="text-2xl bg-church-100 text-church-700">
+                  <AvatarFallback className="text-3xl bg-church-100 text-church-700">
                     {userData.name
                       .split(" ")
                       .map((n) => n[0])
@@ -142,7 +161,7 @@ const PublicProfilePage = () => {
                   </AvatarFallback>
                 </Avatar>
                 
-                <h1 className="text-2xl font-bold text-church-900 mb-2">
+                <h1 className="text-2xl font-bold text-church-900 mb-4">
                   {userData.name}
                 </h1>
 
@@ -154,21 +173,15 @@ const PublicProfilePage = () => {
                   </div>
                 )}
 
-                {/* Roles */}
-                {userData.roles && userData.roles.length > 0 && (
-                  <div className="mb-4">
-                    <h3 className="text-sm font-semibold text-gray-700 mb-2">Funções</h3>
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      {userData.roles.map((role, index) => (
-                        <span
-                          key={index}
-                          className="inline-block bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs"
-                        >
-                          {formatRoleName(role)}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                {/* Botão WhatsApp */}
+                {userData.phone && (
+                  <Button 
+                    onClick={handleWhatsAppClick}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white mb-4"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Mandar mensagem no WhatsApp
+                  </Button>
                 )}
               </CardContent>
             </Card>
@@ -186,6 +199,27 @@ const PublicProfilePage = () => {
                   <p className="text-gray-700 leading-relaxed whitespace-pre-line">
                     {userData.biography}
                   </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Funções */}
+            {userData.roles && userData.roles.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Funções</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-wrap gap-2">
+                    {userData.roles.map((role, index) => (
+                      <span
+                        key={index}
+                        className="inline-block bg-church-100 text-church-800 rounded-full px-4 py-2 text-sm font-medium"
+                      >
+                        {formatRoleName(role)}
+                      </span>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             )}
@@ -213,8 +247,8 @@ const PublicProfilePage = () => {
               </Card>
             )}
 
-            {/* Caso não tenha biografia nem ministérios */}
-            {(!userData.biography && (!userData.ministries || userData.ministries.length === 0)) && (
+            {/* Caso não tenha biografia, funções nem ministérios */}
+            {(!userData.biography && (!userData.roles || userData.roles.length === 0) && (!userData.ministries || userData.ministries.length === 0)) && (
               <Card>
                 <CardContent className="pt-6 text-center text-gray-500">
                   <p>Este usuário ainda não adicionou informações adicionais ao perfil.</p>

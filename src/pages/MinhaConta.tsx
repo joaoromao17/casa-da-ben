@@ -292,7 +292,7 @@ const MinhaConta = () => {
                     <TableRow>
                       <TableCell className="font-medium">Funções</TableCell>
                       <TableCell>
-                        {Array.isArray(userData.roles) ? (
+                        {Array.isArray(userData.roles) && userData.roles.length > 0 ? (
                           userData.roles.map((role, index) => (
                             <span
                               key={index}
@@ -346,7 +346,7 @@ const MinhaConta = () => {
                           <TableCell className="font-medium">Ministérios</TableCell>
                           <TableCell>
                             <div className="flex flex-wrap gap-2">
-                              {userData.ministries.map((ministry) => (
+                              {userData.ministries && userData.ministries.map((ministry) => (
                                 <span
                                   key={ministry.id}
                                   className="bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs"
@@ -374,6 +374,7 @@ const MinhaConta = () => {
                       phone: userData.phone,
                       email: userData.email,
                       member: userData.member,
+                      biography: userData.biography || "",
                     };
 
                     const fullData = {
@@ -430,12 +431,13 @@ const MinhaConta = () => {
         )}
       </div>
 
+      {/* Modal de Edição */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md max-h-[80vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>Editar Informações</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 max-h-[70vh] overflow-y-auto">
+          <div className="space-y-4 flex-1 overflow-y-auto pr-2">
             <div>
               <Label>Nome</Label>
               <Input
@@ -518,7 +520,7 @@ const MinhaConta = () => {
                 </div>
                 <div>
                   <Label>Ministérios</Label>
-                  <div className="space-y-2 border rounded px-3 py-2">
+                  <div className="space-y-2 border rounded px-3 py-2 max-h-32 overflow-y-auto">
                     {ministriesOptions.map((min) => (
                       <div key={min.id} className="flex items-center space-x-2">
                         <Checkbox
@@ -580,7 +582,7 @@ const MinhaConta = () => {
         </DialogContent>
       </Dialog>
 
-
+      {/* Modal de Alteração de Senha */}
       <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
         <DialogContent>
           <DialogHeader>
