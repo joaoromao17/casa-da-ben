@@ -37,7 +37,7 @@ const MinistryEditModal = ({ isOpen, onClose, ministry, users, onSuccess }: Mini
       description: ministry?.description || "",
       meetingDay: ministry?.meetingDay || ministry?.schedule || "",
       image: undefined,
-      activities: (ministry?.activities && ministry?.activities.length > 0) ? ministry?.activities : [],
+      activities: (ministry?.activities && ministry?.activities.length > 0) ? ministry?.activities : [""],
     },
   });
 
@@ -98,8 +98,7 @@ const MinistryEditModal = ({ isOpen, onClose, ministry, users, onSuccess }: Mini
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <MinistryEditForm
               form={form}
-              onSubmit={onSubmit}
-              isSubmitting={isSubmitting}
+              selectedMinistry={ministry}
             />
             <div className="flex justify-end gap-2 mt-6">
               <Button 
