@@ -1,4 +1,5 @@
 
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
@@ -21,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { 
   Select,
@@ -39,6 +41,7 @@ const userFormSchema = z.object({
   email: z.string().email("Email inválido"),
   phone: z.string().min(10, "Telefone inválido").optional().nullable(),
   address: z.string().optional().nullable(),
+  biography: z.string().optional().nullable(),
   birthDate: z.string().optional().nullable(),
   maritalStatus: z.string().optional().nullable(),
   baptized: z.boolean(),
@@ -94,6 +97,7 @@ const UsersTab = () => {
       email: "",
       phone: "",
       address: "",
+      biography: "",
       birthDate: "",
       maritalStatus: "",
       baptized: false,
@@ -223,6 +227,7 @@ const UsersTab = () => {
       email: user.email,
       phone: user.phone || "",
       address: user.address || "",
+      biography: user.biography || "",
       birthDate: user.birthDate?.split('T')[0] || "",
       maritalStatus: user.maritalStatus || "",
       baptized: user.baptized || false,
@@ -467,6 +472,25 @@ const UsersTab = () => {
                       <FormLabel>Endereço</FormLabel>
                       <FormControl>
                         <Input placeholder="Rua, número, bairro, cidade" {...field} value={field.value || ""} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="biography"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Biografia</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          placeholder="Biografia do usuário..." 
+                          className="min-h-[100px]"
+                          {...field} 
+                          value={field.value || ""} 
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -812,3 +836,4 @@ const UsersTab = () => {
 };
 
 export default UsersTab;
+
