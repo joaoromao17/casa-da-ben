@@ -236,17 +236,17 @@ const UsersTab = () => {
 
   // Available roles
   const availableRoles = [
-    { id: "ADMIN", label: "Administrador" },
-    { id: "PASTOR", label: "Pastor" },
-    { id: "LIDER", label: "Líder" },
-    { id: "MEMBRO", label: "Membro" },
-    { id: "PROFESSOR", label: "Professor" },
-    { id: "PASTORAUXILIAR", label: "Pastor Auxiliar" },
-    { id: "EVANGELISTA", label: "Evangelista" },
-    { id: "DIACONO", label: "Diácono" },
-    { id: "MISSIONARIO", label: "Missionário" },
-    { id: "PRESBITERO", label: "Presbítero" },
-    { id: "VISITANTE", label: "Visitante" },
+    { id: "ROLE_ADMIN", label: "Administrador" },
+    { id: "ROLE_PASTOR", label: "Pastor" },
+    { id: "ROLE_LIDER", label: "Líder" },
+    { id: "ROLE_MEMBRO", label: "Membro" },
+    { id: "ROLE_PROFESSOR", label: "Professor" },
+    { id: "ROLE_PASTORAUXILIAR", label: "Pastor Auxiliar" },
+    { id: "ROLE_EVANGELISTA", label: "Evangelista" },
+    { id: "ROLE_DIACONO", label: "Diácono" },
+    { id: "ROLE_MISSIONARIO", label: "Missionário" },
+    { id: "ROLE_PRESBITERO", label: "Presbítero" },
+    { id: "ROLE_VISITANTE", label: "Visitante" },
   ];
 
   return (
@@ -387,6 +387,41 @@ const UsersTab = () => {
 
             <FormField
               control={form.control}
+              name="ministries"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ministérios</FormLabel>
+                  <div className="space-y-2">
+                    {ministries.map((ministry: any) => (
+                      <div key={ministry.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`ministry-${ministry.id}`}
+                          checked={field.value?.includes(ministry.id)}
+                          onCheckedChange={(checked) => {
+                            const current = Array.isArray(field.value) ? field.value : [];
+                            if (checked) {
+                              field.onChange([...current, ministry.id]);
+                            } else {
+                              field.onChange(current.filter((id) => id !== ministry.id));
+                            }
+                          }}
+                        />
+                        <label 
+                          htmlFor={`ministry-${ministry.id}`}
+                          className="text-sm font-medium leading-none"
+                        >
+                          {ministry.name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+                        <FormField
+              control={form.control}
               name="member"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
@@ -417,41 +452,6 @@ const UsersTab = () => {
                   <div className="space-y-1 leading-none">
                     <FormLabel>Usuário Ativo</FormLabel>
                   </div>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="ministries"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ministérios</FormLabel>
-                  <div className="space-y-2">
-                    {ministries.map((ministry: any) => (
-                      <div key={ministry.id} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`ministry-${ministry.id}`}
-                          checked={field.value?.includes(ministry.id)}
-                          onCheckedChange={(checked) => {
-                            const current = Array.isArray(field.value) ? field.value : [];
-                            if (checked) {
-                              field.onChange([...current, ministry.id]);
-                            } else {
-                              field.onChange(current.filter((id) => id !== ministry.id));
-                            }
-                          }}
-                        />
-                        <label 
-                          htmlFor={`ministry-${ministry.id}`}
-                          className="text-sm font-medium leading-none"
-                        >
-                          {ministry.name}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                  <FormMessage />
                 </FormItem>
               )}
             />
