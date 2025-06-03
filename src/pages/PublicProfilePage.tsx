@@ -15,10 +15,7 @@ interface PublicUserData {
   profileImageUrl?: string;
   biography?: string;
   roles: string[];
-  ministries: Array<{
-    id: number;
-    name: string;
-  }>;
+  ministerios: string[];
   phone?: string;
 }
 
@@ -180,7 +177,7 @@ const PublicProfilePage = () => {
                     className="w-full bg-green-500 hover:bg-green-600 text-white mb-4"
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
-                    Mandar mensagem no WhatsApp
+                    Entre em contato!
                   </Button>
                 )}
               </CardContent>
@@ -225,20 +222,20 @@ const PublicProfilePage = () => {
             )}
 
             {/* Ministérios */}
-            {userData.ministries && userData.ministries.length > 0 && (
+            {userData.ministerios && userData.ministerios.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Ministérios</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {userData.ministries.map((ministry) => (
+                    {userData.ministerios.map((ministry, index) => (
                       <div
-                        key={ministry.id}
+                        key={index}
                         className="bg-church-50 rounded-lg p-4 border border-church-200"
                       >
                         <h4 className="font-semibold text-church-800">
-                          {ministry.name}
+                          {ministry}
                         </h4>
                       </div>
                     ))}
@@ -248,7 +245,7 @@ const PublicProfilePage = () => {
             )}
 
             {/* Caso não tenha biografia, funções nem ministérios */}
-            {(!userData.biography && (!userData.roles || userData.roles.length === 0) && (!userData.ministries || userData.ministries.length === 0)) && (
+            {(!userData.biography && (!userData.roles || userData.roles.length === 0) && (!userData.ministerios || userData.ministerios.length === 0)) && (
               <Card>
                 <CardContent className="pt-6 text-center text-gray-500">
                   <p>Este usuário ainda não adicionou informações adicionais ao perfil.</p>

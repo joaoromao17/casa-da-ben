@@ -146,7 +146,9 @@ const MinhaConta = () => {
 
   const formatDate = (dateString: string) => {
     try {
-      const date = new Date(dateString);
+      // Parse da data sem considerar timezone para evitar problemas de fuso horário
+      const [year, month, day] = dateString.split('T')[0].split('-');
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
       return new Intl.DateTimeFormat("pt-BR").format(date);
     } catch (e) {
       return dateString;
