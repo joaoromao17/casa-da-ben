@@ -27,6 +27,7 @@ import Ministerios from "./pages/Ministerios";
 import MinisterioDetail from "@/pages/MinisterioDetail";
 import EventoDetail from "@/pages/EventoDetail";
 import AdminDashboard from "./pages/AdminDashboard";
+import PublicProfilePage from "./pages/PublicProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
           <Route path="/cultos" element={<Cultos />} />
           <Route path="/ministerios" element={<Ministerios />} />
           <Route path="/ministerios/:id" element={<MinisterioDetail />} />
+          <Route path="/profile-public/:id" element={<PublicProfilePage />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/eventos/:id" element={<EventoDetail />} />

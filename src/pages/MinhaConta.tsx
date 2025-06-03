@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
@@ -10,6 +11,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import api from "@/services/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
@@ -32,10 +34,10 @@ interface UserData {
   acceptedTerms: boolean;
   ministries: Ministry[];
   profileImageUrl: string;
+  biography: string;
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-
 
 const MinhaConta = () => {
   const navigate = useNavigate();
@@ -54,7 +56,6 @@ const MinhaConta = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editData, setEditData] = useState({
     name: "",
@@ -68,7 +69,8 @@ const MinhaConta = () => {
     member: false,
     acceptedTerms: true,
     profileImageUrl: "",
-    roles: [] as string[]
+    roles: [] as string[],
+    biography: ""
   });
 
   const handleSelectPhoto = () => {
@@ -223,12 +225,16 @@ const MinhaConta = () => {
                       .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div>
+                <div className="flex-1">
                   <CardTitle className="text-2xl mb-2">{userData.name}</CardTitle>
-                  <div className="text-muted-foreground">
+                  <div className="text-muted-foreground mb-3">
                     <p>{userData.email}</p>
-                    <p className="mt-1">{userData.phone}</p>
                   </div>
+                  {userData.biography && (
+                    <div className="text-gray-700 text-sm">
+                      <p className="line-clamp-3">{userData.biography}</p>
+                    </div>
+                  )}
                   <div className="mt-3">
                     <Button
                       variant="outline"
@@ -267,10 +273,14 @@ const MinhaConta = () => {
                       <TableCell className="font-medium">E-mail</TableCell>
                       <TableCell>{userData.email}</TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Telefone</TableCell>
-                      <TableCell>{userData.phone}</TableCell>
-                    </TableRow>
+                    {userData.biography && (
+                      <TableRow>
+                        <TableCell className="font-medium">Biografia</TableCell>
+                        <TableCell>
+                          <p className="whitespace-pre-line">{userData.biography}</p>
+                        </TableCell>
+                      </TableRow>
+                    )}
                     <TableRow>
                       <TableCell className="font-medium">Membro da Igreja</TableCell>
                       <TableCell>
@@ -308,6 +318,10 @@ const MinhaConta = () => {
                     {/* CAMPOS EXTRAS SE NÃO FOR VISITANTE */}
                     {!userData.roles.includes("ROLE_VISITANTE") && (
                       <>
+                        <TableRow>
+                          <TableCell className="font-medium">Telefone</TableCell>
+                          <TableCell>{userData.phone}</TableCell>
+                        </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Endereço</TableCell>
                           <TableCell>{userData.address}</TableCell>
@@ -436,6 +450,20 @@ const MinhaConta = () => {
                 value={editData.email}
                 onChange={(e) => setEditData({ ...editData, email: e.target.value })}
               />
+            </div>
+            <div>
+              <Label>Biografia</Label>
+              <Textarea
+                value={editData.biography}
+                onChange={(e) => setEditData({ ...editData, biography: e.target.value })}
+                placeholder="Conte um pouco sobre você..."
+                rows={4}
+                maxLength={500}
+                className="resize-none"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                {editData.biography.length}/500 caracteres
+              </p>
             </div>
             <div>
               <Label>Telefone</Label>

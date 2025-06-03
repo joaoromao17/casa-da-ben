@@ -1,9 +1,8 @@
-
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Phone, Mail, Clock, ChevronRight, Edit } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "@/services/api";
 import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -49,6 +48,7 @@ const MinisterioTemplate = ({
   members: _,
   ministryId
 }: MinisterioTemplateProps) => {
+  const navigate = useNavigate();
   const [members, setMembers] = useState<UsuarioComRoles[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { currentUser, isLoading } = useCurrentUser();
@@ -94,6 +94,13 @@ const MinisterioTemplate = ({
         .catch((err) => console.error("Erro ao buscar membros:", err));
     }
   }, [ministryId]);
+
+  /**
+   * Navega para o perfil público do usuário
+   */
+  const handleUserClick = (userId: number) => {
+    navigate(`/profile-public/${userId}`);
+  };
 
   const handleEditSuccess = () => {
     // Refresh the page to show updated data
@@ -179,11 +186,15 @@ const MinisterioTemplate = ({
                         <h2 className="text-xl font-bold text-church-900 mb-2">Liderança</h2>
                         <div className="space-y-3">
                           {leaders.map((leader) => (
-                            <div key={leader.id} className="text-sm border-b pb-2">
+                            <div 
+                              key={leader.id} 
+                              className="text-sm border-b pb-2 cursor-pointer hover:bg-church-100 p-2 rounded transition-colors"
+                              onClick={() => handleUserClick(leader.id)}
+                            >
                               <img
                                 src={`${API_BASE_URL}${leader.profileImageUrl || '/uploads/profiles/default.jpg'}`}
                                 alt={leader.name}
-                                className="w-55 h-20 rounded-full object-cover"
+                                className="w-12 h-12 rounded-full object-cover mb-2"
                               />
                               <p className="font-semibold text-church-800">{leader.name}</p>
                               {leader.email && <p className="text-gray-500">{leader.email}</p>}
@@ -198,11 +209,15 @@ const MinisterioTemplate = ({
                           <h2 className="text-xl font-bold text-church-900 mb-2">Vice-liderança</h2>
                           <div className="space-y-3">
                             {viceLeaders.map((vice) => (
-                              <div key={vice.id} className="text-sm border-b pb-2">
+                              <div 
+                                key={vice.id} 
+                                className="text-sm border-b pb-2 cursor-pointer hover:bg-church-100 p-2 rounded transition-colors"
+                                onClick={() => handleUserClick(vice.id)}
+                              >
                                 <img
                                   src={`${API_BASE_URL}${vice.profileImageUrl || '/uploads/profiles/default.jpg'}`}
                                   alt={vice.name}
-                                  className="w-12 h-12 rounded-full object-cover"
+                                  className="w-12 h-12 rounded-full object-cover mb-2"
                                 />
                                 <p className="font-semibold text-church-800">{vice.name}</p>
                                 {vice.email && <p className="text-gray-500">{vice.email}</p>}
@@ -266,18 +281,19 @@ const MinisterioTemplate = ({
                   return (
                     <div
                       key={member.id}
-                      className="bg-white rounded-lg shadow p-4 flex flex-col items-center"
+                      className="bg-white rounded-lg shadow p-4 flex flex-col items-center cursor-pointer hover:shadow-lg transition-shadow"
+                      onClick={() => handleUserClick(member.id)}
                     >
                       <img
                         src={imageUrl}
                         alt={member.name}
-                        className="w-55 h-40 object-cover rounded-lg mx-auto shadow"
+                        className="w-20 h-20 object-cover rounded-full mb-3 border-2 border-church-200"
                       />
-                      <h3 className="text-lg font-semibold text-church-800">{member.name}</h3>
-                      <p className="text-sm text-gray-500">{member.email}</p>
-                      <p className="text-sm text-gray-500">{member.phone}</p>
-                      <p className="text-sm text-gray-500">
-                        {member.roles.join(", ")}
+                      <h3 className="text-lg font-semibold text-church-800 text-center">{member.name}</h3>
+                      <p className="text-sm text-gray-500 text-center">{member.email}</p>
+                      <p className="text-sm text-gray-500 text-center">{member.phone}</p>
+                      <p className="text-sm text-gray-500 text-center">
+                        {member.roles.map(role => role.replace('ROLE_', '').toLowerCase()).join(", ")}
                       </p>
                     </div>
                   );
