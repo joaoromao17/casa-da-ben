@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/components/ui/use-toast";
 import api from "@/services/api";
-import { Search } from "lucide-react";
+import { Search, Key, Image } from "lucide-react";
 
 import AdminTable from "./AdminTable";
 import AdminFormModal from "./AdminFormModal";
@@ -31,12 +31,17 @@ import {
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 // Form schema for user edit
 const userFormSchema = z.object({
   name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
   email: z.string().email("Email inválido"),
   phone: z.string().min(10, "Telefone inválido").optional().nullable(),
+  address: z.string().optional().nullable(),
+  birthDate: z.string().optional().nullable(),
+  maritalStatus: z.string().optional().nullable(),
+  baptized: z.boolean(),
   roles: z.array(z.string()),
   member: z.boolean().optional(),
   active: z.boolean().default(true),
@@ -83,6 +88,10 @@ const UsersTab = () => {
       name: "",
       email: "",
       phone: "",
+      address: "",
+      birthDate: "",
+      maritalStatus: "",
+      baptized: false,
       roles: [],
       member: false,
       active: true,
@@ -109,6 +118,53 @@ const UsersTab = () => {
       toast({
         title: "Erro",
         description: "Não foi possível atualizar o usuário",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Reset password mutation
+  const resetPasswordMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      return await api.put(`/users/${userId}`, {
+        password: '12345678'
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Sucesso",
+        description: "Senha redefinida para 12345678",
+      });
+    },
+    onError: (error) => {
+      console.error('Error resetting password:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível redefinir a senha",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Reset profile image mutation
+  const resetProfileImageMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      return await api.put(`/users/${userId}`, {
+        profileImageUrl: '/uploads/profiles/default-profile.jpg'
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast({
+        title: "Sucesso",
+        description: "Foto de perfil redefinida!",
+      });
+    },
+    onError: (error) => {
+      console.error('Error resetting profile image:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível redefinir a foto de perfil",
         variant: "destructive",
       });
     }
@@ -150,6 +206,10 @@ const UsersTab = () => {
       name: user.name,
       email: user.email,
       phone: user.phone || "",
+      address: user.address || "",
+      birthDate: user.birthDate || "",
+      maritalStatus: user.maritalStatus || "",
+      baptized: user.baptized || false,
       roles: user.roles || [],
       member: user.member || false,
       active: user.active !== false,
@@ -186,6 +246,18 @@ const UsersTab = () => {
   const confirmDelete = () => {
     if (selectedUser) {
       deleteUserMutation.mutate(selectedUser.id);
+    }
+  };
+
+  const handleResetPassword = () => {
+    if (selectedUser) {
+      resetPasswordMutation.mutate(selectedUser.id);
+    }
+  };
+
+  const handleResetProfileImage = () => {
+    if (selectedUser) {
+      resetProfileImageMutation.mutate(selectedUser.id);
     }
   };
 
@@ -249,6 +321,14 @@ const UsersTab = () => {
     { id: "ROLE_VISITANTE", label: "Visitante" },
   ];
 
+  // Marital status options
+  const maritalStatusOptions = [
+    { value: "solteiro", label: "Solteiro(a)" },
+    { value: "casado", label: "Casado(a)" },
+    { value: "divorciado", label: "Divorciado(a)" },
+    { value: "viuvo", label: "Viúvo(a)" },
+  ];
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Usuários</h2>
@@ -302,173 +382,299 @@ const UsersTab = () => {
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Form {...form}>
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome completo" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <div className="space-y-6">
+            {/* Dados Pessoais */}
+            <div>
+              <h3 className="text-lg font-medium mb-4">Dados Pessoais</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nome</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Nome completo" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="email@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="email@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone</FormLabel>
-                  <FormControl>
-                    <Input placeholder="(00) 00000-0000" {...field} value={field.value || ""} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="roles"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Funções</FormLabel>
-                  <div className="space-y-2">
-                    {availableRoles.map((role) => (
-                      <FormField
-                        key={role.id}
-                        control={form.control}
-                        name="roles"
-                        render={({ field }) => (
-                          <div className="flex items-center space-x-2">
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Telefone</FormLabel>
+                      <FormControl>
+                        <Input placeholder="(00) 00000-0000" {...field} value={field.value || ""} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="birthDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data de Nascimento</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} value={field.value || ""} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Endereço</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Rua, número, bairro, cidade" {...field} value={field.value || ""} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="maritalStatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Estado Civil</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value || ""}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione o estado civil" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {maritalStatusOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Funções e Ministérios */}
+            <div>
+              <h3 className="text-lg font-medium mb-4">Funções e Ministérios</h3>
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="roles"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Funções</FormLabel>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {availableRoles.map((role) => (
+                          <FormField
+                            key={role.id}
+                            control={form.control}
+                            name="roles"
+                            render={({ field }) => (
+                              <div className="flex items-center space-x-2">
+                                <Checkbox
+                                  id={`role-${role.id}`}
+                                  checked={field.value?.includes(role.id)}
+                                  onCheckedChange={(checked) => {
+                                    const updatedRoles = checked
+                                      ? [...field.value, role.id]
+                                      : field.value.filter((r: string) => r !== role.id);
+                                    field.onChange(updatedRoles);
+                                  }}
+                                />
+                                <label 
+                                  htmlFor={`role-${role.id}`}
+                                  className="text-sm font-medium leading-none"
+                                >
+                                  {role.label}
+                                </label>
+                              </div>
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="ministries"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Ministérios</FormLabel>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {ministries.map((ministry: any) => (
+                          <div key={ministry.id} className="flex items-center space-x-2">
                             <Checkbox
-                              id={`role-${role.id}`}
-                              checked={field.value?.includes(role.id)}
+                              id={`ministry-${ministry.id}`}
+                              checked={field.value?.includes(ministry.id)}
                               onCheckedChange={(checked) => {
-                                const updatedRoles = checked
-                                  ? [...field.value, role.id]
-                                  : field.value.filter((r: string) => r !== role.id);
-                                field.onChange(updatedRoles);
+                                const current = Array.isArray(field.value) ? field.value : [];
+                                if (checked) {
+                                  field.onChange([...current, ministry.id]);
+                                } else {
+                                  field.onChange(current.filter((id) => id !== ministry.id));
+                                }
                               }}
                             />
                             <label 
-                              htmlFor={`role-${role.id}`}
+                              htmlFor={`ministry-${ministry.id}`}
                               className="text-sm font-medium leading-none"
                             >
-                              {role.label}
+                              {ministry.name}
                             </label>
                           </div>
-                        )}
-                      />
-                    ))}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="ministries"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ministérios</FormLabel>
-                  <div className="space-y-2">
-                    {ministries.map((ministry: any) => (
-                      <div key={ministry.id} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`ministry-${ministry.id}`}
-                          checked={field.value?.includes(ministry.id)}
-                          onCheckedChange={(checked) => {
-                            const current = Array.isArray(field.value) ? field.value : [];
-                            if (checked) {
-                              field.onChange([...current, ministry.id]);
-                            } else {
-                              field.onChange(current.filter((id) => id !== ministry.id));
-                            }
-                          }}
-                        />
-                        <label 
-                          htmlFor={`ministry-${ministry.id}`}
-                          className="text-sm font-medium leading-none"
-                        >
-                          {ministry.name}
-                        </label>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
 
-                        <FormField
-              control={form.control}
-              name="member"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Membro da Igreja</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
+            <Separator />
 
-            <FormField
-              control={form.control}
-              name="active"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Usuário Ativo</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
+            {/* Status e Configurações */}
+            <div>
+              <h3 className="text-lg font-medium mb-4">Status e Configurações</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="baptized"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2 border rounded">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Batizado</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="member"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2 border rounded">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Membro da Igreja</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="active"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2 border rounded">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Usuário Ativo</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Ações Administrativas */}
+            <div>
+              <h3 className="text-lg font-medium mb-4">Ações Administrativas</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleResetPassword}
+                  disabled={resetPasswordMutation.isPending}
+                  className="w-full"
+                >
+                  <Key className="mr-2 h-4 w-4" />
+                  {resetPasswordMutation.isPending ? "Redefinindo..." : "Resetar Senha"}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleResetProfileImage}
+                  disabled={resetProfileImageMutation.isPending}
+                  className="w-full"
+                >
+                  <Image className="mr-2 h-4 w-4" />
+                  {resetProfileImageMutation.isPending ? "Redefinindo..." : "Resetar Foto"}
+                </Button>
+              </div>
+              <p className="text-sm text-gray-500 mt-2">
+                Resetar senha define a senha como "12345678". Resetar foto define a imagem padrão da igreja.
+              </p>
+            </div>
           </div>
         </Form>
       </AdminFormModal>
 
       {/* View User Dialog */}
       <Dialog open={viewUserOpen} onOpenChange={setViewUserOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[700px]">
           <DialogHeader>
             <DialogTitle>Detalhes do Usuário</DialogTitle>
           </DialogHeader>
           
           {selectedUser && (
-            <div className="py-4 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="py-4 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Nome</h3>
                   <p className="mt-1">{selectedUser.name}</p>
@@ -480,6 +686,18 @@ const UsersTab = () => {
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Telefone</h3>
                   <p className="mt-1">{selectedUser.phone || "-"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Data de Nascimento</h3>
+                  <p className="mt-1">{selectedUser.birthDate || "-"}</p>
+                </div>
+                <div className="md:col-span-2">
+                  <h3 className="text-sm font-medium text-gray-500">Endereço</h3>
+                  <p className="mt-1">{selectedUser.address || "-"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Estado Civil</h3>
+                  <p className="mt-1">{selectedUser.maritalStatus || "-"}</p>
                 </div>
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Status</h3>
@@ -494,6 +712,17 @@ const UsersTab = () => {
                       </span>
                     )}
                   </p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Batizado</h3>
+                  <p className="mt-1">{selectedUser.baptized ? "Sim" : "Não"}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Membro</h3>
+                  <p className="mt-1">{selectedUser.member ? "Sim" : "Não"}</p>
                 </div>
               </div>
               
