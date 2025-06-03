@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ministryFormSchema, type MinistryFormData } from './ministryFormSchema';
+import { ministryFormSchema, type MinistryFormData } from '../admin/ministries/ministryFormSchema';
 
 interface User {
   id: number;
@@ -47,20 +47,29 @@ const MinistryEditForm: React.FC<MinistryEditFormProps> = ({
     defaultValues: {
       name: ministry.name || '',
       description: ministry.description || '',
-      leaderId: ministry.leader?.id || undefined,
-      viceLeaderId: ministry.viceLeader?.id || undefined,
-      memberIds: ministry.members?.map(member => member.id) || [],
+      leaderIds: ministry.leader ? [ministry.leader.id.toString()] : [],
+      viceLeaders: ministry.viceLeader ? [ministry.viceLeader.id.toString()] : [],
+      activities: [''],
     },
   });
 
-  const memberIds = watch('memberIds') || [];
+  const leaderIds = watch('leaderIds') || [];
+  const viceLeaders = watch('viceLeaders') || [];
 
-  const handleMemberToggle = (userId: number) => {
-    const currentMembers = memberIds;
-    const newMembers = currentMembers.includes(userId)
-      ? currentMembers.filter(id => id !== userId)
-      : [...currentMembers, userId];
-    setValue('memberIds', newMembers);
+  const handleLeaderToggle = (userId: string) => {
+    const currentLeaders = leaderIds;
+    const newLeaders = currentLeaders.includes(userId)
+      ? currentLeaders.filter(id => id !== userId)
+      : [...currentLeaders, userId];
+    setValue('leaderIds', newLeaders);
+  };
+
+  const handleViceLeaderToggle = (userId: string) => {
+    const currentViceLeaders = viceLeaders;
+    const newViceLeaders = currentViceLeaders.includes(userId)
+      ? currentViceLeaders.filter(id => id !== userId)
+      : [...currentViceLeaders, userId];
+    setValue('viceLeaders', newViceLeaders);
   };
 
   return (
@@ -91,61 +100,44 @@ const MinistryEditForm: React.FC<MinistryEditFormProps> = ({
       </div>
 
       <div>
-        <Label htmlFor="leaderId">Líder</Label>
-        <select
-          id="leaderId"
-          {...register('leaderId', { valueAsNumber: true })}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="">Selecione um líder</option>
-          {users.map(user => (
-            <option key={user.id} value={user.id}>
-              {user.name}
-            </option>
-          ))}
-        </select>
-        {errors.leaderId && (
-          <p className="text-red-500 text-sm mt-1">{errors.leaderId.message}</p>
-        )}
-      </div>
-
-      <div>
-        <Label htmlFor="viceLeaderId">Vice-Líder</Label>
-        <select
-          id="viceLeaderId"
-          {...register('viceLeaderId', { valueAsNumber: true })}
-          className="w-full border rounded px-3 py-2"
-        >
-          <option value="">Selecione um vice-líder</option>
-          {users.map(user => (
-            <option key={user.id} value={user.id}>
-              {user.name}
-            </option>
-          ))}
-        </select>
-        {errors.viceLeaderId && (
-          <p className="text-red-500 text-sm mt-1">{errors.viceLeaderId.message}</p>
-        )}
-      </div>
-
-      <div>
-        <Label>Membros</Label>
+        <Label>Líderes</Label>
         <div className="space-y-2 border rounded px-3 py-3 max-h-48 overflow-y-auto">
           {users.map(user => (
             <div key={user.id} className="flex items-center space-x-2">
               <Checkbox
-                id={`member-${user.id}`}
-                checked={memberIds.includes(user.id)}
-                onCheckedChange={() => handleMemberToggle(user.id)}
+                id={`leader-${user.id}`}
+                checked={leaderIds.includes(user.id.toString())}
+                onCheckedChange={() => handleLeaderToggle(user.id.toString())}
               />
-              <label htmlFor={`member-${user.id}`} className="text-sm flex-1">
+              <label htmlFor={`leader-${user.id}`} className="text-sm flex-1">
                 {user.name}
               </label>
             </div>
           ))}
         </div>
-        {errors.memberIds && (
-          <p className="text-red-500 text-sm mt-1">{errors.memberIds.message}</p>
+        {errors.leaderIds && (
+          <p className="text-red-500 text-sm mt-1">{errors.leaderIds.message}</p>
+        )}
+      </div>
+
+      <div>
+        <Label>Vice-Líderes</Label>
+        <div className="space-y-2 border rounded px-3 py-3 max-h-48 overflow-y-auto">
+          {users.map(user => (
+            <div key={user.id} className="flex items-center space-x-2">
+              <Checkbox
+                id={`vice-leader-${user.id}`}
+                checked={viceLeaders.includes(user.id.toString())}
+                onCheckedChange={() => handleViceLeaderToggle(user.id.toString())}
+              />
+              <label htmlFor={`vice-leader-${user.id}`} className="text-sm flex-1">
+                {user.name}
+              </label>
+            </div>
+          ))}
+        </div>
+        {errors.viceLeaders && (
+          <p className="text-red-500 text-sm mt-1">{errors.viceLeaders.message}</p>
         )}
       </div>
 
@@ -162,3 +154,4 @@ const MinistryEditForm: React.FC<MinistryEditFormProps> = ({
 };
 
 export default MinistryEditForm;
+export type { MinistryFormData };

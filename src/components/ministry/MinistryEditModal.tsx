@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import MinistryEditForm, { MinistryEditFormData } from "./MinistryEditForm";
+import SimpleMinistryForm, { MinistryEditFormData } from "./SimpleMinistryForm";
 import api from "@/services/api";
 
 // Schema simplificado para edição por líderes
@@ -96,7 +96,7 @@ const MinistryEditModal = ({ isOpen, onClose, ministry, users, onSuccess }: Mini
         </DialogHeader>
         <div className="py-4">
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <MinistryEditForm
+            <SimpleMinistryForm
               form={form}
               selectedMinistry={ministry}
             />
