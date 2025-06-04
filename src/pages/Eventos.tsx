@@ -34,7 +34,16 @@ const Eventos = () => {
     const fetchEventos = async () => {
       try {
         const response = await api.get("/eventos");
-        setEvents(response.data);
+
+        const parsedEvents = response.data.map((event: any) => {
+          const [year, month, day] = event.date.split("-").map(Number);
+          return {
+            ...event,
+            date: new Date(year, month - 1, day),
+          };
+        });
+
+        setEvents(parsedEvents);
       } catch (err) {
         setError("Erro ao carregar eventos.");
       } finally {
@@ -43,23 +52,24 @@ const Eventos = () => {
     };
     fetchEventos();
   }, []);
-  
+
+
   const filteredEvents = events.filter(event => {
     const matchesSearch =
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.description.toLowerCase().includes(searchTerm.toLowerCase());
-  
+
     // Por enquanto, categoria não existe nos dados. Se quiser usar, precisará ser adicionada no backend.
-    const matchesCategory = selectedCategory === "Todos"  || event.category === selectedCategory;
-  
+    const matchesCategory = selectedCategory === "Todos" || event.category === selectedCategory;
+
     return matchesSearch && matchesCategory;
   });
-  
+
   // Sort events by date (closest first)
   const sortedEvents = [...filteredEvents].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
-  
+
 
   return (
     <Layout>
@@ -68,7 +78,7 @@ const Eventos = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-church-900 mb-4">Eventos</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Confira nossa agenda de eventos e participe das atividades da igreja. 
+            Confira nossa agenda de eventos e participe das atividades da igreja.
             Todos são bem-vindos para crescer na fé e em comunhão.
           </p>
         </div>
@@ -95,27 +105,27 @@ const Eventos = () => {
               </Tabs>
             </div>
           </div>
-          
+
           <div className="flex flex-wrap gap-2">
             <p className="text-sm text-gray-600 mr-2 mt-1">Filtros rápidos:</p>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               className="bg-white"
               onClick={() => setSearchTerm("culto")}
             >
               Cultos
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               className="bg-white"
               onClick={() => setSearchTerm("jovens")}
             >
               Jovens
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
               className="bg-white"
               onClick={() => setSearchTerm("casais")}
@@ -136,8 +146,8 @@ const Eventos = () => {
               <p>Carregando eventos...</p>
             </div>
           ) : error ? (
-            <ErrorAlert 
-              title="Erro ao carregar eventos" 
+            <ErrorAlert
+              title="Erro ao carregar eventos"
               message="Tente novamente mais tarde."
               onRetry={() => window.location.reload()}
             />
@@ -174,10 +184,10 @@ const Eventos = () => {
               </p>
             </div>
             <div className="flex-shrink-0">
-            <Link to="/contato">
-              <Button className="bg-white text-church-900 hover:bg-gray-200">
-                Enviar Sugestão
-              </Button>
+              <Link to="/contato">
+                <Button className="bg-white text-church-900 hover:bg-gray-200">
+                  Enviar Sugestão
+                </Button>
               </Link>
             </div>
           </div>

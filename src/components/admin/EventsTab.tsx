@@ -177,7 +177,7 @@ const EventsTab = () => {
     setSelectedEvent(event);
 
     // Format date and time from the event data
-    const eventDate = event.date ? format(new Date(event.date), 'yyyy-MM-dd') : "";
+    const eventDate = event.date ? format(new Date(event.date + "T00:00:00"), 'yyyy-MM-dd') : "";
     const eventTime = event.time || "19:00";
 
     // Reset form with event data
@@ -212,14 +212,18 @@ const EventsTab = () => {
 
   const onSubmit = (data: EventFormData) => {
     const formData = new FormData();
-    formData.append("title", data.title);
-    formData.append("description", data.description);
-    formData.append("date", data.date);
-    formData.append("time", data.time);
-    formData.append("location", data.location);
-    formData.append("category", data.category);
-    
-    // Adiciona imagem se houver
+
+    const evento = {
+      title: data.title,
+      description: data.description,
+      date: data.date,
+      time: data.time,
+      location: data.location,
+      category: data.category,
+    };
+
+    formData.append("evento", new Blob([JSON.stringify(evento)], { type: "application/json" }));
+
     if (data.image && data.image.length > 0) {
       formData.append("image", data.image[0]);
     }
@@ -242,7 +246,8 @@ const EventsTab = () => {
     {
       key: "date",
       title: "Data",
-      render: (date: string) => date ? format(new Date(date), 'dd/MM/yyyy') : "-"
+      render: (date: string) =>
+        date ? format(new Date(date + 'T00:00:00'), 'dd/MM/yyyy') : "-"
     },
     {
       key: "time",

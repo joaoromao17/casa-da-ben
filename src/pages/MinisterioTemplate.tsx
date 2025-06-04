@@ -277,7 +277,7 @@ const MinisterioTemplate = ({
                       <img
                         src={imageUrl}
                         alt={member.name}
-                        className="w-40 h-30 object-cover rounded-full mb-3 border-2 border-church-200"
+                        className="w-50 h-40 object-cover rounded-full mb-3 border-2 border-church-200"
                       />
                       <h3 className="text-lg font-semibold text-church-800 text-center">{member.name}</h3>
                       <p className="text-sm text-gray-500 text-center">{member.email}</p>

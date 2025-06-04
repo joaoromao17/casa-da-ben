@@ -41,9 +41,9 @@ const Home = () => {
       try {
         const res = await api.get('/versiculos/random'); // nova rota da sua API
         const data = res.data;
-  
+
         console.log("Versículo recebido:", data);
-  
+
         setVerseOfDay({
           verse: data.verse.trim(), // 'verse' vem do seu modelo Versiculo
           reference: data.reference,
@@ -56,7 +56,7 @@ const Home = () => {
         });
       }
     };
-  
+
     fetchVerse();
   }, []);
 
@@ -82,9 +82,19 @@ const Home = () => {
     async function fetchEventos() {
       try {
         const response = await api.get("/eventos");
-        console.log("Eventos recebidos:", response.data);
-        const eventosOrdenados = response.data
-          .sort((a: Evento, b: Evento) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+        const eventosComDataCorrigida = response.data.map((evento: any) => {
+          const [year, month, day] = evento.date.split("-").map(Number);
+          return {
+            ...evento,
+            date: new Date(year, month - 1, day), // ajusta para data local
+          };
+        });
+
+        const eventosOrdenados = eventosComDataCorrigida.sort(
+          (a: any, b: any) => a.date.getTime() - b.date.getTime()
+        );
+
         setEventos(eventosOrdenados);
       } catch (error) {
         console.error("Erro ao buscar eventos:", error);
@@ -93,8 +103,6 @@ const Home = () => {
 
     fetchEventos();
   }, []);
-
-
 
   return <Layout>
     {/* Hero Section */}
@@ -182,21 +190,21 @@ const Home = () => {
 
     {/* Verse of the Day */}
     <section className="py-16 bg-white">
-        <div className="container-church max-w-3xl">
-          <h2 className="text-4xl font-bold text-center mb-6">Versículo do Dia</h2>
-          <VerseCard verse={verseOfDay.verse} reference={verseOfDay.reference} />
-          <div className="text-center mt-8">
-            <Link to="/estudos">
-              <Button variant="outline" className="btn-outline">
-                Explorar Mais Estudos Bíblicos <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+      <div className="container-church max-w-3xl">
+        <h2 className="text-4xl font-bold text-center mb-6">Versículo do Dia</h2>
+        <VerseCard verse={verseOfDay.verse} reference={verseOfDay.reference} />
+        <div className="text-center mt-8">
+          <Link to="/estudos">
+            <Button variant="outline" className="btn-outline">
+              Explorar Mais Estudos Bíblicos <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </Link>
         </div>
-      </section>
+      </div>
+    </section>
 
-        {/* Featured Events */}
-        <section className="py-16 bg-gray-100">
+    {/* Featured Events */}
+    <section className="py-16 bg-gray-100">
       <div className="container-church">
         <h2 className="text-3xl font-bold text-church-800 text-center mb-8">Próximos Eventos</h2>
         <div className="grid md:grid-cols-3 gap-8">

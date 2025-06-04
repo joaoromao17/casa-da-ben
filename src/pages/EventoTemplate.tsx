@@ -34,9 +34,11 @@ const EventoTemplate = ({
       : `${API_BASE_URL}${imageUrl}`
     : "/lovable-uploads/eventos.jpg";
 
-  const isToday = isSameDay(date, new Date());
+  const parsedDate = new Date(date + "T00:00:00"); // Evita conversão errada por fuso
 
-  const formattedDate = format(date, "dd 'de' MMMM 'de' yyyy", {
+  const isToday = isSameDay(parsedDate , new Date());
+
+  const formattedDate = format(parsedDate, "dd 'de' MMMM 'de' yyyy", {
     locale: ptBR,
   });
 
