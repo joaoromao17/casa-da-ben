@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
@@ -90,32 +89,9 @@ const EventsTab = () => {
 
   // Create event mutation
   const createEventMutation = useMutation({
-    mutationFn: async (data: EventFormData) => {
-      const formData = new FormData();
-
-      // Prepare event data without image
-      const eventData = {
-        title: data.title,
-        description: data.description,
-        date: data.date,
-        time: data.time,
-        location: data.location,
-        category: data.category
-      };
-
-      formData.append("evento", JSON.stringify(eventData));
-
-      // Add image if selected
-      if (data.image && data.image[0]) {
-        formData.append("image", data.image[0]);
-      }
-
-      // Explicitly set the correct Content-Type for multipart/form-data
-      return await api.post('/eventos', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+    mutationFn: async (formData: FormData) => {
+      // Don't set Content-Type header manually - let the browser set it for FormData
+      return await api.post('/eventos', formData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
@@ -137,33 +113,9 @@ const EventsTab = () => {
 
   // Update event mutation
   const updateEventMutation = useMutation({
-    mutationFn: async (data: EventFormData & { id: string }) => {
-      const { id, ...eventFormData } = data;
-      const formData = new FormData();
-
-      // Prepare event data without image
-      const eventData = {
-        title: eventFormData.title,
-        description: eventFormData.description,
-        date: eventFormData.date,
-        time: eventFormData.time,
-        location: eventFormData.location,
-        category: eventFormData.category
-      };
-
-      formData.append("evento", JSON.stringify(eventData));
-
-      // Add image if selected
-      if (eventFormData.image && eventFormData.image[0]) {
-        formData.append("image", eventFormData.image[0]);
-      }
-
-      // Explicitly set the correct Content-Type for multipart/form-data
-      return await api.put(`/eventos/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+    mutationFn: async ({ id, data }: { id: string; data: FormData }) => {
+      // Don't set Content-Type header manually - let the browser set it for FormData
+      return await api.put(`/eventos/${id}`, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
@@ -259,13 +211,23 @@ const EventsTab = () => {
   };
 
   const onSubmit = (data: EventFormData) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("date", data.date);
+    formData.append("time", data.time);
+    formData.append("location", data.location);
+    formData.append("category", data.category);
+    
+    // Adiciona imagem se houver
+    if (data.image && data.image.length > 0) {
+      formData.append("image", data.image[0]);
+    }
+
     if (isCreating) {
-      createEventMutation.mutate(data);
+      createEventMutation.mutate(formData);
     } else if (selectedEvent) {
-      updateEventMutation.mutate({
-        id: selectedEvent.id,
-        ...data,
-      });
+      updateEventMutation.mutate({ id: selectedEvent.id, data: formData });
     }
   };
 
@@ -445,7 +407,6 @@ const EventsTab = () => {
                       <Input
                         type="file"
                         accept="image/*"
-                        multiple={false}
                         onChange={(e) => onChange(e.target.files)}
                         {...field}
                       />
