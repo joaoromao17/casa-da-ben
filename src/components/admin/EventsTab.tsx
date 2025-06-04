@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/components/ui/use-toast";
 import api from "@/services/api";
-import { format, parse } from "date-fns";
+import { format } from "date-fns";
 
 import AdminTable from "./AdminTable";
 import AdminFormModal from "./AdminFormModal";
@@ -37,9 +37,8 @@ const eventFormSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
   time: z.string().regex(/^\d{2}:\d{2}$/, "Hora inválida"),
   location: z.string().min(3, "Local do evento é obrigatório"),
-  imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
+  image: z.any().optional(),
   category: z.string().min(2, "Categoria é obrigatória"),
-  highlight: z.boolean().optional().default(false),
 });
 
 type EventFormData = z.infer<typeof eventFormSchema>;
@@ -73,16 +72,36 @@ const EventsTab = () => {
       date: format(new Date(), 'yyyy-MM-dd'),
       time: "19:00",
       location: "",
-      imageUrl: "",
+      image: undefined,
       category: "",
-      highlight: false,
     },
   });
 
   // Create event mutation
   const createEventMutation = useMutation({
     mutationFn: async (data: EventFormData) => {
-      return await api.post('/eventos', data);
+      const formData = new FormData();
+      
+      // Prepare event data without image
+      const eventData = {
+        title: data.title,
+        description: data.description,
+        date: data.date,
+        time: data.time,
+        location: data.location,
+        category: data.category
+      };
+      
+      formData.append("evento", JSON.stringify(eventData));
+      
+      // Add image if selected
+      if (data.image && data.image[0]) {
+        formData.append("image", data.image[0]);
+      }
+      
+      return await api.post('/eventos', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
@@ -105,8 +124,29 @@ const EventsTab = () => {
   // Update event mutation
   const updateEventMutation = useMutation({
     mutationFn: async (data: EventFormData & { id: string }) => {
-      const { id, ...eventData } = data;
-      return await api.put(`/eventos/${id}`, eventData);
+      const { id, ...eventFormData } = data;
+      const formData = new FormData();
+      
+      // Prepare event data without image
+      const eventData = {
+        title: eventFormData.title,
+        description: eventFormData.description,
+        date: eventFormData.date,
+        time: eventFormData.time,
+        location: eventFormData.location,
+        category: eventFormData.category
+      };
+      
+      formData.append("evento", JSON.stringify(eventData));
+      
+      // Add image if selected
+      if (eventFormData.image && eventFormData.image[0]) {
+        formData.append("image", eventFormData.image[0]);
+      }
+      
+      return await api.put(`/eventos/${id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
@@ -157,9 +197,8 @@ const EventsTab = () => {
       date: format(new Date(), 'yyyy-MM-dd'),
       time: "19:00",
       location: "",
-      imageUrl: "",
+      image: undefined,
       category: "",
-      highlight: false,
     });
     setIsModalOpen(true);
   };
@@ -179,9 +218,8 @@ const EventsTab = () => {
       date: eventDate,
       time: eventTime,
       location: event.location,
-      imageUrl: event.imageUrl || "",
+      image: undefined,
       category: event.category,
-      highlight: event.highlight || false,
     });
     
     setIsModalOpen(true);
@@ -238,11 +276,6 @@ const EventsTab = () => {
     { 
       key: "category", 
       title: "Categoria",
-    },
-    { 
-      key: "highlight", 
-      title: "Destaque",
-      render: (highlight: boolean) => highlight ? "Sim" : "Não"
     },
   ];
 
@@ -383,38 +416,19 @@ const EventsTab = () => {
 
             <FormField
               control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
+              name="image"
+              render={({ field: { onChange, value, ...field } }) => (
                 <FormItem>
-                  <FormLabel>URL da Imagem</FormLabel>
+                  <FormLabel>Imagem do Evento</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="https://exemplo.com/imagem.jpg" 
-                      {...field} 
-                      value={field.value || ""} 
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => onChange(e.target.files)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="highlight"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-2">
-                  <FormControl>
-                    <input
-                      type="checkbox"
-                      checked={field.value}
-                      onChange={field.onChange}
-                      className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Destacar na página inicial</FormLabel>
-                  </div>
                 </FormItem>
               )}
             />
