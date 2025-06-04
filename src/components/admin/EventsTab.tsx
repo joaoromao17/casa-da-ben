@@ -110,8 +110,12 @@ const EventsTab = () => {
         formData.append("image", data.image[0]);
       }
 
-      // Don't set Content-Type header manually - let the browser set it for FormData
-      return await api.post('/eventos', formData);
+      // Explicitly set the correct Content-Type for multipart/form-data
+      return await api.post('/eventos', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
@@ -154,8 +158,12 @@ const EventsTab = () => {
         formData.append("image", eventFormData.image[0]);
       }
 
-      // Don't set Content-Type header manually - let the browser set it for FormData
-      return await api.put(`/eventos/${id}`, formData);
+      // Explicitly set the correct Content-Type for multipart/form-data
+      return await api.put(`/eventos/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
