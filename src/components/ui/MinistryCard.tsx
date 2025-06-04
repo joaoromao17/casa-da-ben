@@ -1,3 +1,4 @@
+
 // src/components/ui/MinistryCard.tsx
 import { Link } from "react-router-dom";
 import {
@@ -21,7 +22,7 @@ interface MinistryCardProps {
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 const MinistryCard = ({ title, description, imageUrl, slug }: MinistryCardProps) => {
-  const fullImageUrl = imageUrl.startsWith("http") ? imageUrl : `${API_BASE_URL}${imageUrl}`;
+  const fullImageUrl = imageUrl && imageUrl.startsWith("http") ? imageUrl : `${API_BASE_URL}${imageUrl || ''}`;
   return (
     <Card className="card-church overflow-hidden h-full flex flex-col">
       <div className="h-48 overflow-hidden">
