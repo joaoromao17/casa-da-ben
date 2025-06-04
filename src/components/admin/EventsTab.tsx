@@ -58,7 +58,7 @@ const EventsTab = () => {
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<Event>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isCreating, setIsCreating] = useState(false);
 
   // Fetch events
@@ -110,8 +110,8 @@ const EventsTab = () => {
         formData.append("image", data.image[0]);
       }
 
-      return await api.post('/eventos', formData, {
-      });
+      // Don't set Content-Type header manually - let the browser set it for FormData
+      return await api.post('/eventos', formData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
@@ -154,8 +154,8 @@ const EventsTab = () => {
         formData.append("image", eventFormData.image[0]);
       }
 
-      return await api.put(`/eventos/${id}`, formData, {
-      });
+      // Don't set Content-Type header manually - let the browser set it for FormData
+      return await api.put(`/eventos/${id}`, formData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
@@ -319,7 +319,7 @@ const EventsTab = () => {
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <Form {...form}>
-          <div className="space-y-4">
+          <form className="space-y-4">
             <FormField
               control={form.control}
               name="title"
@@ -430,22 +430,24 @@ const EventsTab = () => {
                 <FormItem>
                   <FormLabel>Imagem do Evento</FormLabel>
                   <FormControl>
-                    {selectedEvent?.imageUrl && (
-                      <img src={selectedEvent.imageUrl} alt="Imagem atual" className="w-32 h-auto mb-2 rounded" />
-                    )}
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      multiple={false}
-                      onChange={(e) => onChange(e.target.files)}
-                      {...field}
-                    />
+                    <div className="space-y-2">
+                      {selectedEvent?.imageUrl && (
+                        <img src={selectedEvent.imageUrl} alt="Imagem atual" className="w-32 h-auto mb-2 rounded" />
+                      )}
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        multiple={false}
+                        onChange={(e) => onChange(e.target.files)}
+                        {...field}
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
+          </form>
         </Form>
       </AdminFormModal>
 
