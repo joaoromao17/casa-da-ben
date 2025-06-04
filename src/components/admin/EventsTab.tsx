@@ -22,13 +22,24 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue 
+  SelectValue
 } from "@/components/ui/select";
+
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  category: string;
+  imageUrl?: string;
+}
 
 // Form schema for event
 const eventFormSchema = z.object({
@@ -47,14 +58,14 @@ const EventsTab = () => {
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event>(null);
   const [isCreating, setIsCreating] = useState(false);
 
   // Fetch events
-  const { 
-    data: events = [], 
-    isLoading, 
-    error 
+  const {
+    data: events = [],
+    isLoading,
+    error
   } = useQuery({
     queryKey: ['events'],
     queryFn: async () => {
@@ -81,7 +92,7 @@ const EventsTab = () => {
   const createEventMutation = useMutation({
     mutationFn: async (data: EventFormData) => {
       const formData = new FormData();
-      
+
       // Prepare event data without image
       const eventData = {
         title: data.title,
@@ -91,16 +102,15 @@ const EventsTab = () => {
         location: data.location,
         category: data.category
       };
-      
+
       formData.append("evento", JSON.stringify(eventData));
-      
+
       // Add image if selected
       if (data.image && data.image[0]) {
         formData.append("image", data.image[0]);
       }
-      
+
       return await api.post('/eventos', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
       });
     },
     onSuccess: () => {
@@ -126,7 +136,7 @@ const EventsTab = () => {
     mutationFn: async (data: EventFormData & { id: string }) => {
       const { id, ...eventFormData } = data;
       const formData = new FormData();
-      
+
       // Prepare event data without image
       const eventData = {
         title: eventFormData.title,
@@ -136,16 +146,15 @@ const EventsTab = () => {
         location: eventFormData.location,
         category: eventFormData.category
       };
-      
+
       formData.append("evento", JSON.stringify(eventData));
-      
+
       // Add image if selected
       if (eventFormData.image && eventFormData.image[0]) {
         formData.append("image", eventFormData.image[0]);
       }
-      
+
       return await api.put(`/eventos/${id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
       });
     },
     onSuccess: () => {
@@ -203,14 +212,14 @@ const EventsTab = () => {
     setIsModalOpen(true);
   };
 
-  const handleEditEvent = (event: any) => {
+  const handleEditEvent = (event: Event) => {
     setIsCreating(false);
     setSelectedEvent(event);
-    
+
     // Format date and time from the event data
     const eventDate = event.date ? format(new Date(event.date), 'yyyy-MM-dd') : "";
     const eventTime = event.time || "19:00";
-    
+
     // Reset form with event data
     form.reset({
       title: event.title,
@@ -221,16 +230,16 @@ const EventsTab = () => {
       image: undefined,
       category: event.category,
     });
-    
+
     setIsModalOpen(true);
   };
 
-  const handleDeleteEvent = (event: any) => {
+  const handleDeleteEvent = (event: Event) => {
     setSelectedEvent(event);
     setIsDeleteDialogOpen(true);
   };
 
-  const handleViewEvent = (event: any) => {
+  const handleViewEvent = (event: Event) => {
     // Redirect to event details page
     window.location.href = `/eventos/${event.id}`;
   };
@@ -260,21 +269,21 @@ const EventsTab = () => {
 
   const columns = [
     { key: "title", title: "Título" },
-    { 
-      key: "date", 
+    {
+      key: "date",
       title: "Data",
       render: (date: string) => date ? format(new Date(date), 'dd/MM/yyyy') : "-"
     },
-    { 
-      key: "time", 
+    {
+      key: "time",
       title: "Hora",
     },
-    { 
-      key: "location", 
+    {
+      key: "location",
       title: "Local",
     },
-    { 
-      key: "category", 
+    {
+      key: "category",
       title: "Categoria",
     },
   ];
@@ -290,7 +299,7 @@ const EventsTab = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Eventos</h2>
-      
+
       <AdminTable
         data={events}
         columns={columns}
@@ -332,10 +341,10 @@ const EventsTab = () => {
                 <FormItem>
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Descreva o evento" 
-                      rows={4} 
-                      {...field} 
+                    <Textarea
+                      placeholder="Descreva o evento"
+                      rows={4}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -393,8 +402,8 @@ const EventsTab = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Categoria</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
+                  <Select
+                    onValueChange={field.onChange}
                     defaultValue={field.value}
                     value={field.value}
                   >
@@ -421,9 +430,13 @@ const EventsTab = () => {
                 <FormItem>
                   <FormLabel>Imagem do Evento</FormLabel>
                   <FormControl>
-                    <Input 
+                    {selectedEvent?.imageUrl && (
+                      <img src={selectedEvent.imageUrl} alt="Imagem atual" className="w-32 h-auto mb-2 rounded" />
+                    )}
+                    <Input
                       type="file"
                       accept="image/*"
+                      multiple={false}
                       onChange={(e) => onChange(e.target.files)}
                       {...field}
                     />
