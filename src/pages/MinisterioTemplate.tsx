@@ -52,7 +52,7 @@ const MinisterioTemplate = ({
   const [members, setMembers] = useState<UsuarioComRoles[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { currentUser, isLoading } = useCurrentUser();
-  
+
   const fullImageUrl = imageUrl.startsWith("http")
     ? imageUrl
     : `${API_BASE_URL}${imageUrl}`;
@@ -143,8 +143,8 @@ const MinisterioTemplate = ({
           <Tabs defaultValue="sobre" className="w-full">
             <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-6">
               <TabsTrigger value="sobre">Sobre o Ministério</TabsTrigger>
-              <TabsTrigger value="mural">Mural</TabsTrigger>
               <TabsTrigger value="membros">Membros do Ministério</TabsTrigger>
+              <TabsTrigger value="mural">Mural</TabsTrigger>
             </TabsList>
 
             <TabsContent value="sobre">
@@ -186,15 +186,15 @@ const MinisterioTemplate = ({
                         <h2 className="text-xl font-bold text-church-900 mb-2">Liderança</h2>
                         <div className="space-y-3">
                           {leaders.map((leader) => (
-                            <div 
-                              key={leader.id} 
+                            <div
+                              key={leader.id}
                               className="text-sm border-b pb-2 cursor-pointer hover:bg-church-100 p-2 rounded transition-colors"
                               onClick={() => handleUserClick(leader.id)}
                             >
                               <img
                                 src={`${API_BASE_URL}${leader.profileImageUrl || '/uploads/profiles/default.jpg'}`}
                                 alt={leader.name}
-                                className="w-12 h-12 rounded-full object-cover mb-2"
+                                className="w-55 h-20 rounded-full object-cover mb-2"
                               />
                               <p className="font-semibold text-church-800">{leader.name}</p>
                               {leader.email && <p className="text-gray-500">{leader.email}</p>}
@@ -209,8 +209,8 @@ const MinisterioTemplate = ({
                           <h2 className="text-xl font-bold text-church-900 mb-2">Vice-liderança</h2>
                           <div className="space-y-3">
                             {viceLeaders.map((vice) => (
-                              <div 
-                                key={vice.id} 
+                              <div
+                                key={vice.id}
                                 className="text-sm border-b pb-2 cursor-pointer hover:bg-church-100 p-2 rounded transition-colors"
                                 onClick={() => handleUserClick(vice.id)}
                               >
@@ -255,16 +255,6 @@ const MinisterioTemplate = ({
               </div>
             </TabsContent>
 
-            {/* Aba Mural */}
-            <TabsContent value="mural">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-church-900 mb-4">Mural</h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto whitespace-pre-line">
-                  {wall || "Nenhum aviso postado ainda."}
-                </p>
-              </div>
-            </TabsContent>
-
             {/* Aba Membros */}
             <TabsContent value="membros">
               <div className="text-center mb-12">
@@ -287,7 +277,7 @@ const MinisterioTemplate = ({
                       <img
                         src={imageUrl}
                         alt={member.name}
-                        className="w-20 h-20 object-cover rounded-full mb-3 border-2 border-church-200"
+                        className="w-40 h-30 object-cover rounded-full mb-3 border-2 border-church-200"
                       />
                       <h3 className="text-lg font-semibold text-church-800 text-center">{member.name}</h3>
                       <p className="text-sm text-gray-500 text-center">{member.email}</p>
@@ -300,6 +290,17 @@ const MinisterioTemplate = ({
                 })}
               </div>
             </TabsContent>
+
+            {/* Aba Mural */}
+            <TabsContent value="mural">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold text-church-900 mb-4">Mural</h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto whitespace-pre-line">
+                  {wall || "Nenhum aviso postado ainda."}
+                </p>
+              </div>
+            </TabsContent>
+
           </Tabs>
         </div>
       </section>

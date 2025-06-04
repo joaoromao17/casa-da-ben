@@ -251,8 +251,7 @@ const EventsTab = () => {
   }
 
   const categories = [
-    "Culto", "Célula", "Conferência", "Workshop", "Encontro", 
-    "Evangelismo", "Social", "Outros"
+    "Culto", "Oração", "Ação Social", "Retiro"
   ];
 
   return (
