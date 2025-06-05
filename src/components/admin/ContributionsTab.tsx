@@ -31,17 +31,20 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 
-// Form schema for contribution campaign
+// Form schema for contribution campaign - aligned with backend
 const contributionFormSchema = z.object({
   title: z.string().min(3, "Título deve ter pelo menos 3 caracteres"),
   description: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
-  goal: z.coerce.number().min(1, "Meta deve ser maior que zero"),
-  currentAmount: z.coerce.number().min(0, "Valor deve ser maior ou igual a zero"),
+  targetValue: z.coerce.number().min(0, "Valor deve ser maior ou igual a zero"),
+  collectedValue: z.coerce.number().min(0, "Valor deve ser maior ou igual a zero"),
   endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
-  imageUrl: z.string().url("URL da imagem inválida").optional().nullable(),
-  status: z.enum(["ACTIVE", "COMPLETED", "CANCELLED"]),
-  category: z.string().min(2, "Categoria é obrigatória"),
+  isGoalVisible: z.boolean(),
+  status: z.enum(["ATIVA", "CONCLUIDA", "CANCELADA"]),
+  createdBy: z.string().min(3, "Campo obrigatório"),
+  pixKey: z.string().min(5, "Chave Pix obrigatória"),
+  image: z.any().optional(), // For file upload
 });
 
 type ContributionFormData = z.infer<typeof contributionFormSchema>;
@@ -72,19 +75,36 @@ const ContributionsTab = () => {
     defaultValues: {
       title: "",
       description: "",
-      goal: 0,
-      currentAmount: 0,
+      targetValue: 0,
+      collectedValue: 0,
       endDate: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
-      imageUrl: "",
-      status: "ACTIVE",
-      category: "",
+      isGoalVisible: true,
+      status: "ATIVA",
+      createdBy: "",
+      pixKey: "",
     },
   });
 
   // Create contribution campaign mutation
   const createContributionMutation = useMutation({
     mutationFn: async (data: ContributionFormData) => {
-      return await api.post('/contribuicoes', data);
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("targetValue", data.targetValue.toString());
+      formData.append("collectedValue", data.collectedValue.toString());
+      formData.append("endDate", data.endDate);
+      formData.append("isGoalVisible", data.isGoalVisible.toString());
+      formData.append("status", data.status);
+      formData.append("createdBy", data.createdBy);
+      formData.append("pixKey", data.pixKey);
+      
+      // Add image if provided
+      if (data.image && data.image.length > 0) {
+        formData.append("imagem", data.image[0]);
+      }
+
+      return await api.post('/contribuicoes', formData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contributions'] });
@@ -108,7 +128,24 @@ const ContributionsTab = () => {
   const updateContributionMutation = useMutation({
     mutationFn: async (data: ContributionFormData & { id: string }) => {
       const { id, ...contributionData } = data;
-      return await api.put(`/contribuicoes/${id}`, contributionData);
+      const formData = new FormData();
+      
+      formData.append("title", contributionData.title);
+      formData.append("description", contributionData.description);
+      formData.append("targetValue", contributionData.targetValue.toString());
+      formData.append("collectedValue", contributionData.collectedValue.toString());
+      formData.append("endDate", contributionData.endDate);
+      formData.append("isGoalVisible", contributionData.isGoalVisible.toString());
+      formData.append("status", contributionData.status);
+      formData.append("createdBy", contributionData.createdBy);
+      formData.append("pixKey", contributionData.pixKey);
+      
+      // Add image if provided
+      if (contributionData.image && contributionData.image.length > 0) {
+        formData.append("imagem", contributionData.image[0]);
+      }
+
+      return await api.put(`/contribuicoes/${id}`, formData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contributions'] });
@@ -156,12 +193,13 @@ const ContributionsTab = () => {
     form.reset({
       title: "",
       description: "",
-      goal: 0,
-      currentAmount: 0,
+      targetValue: 0,
+      collectedValue: 0,
       endDate: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
-      imageUrl: "",
-      status: "ACTIVE",
-      category: "",
+      isGoalVisible: true,
+      status: "ATIVA",
+      createdBy: "",
+      pixKey: "",
     });
     setIsModalOpen(true);
   };
@@ -177,14 +215,15 @@ const ContributionsTab = () => {
     
     // Reset form with contribution data
     form.reset({
-      title: contribution.title,
-      description: contribution.description,
-      goal: contribution.goal,
-      currentAmount: contribution.currentAmount || 0,
+      title: contribution.title || "",
+      description: contribution.description || "",
+      targetValue: contribution.targetValue || 0,
+      collectedValue: contribution.collectedValue || 0,
       endDate: endDate,
-      imageUrl: contribution.imageUrl || "",
-      status: contribution.status || "ACTIVE",
-      category: contribution.category || "",
+      isGoalVisible: contribution.isGoalVisible ?? true,
+      status: contribution.status || "ATIVA",
+      createdBy: contribution.createdBy || "",
+      pixKey: contribution.pixKey || "",
     });
     
     setIsModalOpen(true);
@@ -223,30 +262,27 @@ const ContributionsTab = () => {
     }
   };
 
-  const calculateProgress = (current: number, goal: number) => {
-    return Math.min(100, Math.round((current / goal) * 100));
+  const calculateProgress = (current: number, target: number) => {
+    if (!target || target === 0) return 0;
+    return Math.min(100, Math.round((current / target) * 100));
   };
 
   const columns = [
     { key: "title", title: "Título" },
     { 
-      key: "category", 
-      title: "Categoria",
-    },
-    { 
-      key: "goal", 
+      key: "targetValue", 
       title: "Meta",
-      render: (goal: number) => `R$ ${goal.toLocaleString('pt-BR')}`
+      render: (targetValue: number) => `R$ ${(targetValue || 0).toLocaleString('pt-BR')}`
     },
     { 
-      key: "currentAmount", 
+      key: "collectedValue", 
       title: "Arrecadado",
-      render: (current: number, record: any) => (
+      render: (collectedValue: number, record: any) => (
         <div className="space-y-1">
-          <div className="text-sm">R$ {current.toLocaleString('pt-BR')}</div>
-          <Progress value={calculateProgress(current, record.goal)} className="h-2" />
+          <div className="text-sm">R$ {(collectedValue || 0).toLocaleString('pt-BR')}</div>
+          <Progress value={calculateProgress(collectedValue || 0, record.targetValue || 0)} className="h-2" />
           <div className="text-xs text-muted-foreground">
-            {calculateProgress(current, record.goal)}% da meta
+            {calculateProgress(collectedValue || 0, record.targetValue || 0)}% da meta
           </div>
         </div>
       )
@@ -261,19 +297,19 @@ const ContributionsTab = () => {
       title: "Status",
       render: (status: string) => {
         switch (status) {
-          case "ACTIVE":
+          case "ATIVA":
             return (
               <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                 Ativa
               </span>
             );
-          case "COMPLETED":
+          case "CONCLUIDA":
             return (
               <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                Finalizada
+                Concluída
               </span>
             );
-          case "CANCELLED":
+          case "CANCELADA":
             return (
               <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
                 Cancelada
@@ -289,11 +325,6 @@ const ContributionsTab = () => {
   if (error) {
     return <div className="text-center text-red-500">Erro ao carregar campanhas de contribuição.</div>;
   }
-
-  const categories = [
-    "Missões", "Construção", "Ação Social", "Manutenção", 
-    "Equipamentos", "Eventos", "Outros"
-  ];
 
   return (
     <div>
@@ -354,7 +385,7 @@ const ContributionsTab = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="goal"
+                name="targetValue"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Meta (R$)</FormLabel>
@@ -374,7 +405,7 @@ const ContributionsTab = () => {
 
               <FormField
                 control={form.control}
-                name="currentAmount"
+                name="collectedValue"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Valor Arrecadado (R$)</FormLabel>
@@ -409,26 +440,27 @@ const ContributionsTab = () => {
 
             <FormField
               control={form.control}
-              name="category"
+              name="createdBy"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Categoria</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                    value={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione a categoria" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category} value={category}>{category}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Criado Por</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nome do responsável" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="pixKey"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Chave Pix</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Chave Pix para doações" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -450,9 +482,9 @@ const ContributionsTab = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="ACTIVE">Ativa</SelectItem>
-                      <SelectItem value="COMPLETED">Finalizada</SelectItem>
-                      <SelectItem value="CANCELLED">Cancelada</SelectItem>
+                      <SelectItem value="ATIVA">Ativa</SelectItem>
+                      <SelectItem value="CONCLUIDA">Concluída</SelectItem>
+                      <SelectItem value="CANCELADA">Cancelada</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -462,15 +494,39 @@ const ContributionsTab = () => {
 
             <FormField
               control={form.control}
-              name="imageUrl"
+              name="isGoalVisible"
               render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Meta Visível
+                    </FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      Mostrar a meta e barra de progresso no frontend
+                    </p>
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field: { onChange, value, ...field } }) => (
                 <FormItem>
-                  <FormLabel>URL da Imagem</FormLabel>
+                  <FormLabel>Imagem</FormLabel>
                   <FormControl>
                     <Input 
-                      placeholder="https://exemplo.com/imagem.jpg" 
-                      {...field} 
-                      value={field.value || ""} 
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => onChange(e.target.files)}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
