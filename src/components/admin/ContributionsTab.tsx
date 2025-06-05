@@ -26,12 +26,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue 
+  SelectValue
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -70,10 +70,10 @@ const ContributionsTab = () => {
   const [isCreating, setIsCreating] = useState(false);
 
   // Fetch contributions
-  const { 
-    data: contributions = [], 
-    isLoading, 
-    error 
+  const {
+    data: contributions = [],
+    isLoading,
+    error
   } = useQuery({
     queryKey: ['contributions'],
     queryFn: async () => {
@@ -154,7 +154,7 @@ const ContributionsTab = () => {
   const updateContributionMutation = useMutation({
     mutationFn: async (data: ContributionFormData & { id: string }) => {
       const { id, ...contributionData } = data;
-      
+
       // First, update the contribution with JSON data
       const updateData = {
         title: contributionData.title,
@@ -166,6 +166,9 @@ const ContributionsTab = () => {
         status: contributionData.status || "ATIVA",
         createdBy: contributionData.createdBy,
         pixKey: contributionData.pixKey,
+        imageUrl: !contributionData.image || contributionData.image.length === 0
+          ? selectedContribution.imageUrl // se não trocou a imagem, mantém a atual
+          : undefined, // vai ser atualizada depois pelo endpoint de upload
       };
 
       console.log('Updating contribution with data:', updateData);
@@ -246,10 +249,10 @@ const ContributionsTab = () => {
   const handleEditContribution = (contribution: any) => {
     setIsCreating(false);
     setSelectedContribution(contribution);
-    
+
     console.log('Editing contribution:', contribution);
     console.log('Image URL:', contribution.imageUrl);
-    
+
     // Reset form with contribution data - corrigindo o mapeamento
     form.reset({
       title: contribution.title || "",
@@ -265,7 +268,7 @@ const ContributionsTab = () => {
       pixKey: contribution.pixKey || "",
       image: undefined, // Reset image field
     });
-    
+
     setIsModalOpen(true);
   };
 
@@ -309,25 +312,25 @@ const ContributionsTab = () => {
 
   const columns = [
     { key: "title", title: "Título" },
-    { 
-      key: "targetValue", 
+    {
+      key: "targetValue",
       title: "Meta",
       render: (targetValue: number) => {
         if (!targetValue || targetValue === 0) return "Sem meta";
         return `R$ ${targetValue.toLocaleString('pt-BR')}`;
       }
     },
-    { 
-      key: "collectedValue", 
+    {
+      key: "collectedValue",
       title: "Arrecadado",
       render: (collectedValue: number, record: any) => {
         const collected = collectedValue || 0;
         const target = record.targetValue || 0;
-        
+
         if (target === 0) {
           return `R$ ${collected.toLocaleString('pt-BR')}`;
         }
-        
+
         return (
           <div className="space-y-1">
             <div className="text-sm">R$ {collected.toLocaleString('pt-BR')}</div>
@@ -339,13 +342,13 @@ const ContributionsTab = () => {
         );
       }
     },
-    { 
-      key: "endDate", 
+    {
+      key: "endDate",
       title: "Término",
       render: (date: string) => date ? format(new Date(date), 'dd/MM/yyyy') : "Sem prazo"
     },
-    { 
-      key: "status", 
+    {
+      key: "status",
       title: "Status",
       render: (status: string) => {
         switch (status) {
@@ -381,7 +384,7 @@ const ContributionsTab = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Contribuições</h2>
-      
+
       <AdminTable
         data={contributions}
         columns={columns}
@@ -423,10 +426,10 @@ const ContributionsTab = () => {
                 <FormItem>
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Descreva o propósito desta campanha" 
-                      rows={4} 
-                      {...field} 
+                    <Textarea
+                      placeholder="Descreva o propósito desta campanha"
+                      rows={4}
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -490,11 +493,11 @@ const ContributionsTab = () => {
                       <FormItem>
                         <FormLabel>Meta (R$)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            min={0} 
-                            step={0.01} 
-                            placeholder="0.00" 
+                          <Input
+                            type="number"
+                            min={0}
+                            step={0.01}
+                            placeholder="0.00"
                             {...field}
                             value={field.value || ""}
                             onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
@@ -512,11 +515,11 @@ const ContributionsTab = () => {
                       <FormItem>
                         <FormLabel>Valor Arrecadado (R$)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            min={0} 
-                            step={0.01} 
-                            placeholder="0.00" 
+                          <Input
+                            type="number"
+                            min={0}
+                            step={0.01}
+                            placeholder="0.00"
                             {...field}
                             value={field.value || ""}
                             onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
@@ -538,11 +541,11 @@ const ContributionsTab = () => {
                   <FormItem>
                     <FormLabel>Valor Arrecadado (R$)</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
-                        min={0} 
-                        step={0.01} 
-                        placeholder="0.00" 
+                      <Input
+                        type="number"
+                        min={0}
+                        step={0.01}
+                        placeholder="0.00"
                         {...field}
                         value={field.value || ""}
                         onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
@@ -657,8 +660,8 @@ const ContributionsTab = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Status</FormLabel>
-                    <Select 
-                      onValueChange={field.onChange} 
+                    <Select
+                      onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -684,15 +687,15 @@ const ContributionsTab = () => {
               render={({ field: { onChange, value, ...field } }) => (
                 <FormItem>
                   <FormLabel>Imagem</FormLabel>
-                  
+
                   {/* Show current image when editing and no new image selected */}
                   {!isCreating && selectedContribution?.imageUrl && (!watchImage || watchImage.length === 0) && (
                     <div className="mb-3">
                       <p className="text-sm text-muted-foreground mb-2">Imagem atual:</p>
-                      <img 
-                        src={selectedContribution.imageUrl} 
-                        alt="Imagem atual da campanha" 
-                        className="h-32 w-auto rounded object-cover border border-gray-200" 
+                      <img
+                        src={selectedContribution.imageUrl}
+                        alt="Imagem atual da campanha"
+                        className="h-32 w-auto rounded object-cover border border-gray-200"
                         onError={(e) => {
                           console.log('Error loading image:', selectedContribution.imageUrl);
                           e.currentTarget.style.display = 'none';
@@ -700,21 +703,21 @@ const ContributionsTab = () => {
                       />
                     </div>
                   )}
-                  
+
                   {/* Show selected new image */}
                   {watchImage && watchImage.length > 0 && (
                     <div className="mb-3">
                       <p className="text-sm text-muted-foreground mb-2">Nova imagem selecionada:</p>
-                      <img 
-                        src={URL.createObjectURL(watchImage[0])} 
-                        alt="Nova imagem" 
-                        className="h-32 w-auto rounded object-cover border border-gray-200" 
+                      <img
+                        src={URL.createObjectURL(watchImage[0])}
+                        alt="Nova imagem"
+                        className="h-32 w-auto rounded object-cover border border-gray-200"
                       />
                     </div>
                   )}
-                  
+
                   <FormControl>
-                    <Input 
+                    <Input
                       type="file"
                       accept="image/*"
                       onChange={(e) => {
@@ -722,7 +725,6 @@ const ContributionsTab = () => {
                         onChange(e.target.files);
                       }}
                       {...field}
-                      value=""
                     />
                   </FormControl>
                   <p className="text-sm text-muted-foreground">
