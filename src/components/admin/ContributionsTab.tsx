@@ -102,6 +102,7 @@ const ContributionsTab = () => {
 
   const watchHasGoal = form.watch("hasGoal");
   const watchHasEndDate = form.watch("hasEndDate");
+  const watchImage = form.watch("image");
 
   // Create contribution campaign mutation
   const createContributionMutation = useMutation({
@@ -649,6 +650,19 @@ const ContributionsTab = () => {
               render={({ field: { onChange, value, ...field } }) => (
                 <FormItem>
                   <FormLabel>Imagem</FormLabel>
+                  
+                  {/* Show current image when editing and no new image selected */}
+                  {!isCreating && selectedContribution?.imageUrl && (!watchImage || watchImage.length === 0) && (
+                    <div className="mb-3">
+                      <p className="text-sm text-muted-foreground mb-2">Imagem atual:</p>
+                      <img 
+                        src={selectedContribution.imageUrl} 
+                        alt="Imagem atual da campanha" 
+                        className="h-32 w-32 rounded object-cover border border-gray-200" 
+                      />
+                    </div>
+                  )}
+                  
                   <FormControl>
                     <Input 
                       type="file"
@@ -657,6 +671,9 @@ const ContributionsTab = () => {
                       {...field}
                     />
                   </FormControl>
+                  <p className="text-sm text-muted-foreground">
+                    {!isCreating ? "Selecione uma nova imagem apenas se quiser alterar a atual" : "Selecione uma imagem para a campanha"}
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}
