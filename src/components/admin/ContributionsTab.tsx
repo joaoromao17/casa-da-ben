@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { DataGrid } from '@mui/x-data-grid';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { API_BASE_URL } from "@/services/api";
 import api from "@/services/api";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -78,7 +79,7 @@ const ContributionsTab = () => {
         description: formData.description,
         targetValue: parseFloat(formData.targetValue.replace(',', '.')),
         endDate: formData.endDate,
-        startDate: new Date().toISOString().split("T")[0], // Adicionar data atual
+        startDate: new Date().toISOString().split("T")[0],
         pixKey: formData.pixKey,
         isGoalVisible: formData.isGoalVisible
       };
@@ -209,39 +210,6 @@ const ContributionsTab = () => {
     }
   };
 
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'title', headerName: 'Título', width: 200 },
-    { field: 'description', headerName: 'Descrição', width: 300 },
-    { field: 'targetValue', headerName: 'Valor Alvo', width: 130 },
-    { field: 'endDate', headerName: 'Data de Encerramento', width: 150 },
-    { field: 'pixKey', headerName: 'Chave PIX', width: 200 },
-    {
-      field: 'actions',
-      headerName: 'Ações',
-      width: 200,
-      renderCell: (params) => (
-        <div>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => handleEdit(params.row)}
-            className="mr-2"
-          >
-            Editar
-          </Button>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => handleDelete(params.row.id)}
-          >
-            Excluir
-          </Button>
-        </div>
-      ),
-    },
-  ];
-
   return (
     <div>
       <div className="md:flex items-center justify-between">
@@ -270,15 +238,49 @@ const ContributionsTab = () => {
           <CardDescription>Visualize e gerencie as contribuições do seu site.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-              rows={contributions}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5, 10, 20]}
-              disableSelectionOnClick
-            />
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Título</TableHead>
+                <TableHead>Descrição</TableHead>
+                <TableHead>Valor Alvo</TableHead>
+                <TableHead>Data de Encerramento</TableHead>
+                <TableHead>Chave PIX</TableHead>
+                <TableHead>Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {contributions.map((contribution) => (
+                <TableRow key={contribution.id}>
+                  <TableCell>{contribution.id}</TableCell>
+                  <TableCell>{contribution.title}</TableCell>
+                  <TableCell className="max-w-xs truncate">{contribution.description}</TableCell>
+                  <TableCell>{contribution.targetValue}</TableCell>
+                  <TableCell>{contribution.endDate}</TableCell>
+                  <TableCell className="max-w-xs truncate">{contribution.pixKey}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleEdit(contribution)}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(contribution.id)}
+                      >
+                        Excluir
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
 
