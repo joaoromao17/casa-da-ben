@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from "@/components/layout/Layout";
@@ -10,6 +9,17 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loading } from "@/components/ui/loading";
 import ErrorAlert from "@/components/ui/ErrorAlert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import api from "@/services/api";
 import {
   ArrowLeft,
@@ -33,6 +43,7 @@ const ContribuicaoDetalhe = () => {
   const [contribuicao, setContribuicao] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const [formData, setFormData] = useState({
     valor: ''
@@ -115,13 +126,10 @@ const ContribuicaoDetalhe = () => {
       return;
     }
 
-    // Confirm dialog antes de registrar a contribuição
-    const confirmou = window.confirm(
-      "Já transferiu para a conta? Para não atrapalhar a nossa contagem de progresso, clique em 'OK' apenas quando a transferência for concluída."
-    );
+    setShowConfirmDialog(true);
+  };
 
-    if (!confirmou) return;
-
+  const confirmarContribuicao = async () => {
     try {
       const valor = parseFloat(formData.valor.replace(',', '.'));
       
@@ -149,31 +157,8 @@ const ContribuicaoDetalhe = () => {
         description: "Não foi possível processar sua contribuição. Tente novamente mais tarde.",
         variant: "destructive"
       });
-    }
-  };
-
-  const getStatusBadge = () => {
-    switch (contribuicao?.status) {
-      case 'ATIVA':
-        return (
-          <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full text-sm">
-            <Check className="w-3.5 h-3.5" /> Ativa
-          </span>
-        );
-      case 'CONCLUIDA':
-        return (
-          <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full text-sm">
-            <Check className="w-3.5 h-3.5" /> Concluída
-          </span>
-        );
-      case 'CANCELADA':
-        return (
-          <span className="inline-flex items-center gap-1 bg-red-100 text-red-800 px-2.5 py-0.5 rounded-full text-sm">
-            <X className="w-3.5 h-3.5" /> Cancelada
-          </span>
-        );
-      default:
-        return null;
+    } finally {
+      setShowConfirmDialog(false);
     }
   };
 
@@ -330,18 +315,9 @@ const ContribuicaoDetalhe = () => {
                   <CardDescription>Faça sua doação para esta campanha</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {/* QR Code e chave PIX */}
+                  {/* Chave PIX */}
                   <div className="mb-6">
-                    <p className="text-sm mb-3">Escaneie o QR Code ou use a chave PIX abaixo:</p>
-                    <div className="flex justify-center my-4">
-                      <div className="bg-white p-3 border rounded-md inline-block">
-                        <img
-                          src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
-                          alt="QR Code PIX"
-                          className="w-40 h-40"
-                        />
-                      </div>
-                    </div>
+                    <p className="text-sm mb-3">Use a chave PIX abaixo para fazer sua transferência:</p>
 
                     <div className="bg-gray-50 p-3 rounded-md">
                       <p className="text-sm font-medium mb-1">Chave PIX:</p>
@@ -360,7 +336,7 @@ const ContribuicaoDetalhe = () => {
                     </div>
                   </div>
 
-                  {/* Formulário de contribuição simplificado */}
+                  {/* Formulário de contribuição */}
                   <form onSubmit={handleSubmit} className="space-y-4 mt-6">
                     <div className="space-y-2">
                       <Label htmlFor="valor">Valor da contribuição</Label>
@@ -378,9 +354,31 @@ const ContribuicaoDetalhe = () => {
                       </div>
                     </div>
 
-                    <Button type="submit" className="w-full bg-church-700 hover:bg-church-800">
-                      Confirmar contribuição
-                    </Button>
+                    <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+                      <AlertDialogTrigger asChild>
+                        <Button type="submit" className="w-full bg-church-700 hover:bg-church-800">
+                          Confirmar contribuição
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirmar Contribuição</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Já transferiu para a conta? Para não atrapalhar a nossa contagem de progresso, 
+                            clique em 'Confirmar' apenas quando a transferência for concluída.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={confirmarContribuicao}
+                            className="bg-church-700 hover:bg-church-800"
+                          >
+                            Confirmar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </form>
                 </CardContent>
               </Card>
