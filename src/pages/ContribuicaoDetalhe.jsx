@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
@@ -65,6 +66,23 @@ const ContribuicaoDetalhe = () => {
   useEffect(() => {
     carregarContribuicao();
   }, [id]);
+
+  // Função para exibir o status da campanha
+  const getStatusBadge = () => {
+    if (!contribuicao) return null;
+    
+    const now = new Date();
+    const startDate = contribuicao.startDate ? new Date(contribuicao.startDate) : null;
+    const endDate = contribuicao.endDate ? new Date(contribuicao.endDate) : null;
+    
+    if (startDate && now < startDate) {
+      return <Badge variant="secondary">Em breve</Badge>;
+    } else if (endDate && now > endDate) {
+      return <Badge variant="destructive">Encerrada</Badge>;
+    } else {
+      return <Badge variant="default">Ativa</Badge>;
+    }
+  };
 
   // Formatar valores para exibição em reais
   const formatarValor = (valor) => {
