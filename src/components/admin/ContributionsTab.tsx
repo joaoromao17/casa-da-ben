@@ -1,752 +1,388 @@
-import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "@/components/ui/use-toast";
-import api from "@/services/api";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-
-import AdminTable from "./AdminTable";
-import AdminFormModal from "./AdminFormModal";
-import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
-import { Progress } from "@/components/ui/progress";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { DataGrid } from '@mui/x-data-grid';
+import { API_BASE_URL } from "@/services/api";
+import api from "@/services/api";
 import { Checkbox } from "@/components/ui/checkbox";
 
-// Form schema for contribution campaign - aligned with backend
-const contributionFormSchema = z.object({
-  title: z.string().min(3, "Título deve ter pelo menos 3 caracteres"),
-  description: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
-  hasGoal: z.boolean(),
-  targetValue: z.coerce.number().min(0, "Valor deve ser maior ou igual a zero").optional(),
-  collectedValue: z.coerce.number().min(0, "Valor deve ser maior ou igual a zero").optional(),
-  hasEndDate: z.boolean(),
-  endDate: z.date().optional(),
-  isGoalVisible: z.boolean(),
-  status: z.enum(["ATIVA", "CONCLUIDA", "CANCELADA"]).optional(),
-  createdBy: z.string().min(3, "Campo obrigatório"),
-  pixKey: z.string().min(5, "Chave Pix obrigatória"),
-  image: z.any().optional(), // For file upload
-}).refine((data) => {
-  if (data.hasGoal && (!data.targetValue || data.targetValue <= 0)) {
-    return false;
-  }
-  return true;
-}, {
-  message: "Meta é obrigatória quando 'Tem Meta de valor?' está marcado",
-  path: ["targetValue"]
-});
-
-type ContributionFormData = z.infer<typeof contributionFormSchema>;
-
 const ContributionsTab = () => {
-  const queryClient = useQueryClient();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedContribution, setSelectedContribution] = useState<any>(null);
-  const [isCreating, setIsCreating] = useState(false);
+  const [contributions, setContributions] = useState([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    targetValue: '',
+    endDate: '',
+    pixKey: '',
+    isGoalVisible: true
+  });
+  const [editingContribution, setEditingContribution] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const { toast } = useToast();
 
-  // Fetch contributions
-  const {
-    data: contributions = [],
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ['contributions'],
-    queryFn: async () => {
+  useEffect(() => {
+    loadContributions();
+  }, []);
+
+  const loadContributions = async () => {
+    try {
       const response = await api.get('/contribuicoes');
-      return response.data;
+      setContributions(response.data);
+    } catch (error) {
+      console.error("Error loading contributions:", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível carregar as contribuições.",
+        variant: "destructive"
+      });
     }
-  });
+  };
 
-  // Form setup
-  const form = useForm<ContributionFormData>({
-    resolver: zodResolver(contributionFormSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      hasGoal: false,
-      targetValue: 0,
-      collectedValue: 0,
-      hasEndDate: false,
-      endDate: undefined,
-      isGoalVisible: true,
-      status: "ATIVA",
-      createdBy: "",
-      pixKey: "",
-    },
-  });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-  const watchHasGoal = form.watch("hasGoal");
-  const watchHasEndDate = form.watch("hasEndDate");
-  const watchImage = form.watch("image");
+  const handleCheckboxChange = (e) => {
+    setFormData(prev => ({ ...prev, isGoalVisible: e }));
+  };
 
-  // Create contribution campaign mutation
-  const createContributionMutation = useMutation({
-    mutationFn: async (data: ContributionFormData) => {
-      // First, create the contribution with JSON data
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
       const contributionData = {
-        title: data.title,
-        description: data.description,
-        targetValue: data.hasGoal ? (data.targetValue || 0) : 0,
-        collectedValue: data.collectedValue || 0,
-        isGoalVisible: data.hasGoal ? data.isGoalVisible : false,
-        endDate: data.hasEndDate && data.endDate ? format(data.endDate, 'yyyy-MM-dd') : null,
-        status: "ATIVA",
-        createdBy: data.createdBy,
-        pixKey: data.pixKey,
+        title: formData.title,
+        description: formData.description,
+        targetValue: parseFloat(formData.targetValue.replace(',', '.')),
+        endDate: formData.endDate,
+        startDate: new Date().toISOString().split("T")[0], // Adicionar data atual
+        pixKey: formData.pixKey,
+        isGoalVisible: formData.isGoalVisible
       };
 
-      const response = await api.post('/contribuicoes', contributionData);
-      const contributionId = response.data.id;
-
-      // If there's an image, upload it separately
-      if (data.image && data.image.length > 0) {
-        const formData = new FormData();
-        formData.append("imagem", data.image[0]);
-        await api.post(`/contribuicoes/${contributionId}/imagem`, formData);
+      let response;
+      if (editingContribution) {
+        // Update existing contribution
+        response = await api.put(`/contribuicoes/${editingContribution.id}`, contributionData);
+        
+        // Handle image upload if new image is selected
+        if (imageFile) {
+          const imageFormData = new FormData();
+          imageFormData.append('image', imageFile);
+          
+          try {
+            const imageResponse = await api.post(`/contribuicoes/${editingContribution.id}/upload-image`, imageFormData, {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            console.log("Image uploaded successfully:", imageResponse.data);
+          } catch (imageError) {
+            console.error("Error uploading image:", imageError);
+            toast({
+              title: "Aviso",
+              description: "Contribuição atualizada, mas houve erro no upload da imagem.",
+              variant: "default"
+            });
+          }
+        }
+        
+        setEditingContribution(null);
+        toast({
+          title: "Contribuição atualizada!",
+          description: "A contribuição foi atualizada com sucesso."
+        });
+      } else {
+        // Create new contribution
+        response = await api.post('/contribuicoes', contributionData);
+        
+        // Handle image upload if image is selected
+        if (imageFile) {
+          const imageFormData = new FormData();
+          imageFormData.append('image', imageFile);
+          
+          try {
+            const imageResponse = await api.post(`/contribuicoes/${response.data.id}/upload-image`, imageFormData, {
+              headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            console.log("Image uploaded successfully:", imageResponse.data);
+          } catch (imageError) {
+            console.error("Error uploading image:", imageError);
+            toast({
+              title: "Aviso", 
+              description: "Contribuição criada, mas houve erro no upload da imagem.",
+              variant: "default"
+            });
+          }
+        }
+        
+        toast({
+          title: "Contribuição criada!",
+          description: "A nova contribuição foi criada com sucesso."
+        });
       }
 
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['contributions'] });
-      toast({
-        title: "Sucesso",
-        description: "Campanha de contribuição criada com sucesso",
+      // Reset form and reload data
+      setFormData({
+        title: '',
+        description: '',
+        targetValue: '',
+        endDate: '',
+        pixKey: '',
+        isGoalVisible: true
       });
-      handleCloseModal();
-    },
-    onError: (error) => {
-      console.error('Error creating contribution campaign:', error);
+      setImageFile(null);
+      setImagePreview(null);
+      setDialogOpen(false);
+      loadContributions();
+    } catch (error) {
+      console.error("Error saving contribution:", error);
       toast({
         title: "Erro",
-        description: "Não foi possível criar a campanha",
-        variant: "destructive",
+        description: "Não foi possível salvar a contribuição. Tente novamente.",
+        variant: "destructive"
       });
     }
-  });
+  };
 
-  // Update contribution campaign mutation
-  const updateContributionMutation = useMutation({
-    mutationFn: async (data: ContributionFormData & { id: string }) => {
-      const { id, ...contributionData } = data;
+  const handleEdit = (contribution) => {
+    setEditingContribution(contribution);
+    setFormData({
+      title: contribution.title,
+      description: contribution.description,
+      targetValue: contribution.targetValue.toString(),
+      endDate: contribution.endDate,
+      pixKey: contribution.pixKey,
+      isGoalVisible: contribution.isGoalVisible
+    });
+    setDialogOpen(true);
 
-      // First, update the contribution with JSON data
-      const updateData = {
-        title: contributionData.title,
-        description: contributionData.description,
-        targetValue: contributionData.hasGoal ? (contributionData.targetValue || 0) : 0,
-        collectedValue: contributionData.collectedValue || 0,
-        isGoalVisible: contributionData.hasGoal ? contributionData.isGoalVisible : false,
-        endDate: contributionData.hasEndDate && contributionData.endDate ? format(contributionData.endDate, 'yyyy-MM-dd') : null,
-        status: contributionData.status || "ATIVA",
-        createdBy: contributionData.createdBy,
-        pixKey: contributionData.pixKey,
-        imageUrl: !contributionData.image || contributionData.image.length === 0
-          ? selectedContribution.imageUrl // se não trocou a imagem, mantém a atual
-          : undefined, // vai ser atualizada depois pelo endpoint de upload
-      };
+    // Load image for edit
+    if (contribution.imageUrl) {
+      const imageUrl = contribution.imageUrl.startsWith('http')
+        ? contribution.imageUrl
+        : `${API_BASE_URL}${contribution.imageUrl}`;
+      setImagePreview(imageUrl);
+    } else {
+      setImagePreview(null);
+    }
+  };
 
-      console.log('Updating contribution with data:', updateData);
-      console.log('Has new image?', contributionData.image && contributionData.image.length > 0);
-
-      const response = await api.put(`/contribuicoes/${id}`, updateData);
-
-      // Upload new image if one was selected
-      if (contributionData.image && contributionData.image.length > 0) {
-        console.log('Uploading new image...');
-        const formData = new FormData();
-        formData.append("imagem", contributionData.image[0]);
-        await api.post(`/contribuicoes/${id}/imagem`, formData);
-        console.log('Image uploaded successfully');
+  const handleDelete = async (id) => {
+    if (window.confirm("Tem certeza que deseja excluir esta contribuição?")) {
+      try {
+        await api.delete(`/contribuicoes/${id}`);
+        toast({
+          title: "Contribuição excluída!",
+          description: "A contribuição foi excluída com sucesso."
+        });
+        loadContributions();
+      } catch (error) {
+        console.error("Error deleting contribution:", error);
+        toast({
+          title: "Erro",
+          description: "Não foi possível excluir a contribuição. Tente novamente.",
+          variant: "destructive"
+        });
       }
-
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['contributions'] });
-      toast({
-        title: "Sucesso",
-        description: "Campanha de contribuição atualizada com sucesso",
-      });
-      handleCloseModal();
-    },
-    onError: (error) => {
-      console.error('Error updating contribution campaign:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível atualizar a campanha",
-        variant: "destructive",
-      });
     }
-  });
-
-  // Delete contribution campaign mutation
-  const deleteContributionMutation = useMutation({
-    mutationFn: async (id: string) => {
-      return await api.delete(`/contribuicoes/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['contributions'] });
-      toast({
-        title: "Sucesso",
-        description: "Campanha de contribuição removida com sucesso",
-      });
-      setIsDeleteDialogOpen(false);
-    },
-    onError: (error) => {
-      console.error('Error deleting contribution campaign:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível remover a campanha",
-        variant: "destructive",
-      });
-    }
-  });
-
-  const handleAddContribution = () => {
-    setIsCreating(true);
-    form.reset({
-      title: "",
-      description: "",
-      hasGoal: false,
-      targetValue: 0,
-      collectedValue: 0,
-      hasEndDate: false,
-      endDate: undefined,
-      isGoalVisible: true,
-      createdBy: "",
-      pixKey: "",
-      image: undefined,
-    });
-    setIsModalOpen(true);
-  };
-
-  const handleEditContribution = (contribution: any) => {
-    setIsCreating(false);
-    setSelectedContribution(contribution);
-
-    console.log('Editing contribution:', contribution);
-    console.log('Image URL:', contribution.imageUrl);
-
-    // Reset form with contribution data - corrigindo o mapeamento
-    form.reset({
-      title: contribution.title || "",
-      description: contribution.description || "",
-      hasGoal: (contribution.targetValue || 0) > 0,
-      targetValue: contribution.targetValue || 0,
-      collectedValue: contribution.collectedValue || 0,
-      hasEndDate: !!contribution.endDate,
-      endDate: contribution.endDate ? new Date(contribution.endDate) : undefined,
-      isGoalVisible: contribution.goalVisible ?? contribution.isGoalVisible ?? true,
-      status: contribution.status || "ATIVA",
-      createdBy: contribution.createdBy || "",
-      pixKey: contribution.pixKey || "",
-      image: undefined, // Reset image field
-    });
-
-    setIsModalOpen(true);
-  };
-
-  const handleDeleteContribution = (contribution: any) => {
-    setSelectedContribution(contribution);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const handleViewContribution = (contribution: any) => {
-    // Redirect to contribution details page
-    window.location.href = `/contribuicoes/${contribution.id}`;
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedContribution(null);
-    setIsCreating(false);
-  };
-
-  const onSubmit = (data: ContributionFormData) => {
-    if (isCreating) {
-      createContributionMutation.mutate(data);
-    } else if (selectedContribution) {
-      updateContributionMutation.mutate({
-        id: selectedContribution.id,
-        ...data,
-      });
-    }
-  };
-
-  const confirmDelete = () => {
-    if (selectedContribution) {
-      deleteContributionMutation.mutate(selectedContribution.id);
-    }
-  };
-
-  const calculateProgress = (current: number, target: number) => {
-    if (!target || target === 0) return 0;
-    return Math.min(100, Math.round((current / target) * 100));
   };
 
   const columns = [
-    { key: "title", title: "Título" },
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'title', headerName: 'Título', width: 200 },
+    { field: 'description', headerName: 'Descrição', width: 300 },
+    { field: 'targetValue', headerName: 'Valor Alvo', width: 130 },
+    { field: 'endDate', headerName: 'Data de Encerramento', width: 150 },
+    { field: 'pixKey', headerName: 'Chave PIX', width: 200 },
     {
-      key: "targetValue",
-      title: "Meta",
-      render: (targetValue: number) => {
-        if (!targetValue || targetValue === 0) return "Sem meta";
-        return `R$ ${targetValue.toLocaleString('pt-BR')}`;
-      }
-    },
-    {
-      key: "collectedValue",
-      title: "Arrecadado",
-      render: (collectedValue: number, record: any) => {
-        const collected = collectedValue || 0;
-        const target = record.targetValue || 0;
-
-        if (target === 0) {
-          return `R$ ${collected.toLocaleString('pt-BR')}`;
-        }
-
-        return (
-          <div className="space-y-1">
-            <div className="text-sm">R$ {collected.toLocaleString('pt-BR')}</div>
-            <Progress value={calculateProgress(collected, target)} className="h-2" />
-            <div className="text-xs text-muted-foreground">
-              {calculateProgress(collected, target)}% da meta
-            </div>
-          </div>
-        );
-      }
-    },
-    {
-      key: "endDate",
-      title: "Término",
-      render: (date: string) => date ? format(new Date(date), 'dd/MM/yyyy') : "Sem prazo"
-    },
-    {
-      key: "status",
-      title: "Status",
-      render: (status: string) => {
-        switch (status) {
-          case "ATIVA":
-            return (
-              <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                Ativa
-              </span>
-            );
-          case "CONCLUIDA":
-            return (
-              <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                Concluída
-              </span>
-            );
-          case "CANCELADA":
-            return (
-              <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                Cancelada
-              </span>
-            );
-          default:
-            return status;
-        }
-      }
+      field: 'actions',
+      headerName: 'Ações',
+      width: 200,
+      renderCell: (params) => (
+        <div>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => handleEdit(params.row)}
+            className="mr-2"
+          >
+            Editar
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => handleDelete(params.row.id)}
+          >
+            Excluir
+          </Button>
+        </div>
+      ),
     },
   ];
 
-  if (error) {
-    return <div className="text-center text-red-500">Erro ao carregar campanhas de contribuição.</div>;
-  }
-
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6">Gerenciamento de Contribuições</h2>
+      <div className="md:flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-800 mb-5">Gerenciar Contribuições</h2>
+        <Button onClick={() => {
+          setEditingContribution(null);
+          setFormData({
+            title: '',
+            description: '',
+            targetValue: '',
+            endDate: '',
+            pixKey: '',
+            isGoalVisible: true
+          });
+          setImageFile(null);
+          setImagePreview(null);
+          setDialogOpen(true);
+        }}>
+          Adicionar Contribuição
+        </Button>
+      </div>
 
-      <AdminTable
-        data={contributions}
-        columns={columns}
-        isLoading={isLoading}
-        onView={handleViewContribution}
-        onEdit={handleEditContribution}
-        onDelete={handleDeleteContribution}
-        onAdd={handleAddContribution}
-      />
-
-      {/* Create/Edit Contribution Modal */}
-      <AdminFormModal
-        title={isCreating ? "Criar Nova Campanha" : `Editar Campanha: ${selectedContribution?.title || ""}`}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        isSubmitting={createContributionMutation.isPending || updateContributionMutation.isPending}
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <Form {...form}>
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Título</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Título da campanha" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descrição</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Descreva o propósito desta campanha"
-                      rows={4}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="hasGoal"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Tem Meta de valor?
-                    </FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      Marque se esta campanha possui uma meta financeira específica
-                    </p>
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            {watchHasGoal && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="isGoalVisible"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Meta Visível
-                        </FormLabel>
-                        <p className="text-sm text-muted-foreground">
-                          Mostrar a meta e barra de progresso no frontend
-                        </p>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="targetValue"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Meta (R$)</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min={0}
-                            step={0.01}
-                            placeholder="0.00"
-                            {...field}
-                            value={field.value || ""}
-                            onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="collectedValue"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Valor Arrecadado (R$)</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min={0}
-                            step={0.01}
-                            placeholder="0.00"
-                            {...field}
-                            value={field.value || ""}
-                            onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </>
-            )}
-
-            {!watchHasGoal && (
-              <FormField
-                control={form.control}
-                name="collectedValue"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Valor Arrecadado (R$)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min={0}
-                        step={0.01}
-                        placeholder="0.00"
-                        {...field}
-                        value={field.value || ""}
-                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <FormField
-              control={form.control}
-              name="hasEndDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Tem Data Limite?
-                    </FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      Marque se esta campanha possui uma data limite para arrecadação
-                    </p>
-                  </div>
-                </FormItem>
-              )}
-            />
-
-            {watchHasEndDate && (
-              <FormField
-                control={form.control}
-                name="endDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Data de Término</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "dd/MM/yyyy")
-                            ) : (
-                              <span>Selecionar data</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) =>
-                            date < new Date()
-                          }
-                          initialFocus
-                          className="p-3 pointer-events-auto"
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <FormField
-              control={form.control}
-              name="createdBy"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Criado Por</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Nome do responsável" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="pixKey"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Chave Pix</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Chave Pix para doações" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {!isCreating && (
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione o status" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="ATIVA">Ativa</SelectItem>
-                        <SelectItem value="CONCLUIDA">Concluída</SelectItem>
-                        <SelectItem value="CANCELADA">Cancelada</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field: { onChange, value, ...field } }) => (
-                <FormItem>
-                  <FormLabel>Imagem</FormLabel>
-
-                  {/* Show current image when editing and no new image selected */}
-                  {!isCreating && selectedContribution?.imageUrl && (!watchImage || watchImage.length === 0) && (
-                    <div className="mb-3">
-                      <p className="text-sm text-muted-foreground mb-2">Imagem atual:</p>
-                      <img
-                        src={selectedContribution.imageUrl}
-                        alt="Imagem atual da campanha"
-                        className="h-32 w-auto rounded object-cover border border-gray-200"
-                        onError={(e) => {
-                          console.log('Error loading image:', selectedContribution.imageUrl);
-                          e.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  {/* Show selected new image */}
-                  {watchImage && watchImage.length > 0 && (
-                    <div className="mb-3">
-                      <p className="text-sm text-muted-foreground mb-2">Nova imagem selecionada:</p>
-                      <img
-                        src={URL.createObjectURL(watchImage[0])}
-                        alt="Nova imagem"
-                        className="h-32 w-auto rounded object-cover border border-gray-200"
-                      />
-                    </div>
-                  )}
-
-                  <FormControl>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        console.log('File selected:', e.target.files);
-                        onChange(e.target.files);
-                      }}
-                      {...field}
-                    />
-                  </FormControl>
-                  <p className="text-sm text-muted-foreground">
-                    {!isCreating ? "Selecione uma nova imagem apenas se quiser alterar a atual" : "Selecione uma imagem para a campanha"}
-                  </p>
-                  <FormMessage />
-                </FormItem>
-              )}
+      <Card>
+        <CardHeader>
+          <CardTitle>Lista de Contribuições</CardTitle>
+          <CardDescription>Visualize e gerencie as contribuições do seu site.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div style={{ height: 400, width: '100%' }}>
+            <DataGrid
+              rows={contributions}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5, 10, 20]}
+              disableSelectionOnClick
             />
           </div>
-        </Form>
-      </AdminFormModal>
+        </CardContent>
+      </Card>
 
-      {/* Delete Confirmation Dialog */}
-      <DeleteConfirmationDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={confirmDelete}
-        title="Confirmar Exclusão"
-        description={`Tem certeza que deseja excluir a campanha "${selectedContribution?.title}"? Esta ação não pode ser desfeita.`}
-        isDeleting={deleteContributionMutation.isPending}
-      />
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{editingContribution ? 'Editar Contribuição' : 'Nova Contribuição'}</DialogTitle>
+            <DialogDescription>
+              Preencha os campos abaixo para {editingContribution ? 'editar a contribuição selecionada' : 'criar uma nova contribuição'}.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="title">Título</Label>
+                <Input
+                  type="text"
+                  id="title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="targetValue">Valor Alvo</Label>
+                <Input
+                  type="text"
+                  id="targetValue"
+                  name="targetValue"
+                  value={formData.targetValue}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="description">Descrição</Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                rows={3}
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="endDate">Data de Encerramento</Label>
+                <Input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div>
+                <Label htmlFor="pixKey">Chave PIX</Label>
+                <Input
+                  type="text"
+                  id="pixKey"
+                  name="pixKey"
+                  value={formData.pixKey}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="isGoalVisible"
+                checked={formData.isGoalVisible}
+                onCheckedChange={handleCheckboxChange}
+              />
+              <Label htmlFor="isGoalVisible">Mostrar meta no site</Label>
+            </div>
+
+            <div>
+              <Label htmlFor="image">Imagem</Label>
+              <Input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+              {imagePreview && (
+                <div className="mt-2">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    style={{ maxWidth: '100%', height: 'auto' }}
+                  />
+                </div>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button type="submit">Salvar</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

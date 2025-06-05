@@ -7,8 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Loading } from "@/components/ui/loading";
 import ErrorAlert from "@/components/ui/ErrorAlert";
@@ -37,26 +35,23 @@ const ContribuicaoDetalhe = () => {
   const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({
-    nome: '',
-    valor: '',
-    mensagem: '',
-    anonimo: false
+    valor: ''
   });
 
-  useEffect(() => {
-    const carregarContribuicao = async () => {
-      try {
-        const response = await api.get(`/contribuicoes/${id}`);
-        setContribuicao(response.data);
-        console.log("Dados recebidos da API:", response.data);
-      } catch (error) {
-        console.error("Erro ao carregar contribuição:", error);
-        setError("Não foi possível carregar os detalhes desta campanha.");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const carregarContribuicao = async () => {
+    try {
+      const response = await api.get(`/contribuicoes/${id}`);
+      setContribuicao(response.data);
+      console.log("Dados recebidos da API:", response.data);
+    } catch (error) {
+      console.error("Erro ao carregar contribuição:", error);
+      setError("Não foi possível carregar os detalhes desta campanha.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     carregarContribuicao();
   }, [id]);
 
@@ -71,10 +66,6 @@ const ContribuicaoDetalhe = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleCheckboxChange = (e) => {
-    setFormData(prev => ({ ...prev, anonimo: e }));
   };
 
   const handleCopyPixKey = () => {
@@ -124,14 +115,19 @@ const ContribuicaoDetalhe = () => {
       return;
     }
 
-    try {
-      const dados = {
-        ...formData,
-        valor: parseFloat(formData.valor.replace(',', '.')),
-        contribuicaoId: id
-      };
+    // Confirm dialog antes de registrar a contribuição
+    const confirmou = window.confirm(
+      "Já transferiu para a conta? Para não atrapalhar a nossa contagem de progresso, clique em 'OK' apenas quando a transferência for concluída."
+    );
 
-      await api.post(`/contribuicoes/${id}/doacoes`, dados);
+    if (!confirmou) return;
+
+    try {
+      const valor = parseFloat(formData.valor.replace(',', '.'));
+      
+      await api.post(`/contribuicoes/${id}/adicionar-valor`, null, {
+        params: { valor }
+      });
 
       toast({
         title: "Contribuição registrada!",
@@ -140,11 +136,11 @@ const ContribuicaoDetalhe = () => {
 
       // Limpar formulário
       setFormData({
-        nome: '',
-        valor: '',
-        mensagem: '',
-        anonimo: false
+        valor: ''
       });
+
+      // Recarregar os dados da campanha
+      await carregarContribuicao();
 
     } catch (error) {
       console.error("Erro ao processar doação:", error);
@@ -364,7 +360,7 @@ const ContribuicaoDetalhe = () => {
                     </div>
                   </div>
 
-                  {/* Formulário de contribuição */}
+                  {/* Formulário de contribuição simplificado */}
                   <form onSubmit={handleSubmit} className="space-y-4 mt-6">
                     <div className="space-y-2">
                       <Label htmlFor="valor">Valor da contribuição</Label>
@@ -377,41 +373,9 @@ const ContribuicaoDetalhe = () => {
                           className="pl-10"
                           value={formData.valor}
                           onChange={handleInputChange}
+                          required
                         />
                       </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="nome">Seu nome</Label>
-                      <Input
-                        id="nome"
-                        name="nome"
-                        placeholder="Como você quer ser identificado"
-                        value={formData.nome}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="mensagem">Mensagem (opcional)</Label>
-                      <Textarea
-                        id="mensagem"
-                        name="mensagem"
-                        placeholder="Deixe uma mensagem de apoio"
-                        value={formData.mensagem}
-                        onChange={handleInputChange}
-                        className="resize-none"
-                        rows={3}
-                      />
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="anonimo"
-                        checked={formData.anonimo}
-                        onCheckedChange={handleCheckboxChange}
-                      />
-                      <Label htmlFor="anonimo">Contribuir anonimamente</Label>
                     </div>
 
                     <Button type="submit" className="w-full bg-church-700 hover:bg-church-800">
