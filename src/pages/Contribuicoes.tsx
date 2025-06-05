@@ -1,8 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import ContribuicaoCard from "@/components/ui/ContribuicaoCard";
 import { Loading } from "@/components/ui/loading";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import api from "@/services/api";
 import { 
   CreditCard, 
@@ -22,7 +23,8 @@ import {
   HelpCircle, 
   ChevronDown,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  Settings
 } from "lucide-react";
 
 const schema = z.object({
@@ -35,6 +37,9 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const Contribuicoes = () => {
+  const navigate = useNavigate();
+  const { currentUser } = useCurrentUser();
+  
   const [metodo, setMetodo] = useState<string>("pix");
   const [showInstructions, setShowInstructions] = useState(false);
   const [activeTab, setActiveTab] = useState("geral");
@@ -52,6 +57,11 @@ const Contribuicoes = () => {
       mensagem: "",
     },
   });
+
+  // Check if user has permission to manage contributions
+  const canManageContributions = currentUser?.roles?.some(role => 
+    ['ROLE_ADMIN', 'ROLE_PASTOR', 'ROLE_PASTORAUXILIAR', 'ROLE_LIDER'].includes(role)
+  );
 
   // Carregar as campanhas de contribuição do API
   useEffect(() => {
@@ -506,10 +516,22 @@ const Contribuicoes = () => {
             <TabsContent value="campanhas">
               <div className="bg-white p-8 rounded-lg shadow-sm mb-8">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-                  <div>
+                  <div className="flex-1">
                     <h2 className="text-2xl font-bold text-church-900">Caixinhas de Contribuição</h2>
                     <p className="text-gray-600">Campanhas específicas para necessidades da igreja e projetos especiais</p>
                   </div>
+                  
+                  {canManageContributions && (
+                    <div className="mt-4 md:mt-0">
+                      <Button 
+                        onClick={() => navigate('/contribuicoes/gerenciar')}
+                        className="bg-church-700 hover:bg-church-800"
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        Ações Contribuições
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 
                 {renderCaixinhasContent()}

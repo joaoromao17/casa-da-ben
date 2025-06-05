@@ -17,6 +17,7 @@ import Estudos from "./pages/Estudos";
 import EstudosGerenciar from "./pages/EstudosGerenciar";
 import Eventos from "./pages/Eventos";
 import Contribuicoes from "./pages/Contribuicoes";
+import ContribuicoesGerenciar from "./pages/ContribuicoesGerenciar";
 import ContribuicaoDetalhe from "./pages/ContribuicaoDetalhe";
 import Testemunhos from "./pages/Testemunhos";
 import Oracao from "./pages/Oracao";
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/estudos/gerenciar" element={<EstudosGerenciar />} />
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/contribuicoes" element={<Contribuicoes />} />
+          <Route path="/contribuicoes/gerenciar" element={<ContribuicoesGerenciar />} />
           <Route path="/contribuicoes/:id" element={<ContribuicaoDetalhe />} />
           <Route path="/testemunhos" element={<Testemunhos />} />
           <Route path="/oracao" element={<Oracao />} />
