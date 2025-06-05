@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
@@ -166,6 +167,8 @@ const ContributionsTab = () => {
         status: contributionData.status || "ATIVA",
         createdBy: contributionData.createdBy,
         pixKey: contributionData.pixKey,
+        // Preserva a imageUrl atual se não houver nova imagem
+        imageUrl: selectedContribution?.imageUrl || null,
       };
 
       const response = await api.put(`/contribuicoes/${id}`, updateData);
@@ -242,10 +245,10 @@ const ContributionsTab = () => {
     setIsCreating(false);
     setSelectedContribution(contribution);
     
-    console.log('Editing contribution:', contribution); // Debug log
-    console.log('Image URL:', contribution.imageUrl); // Debug log
+    console.log('Editing contribution:', contribution);
+    console.log('Image URL:', contribution.imageUrl);
     
-    // Reset form with contribution data
+    // Reset form with contribution data - corrigindo o mapeamento
     form.reset({
       title: contribution.title || "",
       description: contribution.description || "",
@@ -254,7 +257,7 @@ const ContributionsTab = () => {
       collectedValue: contribution.collectedValue || 0,
       hasEndDate: !!contribution.endDate,
       endDate: contribution.endDate ? new Date(contribution.endDate) : undefined,
-      isGoalVisible: contribution.isGoalVisible ?? true,
+      isGoalVisible: contribution.goalVisible ?? contribution.isGoalVisible ?? true, // Corrigindo mapeamento
       status: contribution.status || "ATIVA",
       createdBy: contribution.createdBy || "",
       pixKey: contribution.pixKey || "",
@@ -680,8 +683,8 @@ const ContributionsTab = () => {
                 <FormItem>
                   <FormLabel>Imagem</FormLabel>
                   
-                  {/* Show current image when editing */}
-                  {!isCreating && selectedContribution?.imageUrl && (
+                  {/* Show current image when editing and no new image selected */}
+                  {!isCreating && selectedContribution?.imageUrl && (!watchImage || watchImage.length === 0) && (
                     <div className="mb-3">
                       <p className="text-sm text-muted-foreground mb-2">Imagem atual:</p>
                       <img 
@@ -692,6 +695,18 @@ const ContributionsTab = () => {
                           console.log('Error loading image:', selectedContribution.imageUrl);
                           e.currentTarget.style.display = 'none';
                         }}
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Show selected new image */}
+                  {watchImage && watchImage.length > 0 && (
+                    <div className="mb-3">
+                      <p className="text-sm text-muted-foreground mb-2">Nova imagem selecionada:</p>
+                      <img 
+                        src={URL.createObjectURL(watchImage[0])} 
+                        alt="Nova imagem" 
+                        className="h-32 w-auto rounded object-cover border border-gray-200" 
                       />
                     </div>
                   )}
