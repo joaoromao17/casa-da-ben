@@ -107,38 +107,29 @@ const ContributionsTab = () => {
   // Create contribution campaign mutation
   const createContributionMutation = useMutation({
     mutationFn: async (data: ContributionFormData) => {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      
-      if (data.hasGoal && data.targetValue) {
-        formData.append("targetValue", data.targetValue.toString());
-        formData.append("collectedValue", (data.collectedValue || 0).toString());
-        formData.append("isGoalVisible", data.isGoalVisible.toString());
-      } else {
-        formData.append("targetValue", "0");
-        formData.append("collectedValue", "0");
-        formData.append("isGoalVisible", "false");
-      }
-      
-      if (data.hasEndDate && data.endDate) {
-        formData.append("endDate", format(data.endDate, 'yyyy-MM-dd'));
-      }
-      
-      formData.append("status", "ATIVA");
-      formData.append("createdBy", data.createdBy);
-      formData.append("pixKey", data.pixKey);
-      
-      // Add image if provided
+      // First, create the contribution with JSON data
+      const contributionData = {
+        title: data.title,
+        description: data.description,
+        targetValue: data.hasGoal ? (data.targetValue || 0) : 0,
+        collectedValue: data.hasGoal ? (data.collectedValue || 0) : 0,
+        isGoalVisible: data.hasGoal ? data.isGoalVisible : false,
+        endDate: data.hasEndDate && data.endDate ? format(data.endDate, 'yyyy-MM-dd') : null,
+        status: "ATIVA",
+        createdBy: data.createdBy,
+        pixKey: data.pixKey,
+      };
+
+      const response = await api.post('/contribuicoes', contributionData);
+      const contributionId = response.data.id;
+
+      // If there's an image, upload it separately
       if (data.image && data.image.length > 0) {
+        const formData = new FormData();
         formData.append("imagem", data.image[0]);
+        await api.post(`/contribuicoes/${contributionId}/imagem`, formData);
       }
 
-      const response = await api.post('/contribuicoes', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
       return response.data;
     },
     onSuccess: () => {
@@ -163,41 +154,29 @@ const ContributionsTab = () => {
   const updateContributionMutation = useMutation({
     mutationFn: async (data: ContributionFormData & { id: string }) => {
       const { id, ...contributionData } = data;
-      const formData = new FormData();
       
-      formData.append("title", contributionData.title);
-      formData.append("description", contributionData.description);
-      
-      if (contributionData.hasGoal && contributionData.targetValue) {
-        formData.append("targetValue", contributionData.targetValue.toString());
-        formData.append("collectedValue", (contributionData.collectedValue || 0).toString());
-        formData.append("isGoalVisible", contributionData.isGoalVisible.toString());
-      } else {
-        formData.append("targetValue", "0");
-        formData.append("collectedValue", "0");
-        formData.append("isGoalVisible", "false");
-      }
-      
-      if (contributionData.hasEndDate && contributionData.endDate) {
-        formData.append("endDate", format(contributionData.endDate, 'yyyy-MM-dd'));
-      }
-      
-      if (contributionData.status) {
-        formData.append("status", contributionData.status);
-      }
-      formData.append("createdBy", contributionData.createdBy);
-      formData.append("pixKey", contributionData.pixKey);
-      
-      // Add image if provided
+      // First, update the contribution with JSON data
+      const updateData = {
+        title: contributionData.title,
+        description: contributionData.description,
+        targetValue: contributionData.hasGoal ? (contributionData.targetValue || 0) : 0,
+        collectedValue: contributionData.hasGoal ? (contributionData.collectedValue || 0) : 0,
+        isGoalVisible: contributionData.hasGoal ? contributionData.isGoalVisible : false,
+        endDate: contributionData.hasEndDate && contributionData.endDate ? format(contributionData.endDate, 'yyyy-MM-dd') : null,
+        status: contributionData.status || "ATIVA",
+        createdBy: contributionData.createdBy,
+        pixKey: contributionData.pixKey,
+      };
+
+      const response = await api.put(`/contribuicoes/${id}`, updateData);
+
+      // If there's a new image, upload it separately
       if (contributionData.image && contributionData.image.length > 0) {
+        const formData = new FormData();
         formData.append("imagem", contributionData.image[0]);
+        await api.post(`/contribuicoes/${id}/imagem`, formData);
       }
 
-      const response = await api.put(`/contribuicoes/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
       return response.data;
     },
     onSuccess: () => {
