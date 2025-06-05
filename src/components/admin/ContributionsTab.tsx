@@ -112,7 +112,7 @@ const ContributionsTab = () => {
         title: data.title,
         description: data.description,
         targetValue: data.hasGoal ? (data.targetValue || 0) : 0,
-        collectedValue: data.collectedValue || 0, // Always save collected value
+        collectedValue: data.collectedValue || 0,
         isGoalVisible: data.hasGoal ? data.isGoalVisible : false,
         endDate: data.hasEndDate && data.endDate ? format(data.endDate, 'yyyy-MM-dd') : null,
         status: "ATIVA",
@@ -160,7 +160,7 @@ const ContributionsTab = () => {
         title: contributionData.title,
         description: contributionData.description,
         targetValue: contributionData.hasGoal ? (contributionData.targetValue || 0) : 0,
-        collectedValue: contributionData.collectedValue || 0, // Always save collected value
+        collectedValue: contributionData.collectedValue || 0,
         isGoalVisible: contributionData.hasGoal ? contributionData.isGoalVisible : false,
         endDate: contributionData.hasEndDate && contributionData.endDate ? format(contributionData.endDate, 'yyyy-MM-dd') : null,
         status: contributionData.status || "ATIVA",
@@ -233,6 +233,7 @@ const ContributionsTab = () => {
       isGoalVisible: true,
       createdBy: "",
       pixKey: "",
+      image: undefined,
     });
     setIsModalOpen(true);
   };
@@ -240,6 +241,9 @@ const ContributionsTab = () => {
   const handleEditContribution = (contribution: any) => {
     setIsCreating(false);
     setSelectedContribution(contribution);
+    
+    console.log('Editing contribution:', contribution); // Debug log
+    console.log('Image URL:', contribution.imageUrl); // Debug log
     
     // Reset form with contribution data
     form.reset({
@@ -254,6 +258,7 @@ const ContributionsTab = () => {
       status: contribution.status || "ATIVA",
       createdBy: contribution.createdBy || "",
       pixKey: contribution.pixKey || "",
+      image: undefined, // Reset image field
     });
     
     setIsModalOpen(true);
@@ -520,6 +525,30 @@ const ContributionsTab = () => {
               </>
             )}
 
+            {!watchHasGoal && (
+              <FormField
+                control={form.control}
+                name="collectedValue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Valor Arrecadado (R$)</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min={0} 
+                        step={0.01} 
+                        placeholder="0.00" 
+                        {...field}
+                        value={field.value || ""}
+                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+
             <FormField
               control={form.control}
               name="hasEndDate"
@@ -651,14 +680,18 @@ const ContributionsTab = () => {
                 <FormItem>
                   <FormLabel>Imagem</FormLabel>
                   
-                  {/* Show current image when editing and no new image selected */}
-                  {!isCreating && selectedContribution?.imageUrl && (!watchImage || watchImage.length === 0) && (
+                  {/* Show current image when editing */}
+                  {!isCreating && selectedContribution?.imageUrl && (
                     <div className="mb-3">
                       <p className="text-sm text-muted-foreground mb-2">Imagem atual:</p>
                       <img 
                         src={selectedContribution.imageUrl} 
                         alt="Imagem atual da campanha" 
-                        className="h-32 w-32 rounded object-cover border border-gray-200" 
+                        className="h-32 w-auto rounded object-cover border border-gray-200" 
+                        onError={(e) => {
+                          console.log('Error loading image:', selectedContribution.imageUrl);
+                          e.currentTarget.style.display = 'none';
+                        }}
                       />
                     </div>
                   )}
@@ -669,6 +702,7 @@ const ContributionsTab = () => {
                       accept="image/*"
                       onChange={(e) => onChange(e.target.files)}
                       {...field}
+                      value=""
                     />
                   </FormControl>
                   <p className="text-sm text-muted-foreground">
