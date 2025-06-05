@@ -33,7 +33,8 @@ import {
   X,
   MessageSquare,
   Share2,
-  ShareIcon
+  ShareIcon,
+  AlertTriangle
 } from "lucide-react";
 
 const ContribuicaoDetalhe = () => {
@@ -70,11 +71,11 @@ const ContribuicaoDetalhe = () => {
   // Função para exibir o status da campanha
   const getStatusBadge = () => {
     if (!contribuicao) return null;
-    
+
     const now = new Date();
     const startDate = contribuicao.startDate ? new Date(contribuicao.startDate) : null;
     const endDate = contribuicao.endDate ? new Date(contribuicao.endDate) : null;
-    
+
     if (startDate && now < startDate) {
       return <Badge variant="secondary">Em breve</Badge>;
     } else if (endDate && now > endDate) {
@@ -150,7 +151,7 @@ const ContribuicaoDetalhe = () => {
   const confirmarContribuicao = async () => {
     try {
       const valor = parseFloat(formData.valor.replace(',', '.'));
-      
+
       await api.post(`/contribuicoes/${id}/adicionar-valor`, null, {
         params: { valor }
       });
@@ -372,31 +373,32 @@ const ContribuicaoDetalhe = () => {
                       </div>
                     </div>
 
-                    <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-                      <AlertDialogTrigger asChild>
-                        <Button type="submit" className="w-full bg-church-700 hover:bg-church-800">
-                          Confirmar contribuição
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Confirmar Contribuição</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Já transferiu para a conta? Para não atrapalhar a nossa contagem de progresso, 
-                            clique em 'Confirmar' apenas quando a transferência for concluída.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction 
-                            onClick={confirmarContribuicao}
-                            className="bg-church-700 hover:bg-church-800"
-                          >
-                            Confirmar
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="text-red-600 w-5 h-5" />
+                          <AlertDialogTitle className="text-red-700">
+                            Atenção!
+                          </AlertDialogTitle>
+                        </div>
+
+                        <AlertDialogDescription className="text-red-600 mt-2">
+                          Já transferiu para a conta? <br />
+                          <strong>Para não atrapalhar a nossa contagem de progresso</strong>,
+                          clique em <span className="font-semibold">"Confirmar"</span> apenas quando a transferência for <u>concluída</u>.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={confirmarContribuicao}
+                          className="bg-church-700 hover:bg-church-800"
+                        >
+                          Confirmar
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
                   </form>
                 </CardContent>
               </Card>
