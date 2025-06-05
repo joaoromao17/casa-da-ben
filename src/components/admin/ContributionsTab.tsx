@@ -7,11 +7,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/components/ui/use-toast";
 import api from "@/services/api";
 import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
 import AdminTable from "./AdminTable";
 import AdminFormModal from "./AdminFormModal";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 import { Progress } from "@/components/ui/progress";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 import {
   Form,
@@ -37,14 +41,24 @@ import { Checkbox } from "@/components/ui/checkbox";
 const contributionFormSchema = z.object({
   title: z.string().min(3, "Título deve ter pelo menos 3 caracteres"),
   description: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
-  targetValue: z.coerce.number().min(0, "Valor deve ser maior ou igual a zero"),
-  collectedValue: z.coerce.number().min(0, "Valor deve ser maior ou igual a zero"),
-  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
+  hasGoal: z.boolean(),
+  targetValue: z.coerce.number().min(0, "Valor deve ser maior ou igual a zero").optional(),
+  collectedValue: z.coerce.number().min(0, "Valor deve ser maior ou igual a zero").optional(),
+  hasEndDate: z.boolean(),
+  endDate: z.date().optional(),
   isGoalVisible: z.boolean(),
-  status: z.enum(["ATIVA", "CONCLUIDA", "CANCELADA"]),
+  status: z.enum(["ATIVA", "CONCLUIDA", "CANCELADA"]).optional(),
   createdBy: z.string().min(3, "Campo obrigatório"),
   pixKey: z.string().min(5, "Chave Pix obrigatória"),
   image: z.any().optional(), // For file upload
+}).refine((data) => {
+  if (data.hasGoal && (!data.targetValue || data.targetValue <= 0)) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Meta é obrigatória quando 'Tem Meta de valor?' está marcado",
+  path: ["targetValue"]
 });
 
 type ContributionFormData = z.infer<typeof contributionFormSchema>;
@@ -75,9 +89,11 @@ const ContributionsTab = () => {
     defaultValues: {
       title: "",
       description: "",
+      hasGoal: false,
       targetValue: 0,
       collectedValue: 0,
-      endDate: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
+      hasEndDate: false,
+      endDate: undefined,
       isGoalVisible: true,
       status: "ATIVA",
       createdBy: "",
@@ -85,17 +101,31 @@ const ContributionsTab = () => {
     },
   });
 
+  const watchHasGoal = form.watch("hasGoal");
+  const watchHasEndDate = form.watch("hasEndDate");
+
   // Create contribution campaign mutation
   const createContributionMutation = useMutation({
     mutationFn: async (data: ContributionFormData) => {
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("description", data.description);
-      formData.append("targetValue", data.targetValue.toString());
-      formData.append("collectedValue", data.collectedValue.toString());
-      formData.append("endDate", data.endDate);
-      formData.append("isGoalVisible", data.isGoalVisible.toString());
-      formData.append("status", data.status);
+      
+      if (data.hasGoal && data.targetValue) {
+        formData.append("targetValue", data.targetValue.toString());
+        formData.append("collectedValue", (data.collectedValue || 0).toString());
+        formData.append("isGoalVisible", data.isGoalVisible.toString());
+      } else {
+        formData.append("targetValue", "0");
+        formData.append("collectedValue", "0");
+        formData.append("isGoalVisible", "false");
+      }
+      
+      if (data.hasEndDate && data.endDate) {
+        formData.append("endDate", format(data.endDate, 'yyyy-MM-dd'));
+      }
+      
+      formData.append("status", "ATIVA");
       formData.append("createdBy", data.createdBy);
       formData.append("pixKey", data.pixKey);
       
@@ -104,7 +134,12 @@ const ContributionsTab = () => {
         formData.append("imagem", data.image[0]);
       }
 
-      return await api.post('/contribuicoes', formData);
+      const response = await api.post('/contribuicoes', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contributions'] });
@@ -132,11 +167,24 @@ const ContributionsTab = () => {
       
       formData.append("title", contributionData.title);
       formData.append("description", contributionData.description);
-      formData.append("targetValue", contributionData.targetValue.toString());
-      formData.append("collectedValue", contributionData.collectedValue.toString());
-      formData.append("endDate", contributionData.endDate);
-      formData.append("isGoalVisible", contributionData.isGoalVisible.toString());
-      formData.append("status", contributionData.status);
+      
+      if (contributionData.hasGoal && contributionData.targetValue) {
+        formData.append("targetValue", contributionData.targetValue.toString());
+        formData.append("collectedValue", (contributionData.collectedValue || 0).toString());
+        formData.append("isGoalVisible", contributionData.isGoalVisible.toString());
+      } else {
+        formData.append("targetValue", "0");
+        formData.append("collectedValue", "0");
+        formData.append("isGoalVisible", "false");
+      }
+      
+      if (contributionData.hasEndDate && contributionData.endDate) {
+        formData.append("endDate", format(contributionData.endDate, 'yyyy-MM-dd'));
+      }
+      
+      if (contributionData.status) {
+        formData.append("status", contributionData.status);
+      }
       formData.append("createdBy", contributionData.createdBy);
       formData.append("pixKey", contributionData.pixKey);
       
@@ -145,7 +193,12 @@ const ContributionsTab = () => {
         formData.append("imagem", contributionData.image[0]);
       }
 
-      return await api.put(`/contribuicoes/${id}`, formData);
+      const response = await api.put(`/contribuicoes/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contributions'] });
@@ -193,11 +246,12 @@ const ContributionsTab = () => {
     form.reset({
       title: "",
       description: "",
+      hasGoal: false,
       targetValue: 0,
       collectedValue: 0,
-      endDate: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 'yyyy-MM-dd'),
+      hasEndDate: false,
+      endDate: undefined,
       isGoalVisible: true,
-      status: "ATIVA",
       createdBy: "",
       pixKey: "",
     });
@@ -208,18 +262,15 @@ const ContributionsTab = () => {
     setIsCreating(false);
     setSelectedContribution(contribution);
     
-    // Format date from the contribution data
-    const endDate = contribution.endDate 
-      ? format(new Date(contribution.endDate), 'yyyy-MM-dd') 
-      : format(new Date(), 'yyyy-MM-dd');
-    
     // Reset form with contribution data
     form.reset({
       title: contribution.title || "",
       description: contribution.description || "",
+      hasGoal: (contribution.targetValue || 0) > 0,
       targetValue: contribution.targetValue || 0,
       collectedValue: contribution.collectedValue || 0,
-      endDate: endDate,
+      hasEndDate: !!contribution.endDate,
+      endDate: contribution.endDate ? new Date(contribution.endDate) : undefined,
       isGoalVisible: contribution.isGoalVisible ?? true,
       status: contribution.status || "ATIVA",
       createdBy: contribution.createdBy || "",
@@ -272,25 +323,37 @@ const ContributionsTab = () => {
     { 
       key: "targetValue", 
       title: "Meta",
-      render: (targetValue: number) => `R$ ${(targetValue || 0).toLocaleString('pt-BR')}`
+      render: (targetValue: number) => {
+        if (!targetValue || targetValue === 0) return "Sem meta";
+        return `R$ ${targetValue.toLocaleString('pt-BR')}`;
+      }
     },
     { 
       key: "collectedValue", 
       title: "Arrecadado",
-      render: (collectedValue: number, record: any) => (
-        <div className="space-y-1">
-          <div className="text-sm">R$ {(collectedValue || 0).toLocaleString('pt-BR')}</div>
-          <Progress value={calculateProgress(collectedValue || 0, record.targetValue || 0)} className="h-2" />
-          <div className="text-xs text-muted-foreground">
-            {calculateProgress(collectedValue || 0, record.targetValue || 0)}% da meta
+      render: (collectedValue: number, record: any) => {
+        const collected = collectedValue || 0;
+        const target = record.targetValue || 0;
+        
+        if (target === 0) {
+          return `R$ ${collected.toLocaleString('pt-BR')}`;
+        }
+        
+        return (
+          <div className="space-y-1">
+            <div className="text-sm">R$ {collected.toLocaleString('pt-BR')}</div>
+            <Progress value={calculateProgress(collected, target)} className="h-2" />
+            <div className="text-xs text-muted-foreground">
+              {calculateProgress(collected, target)}% da meta
+            </div>
           </div>
-        </div>
-      )
+        );
+      }
     },
     { 
       key: "endDate", 
       title: "Término",
-      render: (date: string) => date ? format(new Date(date), 'dd/MM/yyyy') : "-"
+      render: (date: string) => date ? format(new Date(date), 'dd/MM/yyyy') : "Sem prazo"
     },
     { 
       key: "status", 
@@ -382,61 +445,165 @@ const ContributionsTab = () => {
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="targetValue"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Meta (R$)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        min={0} 
-                        step={0.01} 
-                        placeholder="0.00" 
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="collectedValue"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Valor Arrecadado (R$)</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="number" 
-                        min={0} 
-                        step={0.01} 
-                        placeholder="0.00" 
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
             <FormField
               control={form.control}
-              name="endDate"
+              name="hasGoal"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data de Término</FormLabel>
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Tem Meta de valor?
+                    </FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      Marque se esta campanha possui uma meta financeira específica
+                    </p>
+                  </div>
                 </FormItem>
               )}
             />
+
+            {watchHasGoal && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="isGoalVisible"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>
+                          Meta Visível
+                        </FormLabel>
+                        <p className="text-sm text-muted-foreground">
+                          Mostrar a meta e barra de progresso no frontend
+                        </p>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="targetValue"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Meta (R$)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min={0} 
+                            step={0.01} 
+                            placeholder="0.00" 
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="collectedValue"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Valor Arrecadado (R$)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="number" 
+                            min={0} 
+                            step={0.01} 
+                            placeholder="0.00" 
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </>
+            )}
+
+            <FormField
+              control={form.control}
+              name="hasEndDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Tem Data Limite?
+                    </FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      Marque se esta campanha possui uma data limite para arrecadação
+                    </p>
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            {watchHasEndDate && (
+              <FormField
+                control={form.control}
+                name="endDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Data de Término</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "dd/MM/yyyy")
+                            ) : (
+                              <span>Selecionar data</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date < new Date()
+                          }
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
@@ -466,54 +633,33 @@ const ContributionsTab = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select 
-                    onValueChange={field.onChange} 
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="ATIVA">Ativa</SelectItem>
-                      <SelectItem value="CONCLUIDA">Concluída</SelectItem>
-                      <SelectItem value="CANCELADA">Cancelada</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="isGoalVisible"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>
-                      Meta Visível
-                    </FormLabel>
-                    <p className="text-sm text-muted-foreground">
-                      Mostrar a meta e barra de progresso no frontend
-                    </p>
-                  </div>
-                </FormItem>
-              )}
-            />
+            {!isCreating && (
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="ATIVA">Ativa</SelectItem>
+                        <SelectItem value="CONCLUIDA">Concluída</SelectItem>
+                        <SelectItem value="CANCELADA">Cancelada</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
             <FormField
               control={form.control}
