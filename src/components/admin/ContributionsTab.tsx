@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
@@ -112,7 +111,7 @@ const ContributionsTab = () => {
         title: data.title,
         description: data.description,
         targetValue: data.hasGoal ? (data.targetValue || 0) : 0,
-        collectedValue: data.hasGoal ? (data.collectedValue || 0) : 0,
+        collectedValue: data.collectedValue || 0, // Always save collected value
         isGoalVisible: data.hasGoal ? data.isGoalVisible : false,
         endDate: data.hasEndDate && data.endDate ? format(data.endDate, 'yyyy-MM-dd') : null,
         status: "ATIVA",
@@ -160,7 +159,7 @@ const ContributionsTab = () => {
         title: contributionData.title,
         description: contributionData.description,
         targetValue: contributionData.hasGoal ? (contributionData.targetValue || 0) : 0,
-        collectedValue: contributionData.hasGoal ? (contributionData.collectedValue || 0) : 0,
+        collectedValue: contributionData.collectedValue || 0, // Always save collected value
         isGoalVisible: contributionData.hasGoal ? contributionData.isGoalVisible : false,
         endDate: contributionData.hasEndDate && contributionData.endDate ? format(contributionData.endDate, 'yyyy-MM-dd') : null,
         status: contributionData.status || "ATIVA",
@@ -170,7 +169,7 @@ const ContributionsTab = () => {
 
       const response = await api.put(`/contribuicoes/${id}`, updateData);
 
-      // If there's a new image, upload it separately
+      // Only upload image if a new one was selected
       if (contributionData.image && contributionData.image.length > 0) {
         const formData = new FormData();
         formData.append("imagem", contributionData.image[0]);
@@ -486,6 +485,8 @@ const ContributionsTab = () => {
                             step={0.01} 
                             placeholder="0.00" 
                             {...field}
+                            value={field.value || ""}
+                            onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
                           />
                         </FormControl>
                         <FormMessage />
@@ -506,6 +507,8 @@ const ContributionsTab = () => {
                             step={0.01} 
                             placeholder="0.00" 
                             {...field}
+                            value={field.value || ""}
+                            onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : 0)}
                           />
                         </FormControl>
                         <FormMessage />
