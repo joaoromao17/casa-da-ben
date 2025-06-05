@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
@@ -167,17 +166,20 @@ const ContributionsTab = () => {
         status: contributionData.status || "ATIVA",
         createdBy: contributionData.createdBy,
         pixKey: contributionData.pixKey,
-        // Preserva a imageUrl atual se não houver nova imagem
-        imageUrl: selectedContribution?.imageUrl || null,
       };
+
+      console.log('Updating contribution with data:', updateData);
+      console.log('Has new image?', contributionData.image && contributionData.image.length > 0);
 
       const response = await api.put(`/contribuicoes/${id}`, updateData);
 
-      // Only upload image if a new one was selected
+      // Upload new image if one was selected
       if (contributionData.image && contributionData.image.length > 0) {
+        console.log('Uploading new image...');
         const formData = new FormData();
         formData.append("imagem", contributionData.image[0]);
         await api.post(`/contribuicoes/${id}/imagem`, formData);
+        console.log('Image uploaded successfully');
       }
 
       return response.data;
@@ -257,7 +259,7 @@ const ContributionsTab = () => {
       collectedValue: contribution.collectedValue || 0,
       hasEndDate: !!contribution.endDate,
       endDate: contribution.endDate ? new Date(contribution.endDate) : undefined,
-      isGoalVisible: contribution.goalVisible ?? contribution.isGoalVisible ?? true, // Corrigindo mapeamento
+      isGoalVisible: contribution.goalVisible ?? contribution.isGoalVisible ?? true,
       status: contribution.status || "ATIVA",
       createdBy: contribution.createdBy || "",
       pixKey: contribution.pixKey || "",
@@ -715,7 +717,10 @@ const ContributionsTab = () => {
                     <Input 
                       type="file"
                       accept="image/*"
-                      onChange={(e) => onChange(e.target.files)}
+                      onChange={(e) => {
+                        console.log('File selected:', e.target.files);
+                        onChange(e.target.files);
+                      }}
                       {...field}
                       value=""
                     />
