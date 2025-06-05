@@ -13,17 +13,17 @@ import { useToast } from "@/hooks/use-toast";
 import { Loading } from "@/components/ui/loading";
 import ErrorAlert from "@/components/ui/ErrorAlert";
 import api from "@/services/api";
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Check, 
-  Copy, 
-  DollarSign, 
-  Percent, 
-  User, 
-  X, 
-  MessageSquare, 
-  Share2, 
+import {
+  ArrowLeft,
+  Calendar,
+  Check,
+  Copy,
+  DollarSign,
+  Percent,
+  User,
+  X,
+  MessageSquare,
+  Share2,
   ShareIcon
 } from "lucide-react";
 
@@ -31,11 +31,11 @@ const ContribuicaoDetalhe = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+
   const [contribuicao, setContribuicao] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     nome: '',
     valor: '',
@@ -62,9 +62,9 @@ const ContribuicaoDetalhe = () => {
 
   // Formatar valores para exibição em reais
   const formatarValor = (valor) => {
-    return Number(valor).toLocaleString('pt-BR', { 
-      style: 'currency', 
-      currency: 'BRL' 
+    return Number(valor).toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
     });
   };
 
@@ -114,7 +114,7 @@ const ContribuicaoDetalhe = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.valor || parseFloat(formData.valor.replace(',', '.')) <= 0) {
       toast({
         title: "Valor inválido",
@@ -123,21 +123,21 @@ const ContribuicaoDetalhe = () => {
       });
       return;
     }
-    
+
     try {
       const dados = {
         ...formData,
         valor: parseFloat(formData.valor.replace(',', '.')),
         contribuicaoId: id
       };
-      
+
       await api.post(`/contribuicoes/${id}/doacoes`, dados);
-      
+
       toast({
         title: "Contribuição registrada!",
         description: "Agradecemos sua generosidade. Sua doação foi registrada com sucesso."
       });
-      
+
       // Limpar formulário
       setFormData({
         nome: '',
@@ -145,7 +145,7 @@ const ContribuicaoDetalhe = () => {
         mensagem: '',
         anonimo: false
       });
-      
+
     } catch (error) {
       console.error("Erro ao processar doação:", error);
       toast({
@@ -197,8 +197,8 @@ const ContribuicaoDetalhe = () => {
       <Layout>
         <div className="container-church py-12">
           <div className="text-center">
-            <ErrorAlert 
-              title="Erro" 
+            <ErrorAlert
+              title="Erro"
               message={error}
               onRetry={() => navigate('/contribuicoes')}
             />
@@ -211,7 +211,7 @@ const ContribuicaoDetalhe = () => {
   // Garante que os valores são tratados como números
   const targetValue = contribuicao?.targetValue ? Number(contribuicao.targetValue) : 0;
   const collectedValue = contribuicao?.collectedValue ? Number(contribuicao.collectedValue) : 0;
-  
+
   // Calcula a porcentagem de progresso
   const progressPercentage = contribuicao?.isGoalVisible !== false && targetValue > 0
     ? Math.min(Math.round((collectedValue / targetValue) * 100), 100)
@@ -219,9 +219,9 @@ const ContribuicaoDetalhe = () => {
 
   // Obter URL completa da imagem
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-  const imageUrl = contribuicao?.imageUrl 
-    ? (contribuicao.imageUrl.startsWith('http') 
-      ? contribuicao.imageUrl 
+  const imageUrl = contribuicao?.imageUrl
+    ? (contribuicao.imageUrl.startsWith('http')
+      ? contribuicao.imageUrl
       : `${API_BASE_URL}${contribuicao.imageUrl}`)
     : '/placeholder.svg';
 
@@ -231,21 +231,21 @@ const ContribuicaoDetalhe = () => {
         <div className="container-church">
           {/* Navegação de volta */}
           <div className="mb-6">
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/contribuicoes')} 
+            <Button
+              variant="outline"
+              onClick={() => navigate('/contribuicoes')}
               className="flex items-center"
             >
               <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para Contribuições
             </Button>
           </div>
-          
+
           {/* Cabeçalho da campanha */}
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div className="aspect-video overflow-hidden rounded-lg">
-              <img 
-                src={imageUrl} 
-                alt={contribuicao?.title} 
+              <img
+                src={imageUrl}
+                alt={contribuicao?.title}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   console.error("Erro ao carregar imagem:", imageUrl);
@@ -253,11 +253,11 @@ const ContribuicaoDetalhe = () => {
                 }}
               />
             </div>
-            
+
             <div>
               <div className="flex items-center gap-3 mb-2">
                 {getStatusBadge()}
-                
+
                 <div className="flex items-center text-sm text-gray-500">
                   <Calendar className="mr-1 h-4 w-4" />
                   {contribuicao?.startDate && (
@@ -270,15 +270,15 @@ const ContribuicaoDetalhe = () => {
                   )}
                 </div>
               </div>
-              
+
               <h1 className="text-3xl font-bold text-church-900 mb-2">{contribuicao?.title}</h1>
-              
+
               {contribuicao?.createdBy && (
                 <p className="flex items-center text-gray-500 mb-4">
                   <User className="mr-1 h-4 w-4" /> Responsável: {contribuicao.createdBy}
                 </p>
               )}
-              
+
               {contribuicao?.isGoalVisible !== false && progressPercentage !== null && (
                 <div className="mb-6">
                   <div className="flex items-center gap-2 text-lg font-medium mb-1">
@@ -286,7 +286,7 @@ const ContribuicaoDetalhe = () => {
                     <span>{formatarValor(collectedValue)}</span>
                     <span className="text-gray-500">de {formatarValor(targetValue)}</span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     <div className="flex-1">
                       <Progress value={progressPercentage} className="h-3" />
@@ -298,22 +298,22 @@ const ContribuicaoDetalhe = () => {
                   </div>
                 </div>
               )}
-              
+
               {/* Compartilhar */}
               <div className="flex flex-wrap gap-2 mt-4">
                 <div className="text-sm text-gray-500 flex items-center mr-2">
                   <ShareIcon className="h-4 w-4 mr-1" /> Compartilhar:
                 </div>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   className="rounded-full"
                   onClick={() => handleShare('whatsapp')}
                 >
                   <MessageSquare className="h-4 w-4 mr-1" /> WhatsApp
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   className="rounded-full"
                   onClick={() => handleShare('facebook')}
@@ -323,8 +323,105 @@ const ContribuicaoDetalhe = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
+
+            {/* Área de doação */}
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Contribuir</CardTitle>
+                  <CardDescription>Faça sua doação para esta campanha</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {/* QR Code e chave PIX */}
+                  <div className="mb-6">
+                    <p className="text-sm mb-3">Escaneie o QR Code ou use a chave PIX abaixo:</p>
+                    <div className="flex justify-center my-4">
+                      <div className="bg-white p-3 border rounded-md inline-block">
+                        <img
+                          src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
+                          alt="QR Code PIX"
+                          className="w-40 h-40"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 p-3 rounded-md">
+                      <p className="text-sm font-medium mb-1">Chave PIX:</p>
+                      <div className="flex">
+                        <p className="text-sm font-mono bg-white p-2 rounded-l border flex-1 truncate">
+                          {contribuicao?.pixKey || '12345678901'}
+                        </p>
+                        <Button
+                          variant="outline"
+                          className="rounded-l-none"
+                          onClick={handleCopyPixKey}
+                        >
+                          <Copy className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Formulário de contribuição */}
+                  <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="valor">Valor da contribuição</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2">R$</span>
+                        <Input
+                          id="valor"
+                          name="valor"
+                          placeholder="0,00"
+                          className="pl-10"
+                          value={formData.valor}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="nome">Seu nome</Label>
+                      <Input
+                        id="nome"
+                        name="nome"
+                        placeholder="Como você quer ser identificado"
+                        value={formData.nome}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="mensagem">Mensagem (opcional)</Label>
+                      <Textarea
+                        id="mensagem"
+                        name="mensagem"
+                        placeholder="Deixe uma mensagem de apoio"
+                        value={formData.mensagem}
+                        onChange={handleInputChange}
+                        className="resize-none"
+                        rows={3}
+                      />
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="anonimo"
+                        checked={formData.anonimo}
+                        onCheckedChange={handleCheckboxChange}
+                      />
+                      <Label htmlFor="anonimo">Contribuir anonimamente</Label>
+                    </div>
+
+                    <Button type="submit" className="w-full bg-church-700 hover:bg-church-800">
+                      Confirmar contribuição
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+
             {/* Descrição e detalhes */}
             <div className="md:col-span-2">
               <Card>
@@ -343,102 +440,7 @@ const ContribuicaoDetalhe = () => {
                 </CardContent>
               </Card>
             </div>
-            
-            {/* Área de doação */}
-            <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle>Contribuir</CardTitle>
-                  <CardDescription>Faça sua doação para esta campanha</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {/* QR Code e chave PIX */}
-                  <div className="mb-6">
-                    <p className="text-sm mb-3">Escaneie o QR Code ou use a chave PIX abaixo:</p>
-                    <div className="flex justify-center my-4">
-                      <div className="bg-white p-3 border rounded-md inline-block">
-                        <img 
-                          src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" 
-                          alt="QR Code PIX" 
-                          className="w-40 h-40"
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="bg-gray-50 p-3 rounded-md">
-                      <p className="text-sm font-medium mb-1">Chave PIX:</p>
-                      <div className="flex">
-                        <p className="text-sm font-mono bg-white p-2 rounded-l border flex-1 truncate">
-                          {contribuicao?.pixKey || '12345678901'}
-                        </p>
-                        <Button 
-                          variant="outline" 
-                          className="rounded-l-none" 
-                          onClick={handleCopyPixKey}
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Formulário de contribuição */}
-                  <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="valor">Valor da contribuição</Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2">R$</span>
-                        <Input 
-                          id="valor" 
-                          name="valor" 
-                          placeholder="0,00" 
-                          className="pl-10" 
-                          value={formData.valor} 
-                          onChange={handleInputChange} 
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="nome">Seu nome</Label>
-                      <Input 
-                        id="nome" 
-                        name="nome" 
-                        placeholder="Como você quer ser identificado" 
-                        value={formData.nome} 
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="mensagem">Mensagem (opcional)</Label>
-                      <Textarea 
-                        id="mensagem" 
-                        name="mensagem" 
-                        placeholder="Deixe uma mensagem de apoio" 
-                        value={formData.mensagem} 
-                        onChange={handleInputChange}
-                        className="resize-none"
-                        rows={3}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="anonimo" 
-                        checked={formData.anonimo} 
-                        onCheckedChange={handleCheckboxChange} 
-                      />
-                      <Label htmlFor="anonimo">Contribuir anonimamente</Label>
-                    </div>
-                    
-                    <Button type="submit" className="w-full bg-church-700 hover:bg-church-800">
-                      Confirmar contribuição
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </div>
+
           </div>
         </div>
       </div>
