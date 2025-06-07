@@ -373,6 +373,16 @@ const ContribuicaoDetalhe = () => {
                       </div>
                     </div>
 
+                    <Button
+                      type="submit"
+                      className="w-full bg-church-700 hover:bg-church-800"
+                    >
+                      Confirmar contribuição
+                    </Button>
+                  </form>
+
+                  {/* ⚠️ Alerta de confirmação fora do form */}
+                  <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <div className="flex items-center gap-2">
@@ -399,7 +409,8 @@ const ContribuicaoDetalhe = () => {
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
-                  </form>
+                  </AlertDialog>
+
                 </CardContent>
               </Card>
             </div>
