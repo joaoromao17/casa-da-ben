@@ -1,21 +1,52 @@
+
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useAuth } from "@/contexts/AuthContext";
+import OracaoActionsMenu from "./OracaoActionsMenu";
+
+interface Usuario {
+  id: number;
+  name: string;
+  email: string;
+}
 
 interface OracaoCardProps {
+  id: number;
   name: string;
   date: Date;
   message: string;
   isAnonymous?: boolean;
-  category: string; // Categoria do testemunho
+  category: string;
+  usuario?: Usuario;
+  approved?: boolean;
+  onEdit?: (id: number) => void;
+  onDelete?: (id: number) => void;
+  onMarkAnswered?: (id: number) => void;
+  onCreateTestimony?: (id: number) => void;
 }
 
-const OracaoCard = ({ name, date, message, isAnonymous = false, category }: OracaoCardProps) => {
+const OracaoCard = ({ 
+  id,
+  name, 
+  date, 
+  message, 
+  isAnonymous = false, 
+  category,
+  usuario,
+  approved = false,
+  onEdit,
+  onDelete,
+  onMarkAnswered,
+  onCreateTestimony
+}: OracaoCardProps) => {
+  const { currentUser } = useAuth();
   const formattedDate = format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
   
   const displayName = isAnonymous ? "Anônimo" : name;
+  const isOwnPrayer = currentUser && usuario && currentUser.id === usuario.id;
 
   const shareOnWhatsApp = () => {
     const text = `Oração de ${displayName}: "${message}" - Compartilhado da Igreja Casa da Benção`;
@@ -31,9 +62,24 @@ const OracaoCard = ({ name, date, message, isAnonymous = false, category }: Orac
             <h3 className="font-semibold text-church-800">{displayName}</h3>
             <p className="text-sm text-gray-500">{formattedDate}</p>
           </div>
-          {/* Exibe a categoria no lugar de "Oração" */}
-          <div className="text-xs px-2 py-1 rounded-full bg-church-100 text-church-700">
-            {category} {/* Exibe o tipo de categoria */}
+          <div className="flex items-center gap-2">
+            {approved && (
+              <div className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
+                Deus respondeu
+              </div>
+            )}
+            <div className="text-xs px-2 py-1 rounded-full bg-church-100 text-church-700">
+              {category}
+            </div>
+            {isOwnPrayer && onEdit && onDelete && onMarkAnswered && onCreateTestimony && (
+              <OracaoActionsMenu
+                oracaoId={id}
+                onEdit={() => onEdit(id)}
+                onDelete={() => onDelete(id)}
+                onMarkAnswered={() => onMarkAnswered(id)}
+                onCreateTestimony={() => onCreateTestimony(id)}
+              />
+            )}
           </div>
         </div>
       </CardHeader>

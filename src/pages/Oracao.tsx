@@ -1,6 +1,8 @@
+
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import OracaoCard from "@/components/ui/OracaoCard";
+import TestimonyFormModal from "@/components/ui/TestimonyFormModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,50 +22,71 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Filter, Plus, Heart } from "lucide-react";
+import { Search, Filter, Plus, Heart, User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import api from "@/services/api";
 
-interface Oracao {
-  message: string;
+interface Usuario {
   id: number;
   name: string;
+  email: string;
+}
+
+interface Oracao {
+  id: number;
+  name: string;
+  message: string;
   date: string;
   approved: boolean;
   isAnonymous: boolean;
   category: string;
+  usuario: Usuario;
 }
 
 const Oracao = () => {
   const { toast } = useToast();
+  const { currentUser, isAuthenticated } = useAuth();
   const [oracoes, setOracoes] = useState<Oracao[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [showMyPrayers, setShowMyPrayers] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isTestimonyModalOpen, setIsTestimonyModalOpen] = useState(false);
+  const [editingOracao, setEditingOracao] = useState<Oracao | null>(null);
+  const [selectedOracaoForTestimony, setSelectedOracaoForTestimony] = useState<Oracao | null>(null);
   const [newOracao, setNewOracao] = useState({
-    name: "",
     message: "",
     isAnonymous: false,
     category: ""
   });
 
   useEffect(() => {
-    const fetchOracoes = async () => {
-      try {
-        const response = await api.get("/oracoes");
-        const unapprovedOracoes = response.data.filter((t: Oracao) => !t.approved);
-        setOracoes(unapprovedOracoes);
-      } catch (error) {
-        toast({
-          title: "Erro ao carregar orações",
-          description: "Tente novamente mais tarde.",
-          variant: "destructive"
-        });
-      }
-    };
-  
     fetchOracoes();
-  }, []);
-  
+  }, [showMyPrayers]);
+
+  const fetchOracoes = async () => {
+    try {
+      let response;
+      if (showMyPrayers && isAuthenticated) {
+        // Buscar todas as orações do usuário
+        response = await api.get("/oracoes");
+        const userOracoes = response.data.filter((o: Oracao) => 
+          o.usuario && o.usuario.id === currentUser?.id
+        );
+        setOracoes(userOracoes);
+      } else {
+        // Buscar orações públicas aprovadas
+        response = await api.get("/oracoes/public");
+        setOracoes(response.data);
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao carregar orações",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const filteredOracoes = [...oracoes]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -72,25 +95,16 @@ const Oracao = () => {
       const name = oracao.isAnonymous ? "Anônimo" : (oracao.name ?? "");
 
       const matchesSearch =
-      message.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        message.toLowerCase().includes(searchTerm.toLowerCase()) ||
         name.toLowerCase().includes(searchTerm.toLowerCase());
 
-      // Filtro por categoria
       const matchesCategory =
         selectedCategory === "" || selectedCategory === "todos" || oracao.category === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setSelectedCategory(value);
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewOracao(prev => ({ ...prev, [name]: value }));
   };
@@ -104,14 +118,15 @@ const Oracao = () => {
   };
 
   const handleSubmit = async () => {
-    if (!newOracao.isAnonymous && !newOracao.name.trim()) {
+    if (!isAuthenticated) {
       toast({
         title: "Erro",
-        description: "Por favor, insira seu nome ou marque como anônimo.",
+        description: "Você precisa estar logado para enviar uma oração.",
         variant: "destructive"
       });
       return;
     }
+
     if (!newOracao.message.trim()) {
       toast({
         title: "Erro",
@@ -122,29 +137,28 @@ const Oracao = () => {
     }
 
     try {
-      const currentDate = new Date().toISOString(); // Obtém a data atual em formato ISO
-  
-      const response = await api.post("/oracoes", {
-        name: newOracao.isAnonymous ? "Anônimo" : newOracao.name || "Membro da Igreja",
+      const payload = {
         message: newOracao.message,
         category: newOracao.category || "geral",
-        isAnonymous: newOracao.isAnonymous,
-        date: currentDate
-      });
+        isAnonymous: newOracao.isAnonymous
+      };
 
-      setOracoes([response.data, ...oracoes]);
-      toast({
-        title: "Oração compartilhado",
-        description: "Sua oração foi enviado com sucesso!"
-      });
+      if (editingOracao) {
+        await api.put(`/oracoes/${editingOracao.id}`, payload);
+        toast({
+          title: "Oração atualizada",
+          description: "Sua oração foi atualizada com sucesso!"
+        });
+      } else {
+        await api.post("/oracoes", payload);
+        toast({
+          title: "Oração enviada",
+          description: "Sua oração foi enviada com sucesso!"
+        });
+      }
 
-      setNewOracao({
-        name: "",
-        message: "",
-        isAnonymous: false,
-        category: ""
-      });
-
+      fetchOracoes();
+      resetForm();
       setIsDialogOpen(false);
     } catch (error) {
       toast({
@@ -153,6 +167,112 @@ const Oracao = () => {
         variant: "destructive"
       });
     }
+  };
+
+  const resetForm = () => {
+    setNewOracao({
+      message: "",
+      isAnonymous: false,
+      category: ""
+    });
+    setEditingOracao(null);
+  };
+
+  const handleEdit = (id: number) => {
+    const oracao = oracoes.find(o => o.id === id);
+    if (oracao) {
+      setEditingOracao(oracao);
+      setNewOracao({
+        message: oracao.message,
+        isAnonymous: oracao.isAnonymous,
+        category: oracao.category
+      });
+      setIsDialogOpen(true);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await api.delete(`/oracoes/${id}`);
+      toast({
+        title: "Oração excluída",
+        description: "Sua oração foi excluída com sucesso."
+      });
+      fetchOracoes();
+    } catch (error) {
+      toast({
+        title: "Erro ao excluir",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleMarkAnswered = async (id: number) => {
+    try {
+      await api.delete(`/oracoes/${id}`);
+      toast({
+        title: "Oração concluída",
+        description: "Que alegria saber que Deus respondeu sua oração!"
+      });
+      fetchOracoes();
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleCreateTestimony = (id: number) => {
+    const oracao = oracoes.find(o => o.id === id);
+    if (oracao) {
+      setSelectedOracaoForTestimony(oracao);
+      setIsTestimonyModalOpen(true);
+    }
+  };
+
+  const handleTestimonySubmit = async (testimony: {
+    message: string;
+    category: string;
+    isAnonymous: boolean;
+  }) => {
+    try {
+      await api.post("/testemunhos", testimony);
+      
+      // Marcar oração como respondida/excluir
+      if (selectedOracaoForTestimony) {
+        await api.delete(`/oracoes/${selectedOracaoForTestimony.id}`);
+      }
+      
+      toast({
+        title: "Testemunho compartilhado",
+        description: "Seu testemunho foi compartilhado e sua oração foi concluída!"
+      });
+      
+      fetchOracoes();
+      setSelectedOracaoForTestimony(null);
+    } catch (error) {
+      toast({
+        title: "Erro ao compartilhar testemunho",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openNewPrayerDialog = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login necessário",
+        description: "Você precisa estar logado para compartilhar uma oração.",
+        variant: "destructive"
+      });
+      return;
+    }
+    resetForm();
+    setIsDialogOpen(true);
   };
 
   return (
@@ -173,13 +293,24 @@ const Oracao = () => {
               placeholder="Pesquisar orações..."
               className="pl-10"
               value={searchTerm}
-              onChange={handleSearch}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
           <div className="flex gap-2">
+            {isAuthenticated && (
+              <Button
+                variant={showMyPrayers ? "default" : "outline"}
+                onClick={() => setShowMyPrayers(!showMyPrayers)}
+                className={showMyPrayers ? "bg-church-700 hover:bg-church-800" : ""}
+              >
+                <User size={18} className="mr-2" />
+                Meus pedidos
+              </Button>
+            )}
+            
             <div className="w-full md:w-48">
-              <Select value={selectedCategory} onValueChange={handleCategoryChange}>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger>
                   <div className="flex items-center gap-2">
                     <Filter size={18} />
@@ -196,10 +327,9 @@ const Oracao = () => {
                   <SelectItem value="geral">Geral</SelectItem>
                 </SelectContent>
               </Select>
-
             </div>
 
-            <Button className="bg-church-700 hover:bg-church-800" onClick={() => setIsDialogOpen(true)}>
+            <Button className="bg-church-700 hover:bg-church-800" onClick={openNewPrayerDialog}>
               <Plus size={18} className="mr-2" /> Compartilhar
             </Button>
           </div>
@@ -211,22 +341,31 @@ const Oracao = () => {
             {filteredOracoes.map((oracao) => (
               <OracaoCard
                 key={oracao.id}
+                id={oracao.id}
                 name={oracao.name}
                 date={new Date(oracao.date)}
                 message={oracao.message}
                 isAnonymous={oracao.isAnonymous}
                 category={oracao.category}
+                usuario={oracao.usuario}
+                approved={oracao.approved}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onMarkAnswered={handleMarkAnswered}
+                onCreateTestimony={handleCreateTestimony}
               />
             ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-600">Nenhuma oração encontrado.</p>
+            <p className="text-xl text-gray-600">
+              {showMyPrayers ? "Você ainda não tem pedidos de oração." : "Nenhuma oração encontrada."}
+            </p>
             <Button
               className="mt-4 bg-church-700 hover:bg-church-800"
-              onClick={() => setIsDialogOpen(true)}
+              onClick={openNewPrayerDialog}
             >
-              Seja o primeiro a compartilhar
+              {showMyPrayers ? "Compartilhar primeira oração" : "Seja o primeiro a compartilhar"}
             </Button>
           </div>
         )}
@@ -242,26 +381,22 @@ const Oracao = () => {
           </p>
           <Button
             className="bg-church-700 hover:bg-church-800"
-            onClick={() => setIsDialogOpen(true)}
+            onClick={openNewPrayerDialog}
           >
             Compartilhe sua Oração
           </Button>
         </div>
       </div>
 
-      {/* Dialog para adicionar oração */}
+      {/* Dialog para adicionar/editar oração */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Compartilhe sua Oração</DialogTitle>
+            <DialogTitle>
+              {editingOracao ? "Editar Oração" : "Compartilhe sua Oração"}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
-            <Input
-              name="name"
-              placeholder="Seu nome"
-              value={newOracao.name}
-              onChange={handleInputChange}
-            />
             <Select
               value={newOracao.category}
               onValueChange={handleCategorySelect}
@@ -280,7 +415,7 @@ const Oracao = () => {
             </Select>
             <Textarea
               name="message"
-              placeholder="Compartilhe como Deus agiu em sua vida..."
+              placeholder="Compartilhe seu pedido de oração..."
               className="h-32"
               value={newOracao.message}
               onChange={handleInputChange}
@@ -307,13 +442,24 @@ const Oracao = () => {
               className="bg-church-700 hover:bg-church-800"
               onClick={handleSubmit}
             >
-              Compartilhar
+              {editingOracao ? "Atualizar" : "Compartilhar"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
+      {/* Modal de testemunho */}
+      <TestimonyFormModal
+        isOpen={isTestimonyModalOpen}
+        onClose={() => {
+          setIsTestimonyModalOpen(false);
+          setSelectedOracaoForTestimony(null);
+        }}
+        onSubmit={handleTestimonySubmit}
+        oracaoMessage={selectedOracaoForTestimony?.message}
+      />
     </Layout>
   );
 };
+
 export default Oracao;
