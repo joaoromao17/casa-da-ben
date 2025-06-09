@@ -12,44 +12,37 @@ export const useCurrentUser = () => {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-    
-    if (!token) {
-      setIsLoading(false);
-      return;
-    }
+useEffect(() => {
+  const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 
+  if (!token) {
+    setIsLoading(false);
+    return;
+  }
+
+  const fetchUser = async () => {
     try {
-      const payload = token.split(".")[1];
-      const decodedPayload = JSON.parse(atob(payload));
-      
-      console.log('Decoded JWT payload:', decodedPayload);
-      
-      // Extrai o email do campo 'sub' e outros dados disponíveis
-      const userEmail = decodedPayload.sub || decodedPayload.email || "";
-      const userId = decodedPayload.userId || decodedPayload.id || 0;
-      
-      setCurrentUser({
-        id: Number(userId) || 0,
-        name: decodedPayload.name || "",
-        email: userEmail,
-        roles: decodedPayload.roles || []
+      const response = await fetch("http://localhost:8080/api/users/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
-      console.log('Current user set to:', {
-        id: Number(userId) || 0,
-        name: decodedPayload.name || "",
-        email: userEmail,
-        roles: decodedPayload.roles || []
-      });
-      
+
+      if (!response.ok) throw new Error("Erro ao buscar usuário");
+
+      const user = await response.json();
+      setCurrentUser(user); // Já virá com id, name, email, roles
+      console.log("Usuário logado via /users/profile:", user);
     } catch (error) {
-      console.error("Error decoding token:", error);
+      console.error("Erro ao buscar usuário atual:", error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
+
+  fetchUser();
+}, []);
+
 
   return { currentUser, isLoading };
 };

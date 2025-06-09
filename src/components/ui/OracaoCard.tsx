@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import OracaoActionsMenu from "./OracaoActionsMenu";
 
 interface Usuario {
