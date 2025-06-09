@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import OracaoCard from "@/components/ui/OracaoCard";
@@ -68,12 +67,9 @@ const Oracao = () => {
     try {
       let response;
       if (showMyPrayers && isAuthenticated) {
-        // Buscar todas as orações do usuário
-        response = await api.get("/oracoes");
-        const userOracoes = response.data.filter((o: Oracao) => 
-          o.usuario && o.usuario.id === currentUser?.id
-        );
-        setOracoes(userOracoes);
+        // Buscar orações do usuário usando endpoint dedicado
+        response = await api.get("/oracoes/minhas");
+        setOracoes(response.data);
       } else {
         // Buscar orações públicas não respondidas
         response = await api.get("/oracoes/pedidos");
