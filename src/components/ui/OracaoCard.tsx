@@ -21,7 +21,7 @@ interface OracaoCardProps {
   isAnonymous?: boolean;
   category: string;
   usuario?: Usuario;
-  approved?: boolean;
+  responded?: boolean;
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
   onMarkAnswered?: (id: number) => void;
@@ -36,7 +36,7 @@ const OracaoCard = ({
   isAnonymous = false, 
   category,
   usuario,
-  approved = false,
+  responded = false,
   onEdit,
   onDelete,
   onMarkAnswered,
@@ -63,7 +63,7 @@ const OracaoCard = ({
             <p className="text-sm text-gray-500">{formattedDate}</p>
           </div>
           <div className="flex items-center gap-2">
-            {approved && (
+            {responded && (
               <div className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
                 Deus respondeu
               </div>

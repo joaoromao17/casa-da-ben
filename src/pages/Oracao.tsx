@@ -37,7 +37,7 @@ interface Oracao {
   name: string;
   message: string;
   date: string;
-  approved: boolean;
+  responded: boolean;
   isAnonymous: boolean;
   category: string;
   usuario: Usuario;
@@ -75,8 +75,8 @@ const Oracao = () => {
         );
         setOracoes(userOracoes);
       } else {
-        // Buscar orações públicas aprovadas
-        response = await api.get("/oracoes/public");
+        // Buscar orações públicas não respondidas
+        response = await api.get("/oracoes/pedidos");
         setOracoes(response.data);
       }
     } catch (error) {
@@ -140,7 +140,7 @@ const Oracao = () => {
       const payload = {
         message: newOracao.message,
         category: newOracao.category || "geral",
-        isAnonymous: newOracao.isAnonymous
+        name: newOracao.isAnonymous ? "Anônimo" : undefined
       };
 
       if (editingOracao) {
@@ -210,9 +210,9 @@ const Oracao = () => {
 
   const handleMarkAnswered = async (id: number) => {
     try {
-      await api.delete(`/oracoes/${id}`);
+      await api.put(`/oracoes/${id}/responder`);
       toast({
-        title: "Oração concluída",
+        title: "Oração respondida",
         description: "Que alegria saber que Deus respondeu sua oração!"
       });
       fetchOracoes();
@@ -241,14 +241,14 @@ const Oracao = () => {
     try {
       await api.post("/testemunhos", testimony);
       
-      // Marcar oração como respondida/excluir
+      // Marcar oração como respondida
       if (selectedOracaoForTestimony) {
-        await api.delete(`/oracoes/${selectedOracaoForTestimony.id}`);
+        await api.put(`/oracoes/${selectedOracaoForTestimony.id}/responder`);
       }
       
       toast({
         title: "Testemunho compartilhado",
-        description: "Seu testemunho foi compartilhado e sua oração foi concluída!"
+        description: "Seu testemunho foi compartilhado e sua oração foi marcada como respondida!"
       });
       
       fetchOracoes();
@@ -348,7 +348,7 @@ const Oracao = () => {
                 isAnonymous={oracao.isAnonymous}
                 category={oracao.category}
                 usuario={oracao.usuario}
-                approved={oracao.approved}
+                responded={oracao.responded}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
                 onMarkAnswered={handleMarkAnswered}
