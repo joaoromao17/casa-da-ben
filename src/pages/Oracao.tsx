@@ -453,6 +453,8 @@ const Oracao = () => {
         }}
         onSubmit={handleTestimonySubmit}
         oracaoMessage={selectedOracaoForTestimony?.message}
+        oracaoCategory={selectedOracaoForTestimony?.category}
+        oracaoIsAnonymous={selectedOracaoForTestimony?.isAnonymous}
       />
     </Layout>
   );

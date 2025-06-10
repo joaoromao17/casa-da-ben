@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,15 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-import { useState } from "react";
 
 interface TestimonyFormModalProps {
   isOpen: boolean;
@@ -27,96 +19,81 @@ interface TestimonyFormModalProps {
     isAnonymous: boolean;
   }) => void;
   oracaoMessage?: string;
+  oracaoCategory?: string;
+  oracaoIsAnonymous?: boolean;
 }
 
-const TestimonyFormModal = ({ 
-  isOpen, 
-  onClose, 
-  onSubmit, 
-  oracaoMessage 
+const TestimonyFormModal = ({
+  isOpen,
+  onClose,
+  onSubmit,
+  oracaoMessage = "",
+  oracaoCategory = "geral",
+  oracaoIsAnonymous = false
 }: TestimonyFormModalProps) => {
-  const [testimony, setTestimony] = useState({
-    message: "",
-    category: "",
-    isAnonymous: false
-  });
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (isOpen && oracaoMessage) {
+      setMessage(oracaoMessage);
+    }
+  }, [isOpen, oracaoMessage]);
 
   const handleSubmit = () => {
-    if (!testimony.message.trim()) return;
-    
-    onSubmit(testimony);
-    setTestimony({
-      message: "",
-      category: "",
-      isAnonymous: false
+    if (!message.trim()) {
+      return;
+    }
+
+    onSubmit({
+      message: message.trim(),
+      category: oracaoCategory,
+      isAnonymous: oracaoIsAnonymous
     });
+
+    setMessage("");
+    onClose();
+  };
+
+  const handleClose = () => {
+    setMessage("");
     onClose();
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Compartilhe seu Testemunho</DialogTitle>
+          <DialogTitle>Compartilhe seu testemunho</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
-          {oracaoMessage && (
-            <div className="p-3 bg-church-50 rounded-lg border-l-4 border-church-700">
-              <p className="text-sm text-gray-600 mb-1">Sua oração:</p>
-              <p className="text-sm font-medium">{oracaoMessage}</p>
-            </div>
-          )}
-          
-          <Select
-            value={testimony.category}
-            onValueChange={(value) => setTestimony(prev => ({ ...prev, category: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Categoria do testemunho" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="cura">Cura</SelectItem>
-              <SelectItem value="milagre">Milagre</SelectItem>
-              <SelectItem value="provisão">Provisão</SelectItem>
-              <SelectItem value="libertação">Libertação</SelectItem>
-              <SelectItem value="família">Família</SelectItem>
-              <SelectItem value="geral">Geral</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Textarea
-            placeholder="Conte como Deus respondeu sua oração..."
-            className="h-32"
-            value={testimony.message}
-            onChange={(e) => setTestimony(prev => ({ ...prev, message: e.target.value }))}
-          />
-          
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="isAnonymous"
-              checked={testimony.isAnonymous}
-              onCheckedChange={(checked) => 
-                setTestimony(prev => ({ ...prev, isAnonymous: !!checked }))
-              }
-            />
-            <label
-              htmlFor="isAnonymous"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Compartilhar anonimamente
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-2 block">
+              Sua mensagem de testemunho:
             </label>
+            <Textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Compartilhe como Deus respondeu sua oração..."
+              className="h-32"
+            />
+          </div>
+          <div className="text-xs text-gray-500">
+            {oracaoIsAnonymous ? 
+              "Este testemunho será compartilhado anonimamente" : 
+              "Este testemunho será compartilhado com seu nome"
+            }
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={handleClose}>
             Cancelar
           </Button>
           <Button
             className="bg-church-700 hover:bg-church-800"
             onClick={handleSubmit}
-            disabled={!testimony.message.trim()}
+            disabled={!message.trim()}
           >
-            Compartilhar Testemunho
+            Contar Testemunho
           </Button>
         </DialogFooter>
       </DialogContent>

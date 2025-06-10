@@ -21,9 +21,15 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Search, Filter, Plus, Heart } from "lucide-react";
+import { Search, Filter, Plus, Heart, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import api from "@/services/api";
+
+interface Usuario {
+  id: number;
+  name: string;
+  email: string;
+}
 
 interface Testimony {
   message: string;
@@ -33,15 +39,18 @@ interface Testimony {
   responded?: boolean;
   isAnonymous: boolean;
   category: string;
+  usuario?: Usuario;
 }
 
 const Testemunhos = () => {
   const { toast } = useToast();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, currentUser } = useAuth();
   const [testimonies, setTestimonies] = useState<Testimony[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [showMyTestimonies, setShowMyTestimonies] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingTestimony, setEditingTestimony] = useState<Testimony | null>(null);
   const [newTestimony, setNewTestimony] = useState({
     message: "",
     isAnonymous: false,
@@ -49,21 +58,27 @@ const Testemunhos = () => {
   });
 
   useEffect(() => {
-    const fetchTestimonies = async () => {
-      try {
-        const response = await api.get("/testemunhos");
-        setTestimonies(response.data);
-      } catch (error) {
-        toast({
-          title: "Erro ao carregar testemunhos",
-          description: "Tente novamente mais tarde.",
-          variant: "destructive"
-        });
-      }
-    };
-
     fetchTestimonies();
-  }, []);
+  }, [showMyTestimonies]);
+
+  const fetchTestimonies = async () => {
+    try {
+      let response;
+      if (showMyTestimonies && isAuthenticated) {
+        response = await api.get("/testemunhos/minhas");
+        setTestimonies(response.data);
+      } else {
+        response = await api.get("/testemunhos");
+        setTestimonies(response.data);
+      }
+    } catch (error) {
+      toast({
+        title: "Erro ao carregar testemunhos",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const filteredTestimonies = [...testimonies]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -75,7 +90,6 @@ const Testemunhos = () => {
       message.toLowerCase().includes(searchTerm.toLowerCase()) ||
         name.toLowerCase().includes(searchTerm.toLowerCase());
 
-      // Filtro por categoria
       const matchesCategory =
         selectedCategory === "" || selectedCategory === "todos" || testimony.category === selectedCategory;
 
@@ -129,24 +143,65 @@ const Testemunhos = () => {
         name: newTestimony.isAnonymous ? "Anônimo" : undefined
       };
 
-      const response = await api.post("/testemunhos", payload);
+      if (editingTestimony) {
+        await api.put(`/testemunhos/${editingTestimony.id}`, payload);
+        toast({
+          title: "Testemunho atualizado",
+          description: "Seu testemunho foi atualizado com sucesso!"
+        });
+      } else {
+        await api.post("/testemunhos", payload);
+        toast({
+          title: "Testemunho compartilhado",
+          description: "Seu testemunho foi enviado com sucesso!"
+        });
+      }
 
-      setTestimonies([response.data, ...testimonies]);
-      toast({
-        title: "Testemunho compartilhado",
-        description: "Seu testemunho foi enviado com sucesso!"
-      });
-
-      setNewTestimony({
-        message: "",
-        isAnonymous: false,
-        category: ""
-      });
-
+      fetchTestimonies();
+      resetForm();
       setIsDialogOpen(false);
     } catch (error) {
       toast({
         title: "Erro ao enviar",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const resetForm = () => {
+    setNewTestimony({
+      message: "",
+      isAnonymous: false,
+      category: ""
+    });
+    setEditingTestimony(null);
+  };
+
+  const handleEdit = (id: number) => {
+    const testimony = testimonies.find(t => t.id === id);
+    if (testimony) {
+      setEditingTestimony(testimony);
+      setNewTestimony({
+        message: testimony.message,
+        isAnonymous: testimony.isAnonymous,
+        category: testimony.category
+      });
+      setIsDialogOpen(true);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await api.delete(`/testemunhos/${id}`);
+      toast({
+        title: "Testemunho excluído",
+        description: "Seu testemunho foi excluído com sucesso."
+      });
+      fetchTestimonies();
+    } catch (error) {
+      toast({
+        title: "Erro ao excluir",
         description: "Tente novamente mais tarde.",
         variant: "destructive"
       });
@@ -162,6 +217,7 @@ const Testemunhos = () => {
       });
       return;
     }
+    resetForm();
     setIsDialogOpen(true);
   };
 
@@ -188,6 +244,17 @@ const Testemunhos = () => {
           </div>
 
           <div className="flex gap-2">
+            {isAuthenticated && (
+              <Button
+                variant={showMyTestimonies ? "default" : "outline"}
+                onClick={() => setShowMyTestimonies(!showMyTestimonies)}
+                className={showMyTestimonies ? "bg-church-700 hover:bg-church-800" : ""}
+              >
+                <User size={18} className="mr-2" />
+                Meus testemunhos
+              </Button>
+            )}
+
             <div className="w-full md:w-48">
               <Select value={selectedCategory} onValueChange={handleCategoryChange}>
                 <SelectTrigger>
@@ -221,23 +288,29 @@ const Testemunhos = () => {
             {filteredTestimonies.map((testimony) => (
               <TestimonyCard
                 key={testimony.id}
+                id={testimony.id}
                 name={testimony.name}
                 date={new Date(testimony.date)}
                 message={testimony.message}
                 isAnonymous={testimony.isAnonymous}
                 category={testimony.category}
+                usuario={testimony.usuario}
                 responded={testimony.responded}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
               />
             ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-600">Nenhum testemunho encontrado.</p>
+            <p className="text-xl text-gray-600">
+              {showMyTestimonies ? "Você ainda não tem testemunhos." : "Nenhum testemunho encontrado."}
+            </p>
             <Button
               className="mt-4 bg-church-700 hover:bg-church-800"
               onClick={openDialog}
             >
-              Seja o primeiro a compartilhar
+              {showMyTestimonies ? "Compartilhar primeiro testemunho" : "Seja o primeiro a compartilhar"}
             </Button>
           </div>
         )}
@@ -260,11 +333,13 @@ const Testemunhos = () => {
         </div>
       </div>
 
-      {/* Dialog para adicionar testemunho */}
+      {/* Dialog para adicionar/editar testemunho */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Compartilhe seu testemunho</DialogTitle>
+            <DialogTitle>
+              {editingTestimony ? "Editar Testemunho" : "Compartilhe seu testemunho"}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <Select
@@ -312,7 +387,7 @@ const Testemunhos = () => {
               className="bg-church-700 hover:bg-church-800"
               onClick={handleSubmit}
             >
-              Compartilhar
+              {editingTestimony ? "Atualizar" : "Compartilhar"}
             </Button>
           </DialogFooter>
         </DialogContent>

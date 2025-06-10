@@ -4,26 +4,44 @@ import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useAuth } from "@/hooks/useAuth";
+import TestimonyActionsMenu from "./TestimonyActionsMenu";
+
+interface Usuario {
+  id: number;
+  name: string;
+  email: string;
+}
 
 interface TestimonyCardProps {
+  id: number;
   name: string;
   date: Date;
   message: string;
   isAnonymous?: boolean;
   category: string;
+  usuario?: Usuario;
   responded?: boolean;
+  onEdit?: (id: number) => void;
+  onDelete?: (id: number) => void;
 }
 
 const TestimonyCard = ({ 
+  id,
   name, 
   date, 
   message, 
   isAnonymous = false, 
   category,
-  responded = false
+  usuario,
+  responded = false,
+  onEdit,
+  onDelete
 }: TestimonyCardProps) => {
+  const { currentUser } = useAuth();
   const formattedDate = format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
   const displayName = isAnonymous ? "Anônimo" : name;
+  const isOwnTestimony = currentUser && usuario && currentUser.id === usuario.id;
 
   const shareOnWhatsApp = () => {
     const text = `Testemunho de ${displayName}: "${message}" - Compartilhado da Igreja Casa da Benção`;
@@ -48,6 +66,13 @@ const TestimonyCard = ({
             <div className="text-xs px-2 py-1 rounded-full bg-church-100 text-church-700">
               {category}
             </div>
+            {isOwnTestimony && onEdit && onDelete && (
+              <TestimonyActionsMenu
+                testimonyId={id}
+                onEdit={() => onEdit(id)}
+                onDelete={() => onDelete(id)}
+              />
+            )}
           </div>
         </div>
       </CardHeader>
