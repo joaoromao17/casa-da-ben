@@ -22,6 +22,14 @@ interface Usuario {
   email: string;
 }
 
+interface OracaoOriginal {
+  id: number;
+  name: string;
+  message: string;
+  date: string;
+  category: string;
+}
+
 interface Testemunho {
   id: number;
   name: string;
@@ -31,6 +39,7 @@ interface Testemunho {
   isAnonymous: boolean;
   responded: boolean;
   usuario: Usuario;
+  oracaoOriginal?: OracaoOriginal;
 }
 
 const Testemunhos = () => {
@@ -148,6 +157,28 @@ const Testemunhos = () => {
     setIsTestimonyModalOpen(true);
   };
 
+  const showMyTestimonies = async () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login necessário",
+        description: "Você precisa estar logado para ver seus testemunhos.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const response = await api.get("/testemunhos/minhas");
+      setTestimonies(response.data);
+    } catch (error) {
+      toast({
+        title: "Erro ao carregar seus testemunhos",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <Layout>
       <div className="container-church py-12">
@@ -211,6 +242,7 @@ const Testemunhos = () => {
                 category={testimony.category}
                 usuario={testimony.usuario}
                 responded={testimony.responded}
+                oracaoOriginal={testimony.oracaoOriginal}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
               />
@@ -259,6 +291,7 @@ const Testemunhos = () => {
         oracaoMessage={editingTestimony?.message}
         oracaoCategory={editingTestimony?.category}
         oracaoIsAnonymous={editingTestimony?.isAnonymous}
+        isFromPrayer={false}
       />
     </Layout>
   );

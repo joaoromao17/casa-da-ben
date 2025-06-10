@@ -9,6 +9,14 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 interface TestimonyFormModalProps {
   isOpen: boolean;
@@ -22,6 +30,7 @@ interface TestimonyFormModalProps {
   oracaoCategory?: string;
   oracaoIsAnonymous?: boolean;
   oracaoId?: number;
+  isFromPrayer?: boolean; // Nova prop para detectar se vem de uma oração
 }
 
 const TestimonyFormModal = ({
@@ -31,15 +40,28 @@ const TestimonyFormModal = ({
   oracaoMessage = "",
   oracaoCategory = "geral",
   oracaoIsAnonymous = false,
-  oracaoId
+  oracaoId,
+  isFromPrayer = false
 }: TestimonyFormModalProps) => {
   const [message, setMessage] = useState("");
+  const [category, setCategory] = useState("geral");
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   useEffect(() => {
-    if (isOpen && oracaoMessage) {
-      setMessage(oracaoMessage);
+    if (isOpen) {
+      if (isFromPrayer && oracaoMessage) {
+        // Vindo de uma oração - usar dados da oração
+        setMessage(oracaoMessage);
+        setCategory(oracaoCategory);
+        setIsAnonymous(oracaoIsAnonymous);
+      } else {
+        // Testemunho novo na página de testemunhos - limpar campos
+        setMessage("");
+        setCategory("geral");
+        setIsAnonymous(false);
+      }
     }
-  }, [isOpen, oracaoMessage]);
+  }, [isOpen, isFromPrayer, oracaoMessage, oracaoCategory, oracaoIsAnonymous]);
 
   const handleSubmit = () => {
     if (!message.trim()) {
@@ -48,16 +70,24 @@ const TestimonyFormModal = ({
 
     onSubmit({
       message: message.trim(),
-      category: oracaoCategory,
-      isAnonymous: oracaoIsAnonymous
+      category: isFromPrayer ? oracaoCategory : category,
+      isAnonymous: isFromPrayer ? oracaoIsAnonymous : isAnonymous
     }, oracaoId);
 
-    setMessage("");
+    if (!isFromPrayer) {
+      setMessage("");
+      setCategory("geral");
+      setIsAnonymous(false);
+    }
     onClose();
   };
 
   const handleClose = () => {
-    setMessage("");
+    if (!isFromPrayer) {
+      setMessage("");
+      setCategory("geral");
+      setIsAnonymous(false);
+    }
     onClose();
   };
 
@@ -65,26 +95,76 @@ const TestimonyFormModal = ({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Compartilhe seu testemunho</DialogTitle>
+          <DialogTitle>
+            {isFromPrayer ? "Compartilhe seu testemunho" : "Novo Testemunho"}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
+          {isFromPrayer && (
+            <div className="p-3 bg-church-50 rounded-lg border">
+              <p className="text-sm font-medium text-church-700 mb-1">
+                Sua oração:
+              </p>
+              <p className="text-sm text-gray-600">
+                {oracaoMessage}
+              </p>
+            </div>
+          )}
+
+          {!isFromPrayer && (
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                Categoria do testemunho:
+              </label>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione uma categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cura">Cura</SelectItem>
+                  <SelectItem value="família">Família</SelectItem>
+                  <SelectItem value="provisão">Provisão</SelectItem>
+                  <SelectItem value="libertação">Libertação</SelectItem>
+                  <SelectItem value="milagre">Milagre</SelectItem>
+                  <SelectItem value="geral">Geral</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Sua mensagem de testemunho:
+              {isFromPrayer ? "Edite sua mensagem de testemunho:" : "Sua mensagem de testemunho:"}
             </label>
             <Textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Compartilhe como Deus respondeu sua oração..."
+              placeholder={isFromPrayer ? "Edite como quiser compartilhar seu testemunho..." : "Compartilhe como Deus tem agido em sua vida..."}
               className="h-32"
             />
           </div>
-          <div className="text-xs text-gray-500">
-            {oracaoIsAnonymous ? 
-              "Este testemunho será compartilhado anonimamente" : 
-              "Este testemunho será compartilhado com seu nome"
-            }
-          </div>
+
+          {!isFromPrayer && (
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="anonymous"
+                checked={isAnonymous}
+                onCheckedChange={(checked) => setIsAnonymous(checked as boolean)}
+              />
+              <label htmlFor="anonymous" className="text-sm text-gray-700">
+                Compartilhar anonimamente
+              </label>
+            </div>
+          )}
+
+          {isFromPrayer && (
+            <div className="text-xs text-gray-500">
+              {oracaoIsAnonymous ? 
+                "Este testemunho será compartilhado anonimamente" : 
+                "Este testemunho será compartilhado com seu nome"
+              }
+            </div>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={handleClose}>
