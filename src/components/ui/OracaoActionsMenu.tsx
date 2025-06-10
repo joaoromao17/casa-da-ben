@@ -15,14 +15,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, Edit, Trash2, CheckCircle } from "lucide-react";
 import { useState } from "react";
@@ -43,21 +35,6 @@ const OracaoActionsMenu = ({
   onCreateTestimony
 }: OracaoActionsMenuProps) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
-  const [showAnsweredDialog, setShowAnsweredDialog] = useState(false);
-
-  const handleAnswered = () => {
-    setShowAnsweredDialog(true);
-  };
-
-  const handleAnsweredWithTestimony = () => {
-    setShowAnsweredDialog(false);
-    onCreateTestimony();
-  };
-
-  const handleAnsweredWithoutTestimony = () => {
-    setShowAnsweredDialog(false);
-    onMarkAnswered();
-  };
 
   return (
     <>
@@ -72,9 +49,9 @@ const OracaoActionsMenu = ({
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleAnswered}>
+          <DropdownMenuItem onClick={onMarkAnswered}>
             <CheckCircle className="mr-2 h-4 w-4" />
-            Já fui respondido
+            Fui Respondido
           </DropdownMenuItem>
           <DropdownMenuItem 
             onClick={() => setShowDeleteAlert(true)}
@@ -102,25 +79,6 @@ const OracaoActionsMenu = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      <Dialog open={showAnsweredDialog} onOpenChange={setShowAnsweredDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Deus respondeu sua oração!</DialogTitle>
-            <DialogDescription>
-              Que alegria saber que Deus respondeu sua oração! Você gostaria de compartilhar um testemunho sobre isso?
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex-col sm:flex-row gap-2">
-            <Button variant="outline" onClick={handleAnsweredWithoutTestimony}>
-              Concluir sem testemunho
-            </Button>
-            <Button onClick={handleAnsweredWithTestimony} className="bg-church-700 hover:bg-church-800">
-              Contar testemunho
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };

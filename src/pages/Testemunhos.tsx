@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import TestimonyCard from "@/components/ui/TestimonyCard";
@@ -50,6 +51,7 @@ const Testemunhos = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [isTestimonyModalOpen, setIsTestimonyModalOpen] = useState(false);
   const [editingTestimony, setEditingTestimony] = useState<Testemunho | null>(null);
+  const [showMyTestimonies, setShowMyTestimonies] = useState(false);
 
   useEffect(() => {
     fetchTestimonies();
@@ -57,7 +59,8 @@ const Testemunhos = () => {
 
   const fetchTestimonies = async () => {
     try {
-      const response = await api.get("/testemunhos");
+      const endpoint = showMyTestimonies ? "/testemunhos/minhas" : "/testemunhos";
+      const response = await api.get(endpoint);
       setTestimonies(response.data);
     } catch (error) {
       toast({
@@ -67,6 +70,10 @@ const Testemunhos = () => {
       });
     }
   };
+
+  useEffect(() => {
+    fetchTestimonies();
+  }, [showMyTestimonies]);
 
   const filteredTestimonies = [...testimonies]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -90,29 +97,36 @@ const Testemunhos = () => {
     isAnonymous: boolean;
   }, oracaoId?: number) => {
     try {
-      if (oracaoId) {
-        // This shouldn't happen in Testemunhos page, but keeping for consistency
-        await api.post(`/testemunhos/from-oracao/${oracaoId}`, {
-          message: testimony.message
+      const payload: any = {
+        message: testimony.message,
+        category: testimony.category,
+      };
+
+      if (testimony.isAnonymous) {
+        payload.name = "Anônimo";
+      }
+
+      if (editingTestimony) {
+        // Edição - fazer PUT em vez de POST
+        await api.put(`/testemunhos/${editingTestimony.id}`, payload);
+        toast({
+          title: "Testemunho atualizado",
+          description: "Seu testemunho foi atualizado com sucesso!"
         });
       } else {
-        // Regular testimony creation
-        await api.post("/testemunhos", {
-          message: testimony.message,
-          category: testimony.category,
-          name: testimony.isAnonymous ? "Anônimo" : undefined
+        // Criação nova
+        await api.post("/testemunhos", payload);
+        toast({
+          title: "Testemunho compartilhado",
+          description: "Seu testemunho foi compartilhado com sucesso!"
         });
       }
 
-      toast({
-        title: "Testemunho compartilhado",
-        description: "Seu testemunho foi compartilhado com sucesso!"
-      });
-
       fetchTestimonies();
+      setEditingTestimony(null);
     } catch (error) {
       toast({
-        title: "Erro ao compartilhar testemunho",
+        title: editingTestimony ? "Erro ao atualizar testemunho" : "Erro ao compartilhar testemunho",
         description: "Tente novamente mais tarde.",
         variant: "destructive"
       });
@@ -157,28 +171,6 @@ const Testemunhos = () => {
     setIsTestimonyModalOpen(true);
   };
 
-  const showMyTestimonies = async () => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Login necessário",
-        description: "Você precisa estar logado para ver seus testemunhos.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const response = await api.get("/testemunhos/minhas");
-      setTestimonies(response.data);
-    } catch (error) {
-      toast({
-        title: "Erro ao carregar seus testemunhos",
-        description: "Tente novamente mais tarde.",
-        variant: "destructive"
-      });
-    }
-  };
-
   return (
     <Layout>
       <div className="container-church py-12">
@@ -221,6 +213,16 @@ const Testemunhos = () => {
                 </SelectContent>
               </Select>
             </div>
+
+            {isAuthenticated && (
+              <Button
+                variant={showMyTestimonies ? "default" : "outline"}
+                className={showMyTestimonies ? "bg-church-700 hover:bg-church-800" : ""}
+                onClick={() => setShowMyTestimonies(!showMyTestimonies)}
+              >
+                {showMyTestimonies ? "Todos os Testemunhos" : "Meus Testemunhos"}
+              </Button>
+            )}
 
             <Button className="bg-church-700 hover:bg-church-800" onClick={openNewTestimonyModal}>
               <Plus size={18} className="mr-2" /> Compartilhar

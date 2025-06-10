@@ -1,6 +1,8 @@
+
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import OracaoCard from "@/components/ui/OracaoCard";
+import OracaoFormModal from "@/components/ui/OracaoFormModal";
 import TestimonyFormModal from "@/components/ui/TestimonyFormModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +14,16 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import api from "@/services/api";
@@ -39,9 +51,13 @@ const Oracao = () => {
   const [prayers, setPrayers] = useState<Oracao[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [isOracaoModalOpen, setIsOracaoModalOpen] = useState(false);
   const [isTestimonyModalOpen, setIsTestimonyModalOpen] = useState(false);
   const [testimonyData, setTestimonyData] = useState<Oracao | null>(null);
   const [showMyPrayers, setShowMyPrayers] = useState(false);
+  const [editingOracao, setEditingOracao] = useState<Oracao | null>(null);
+  const [showAnsweredAlert, setShowAnsweredAlert] = useState(false);
+  const [selectedPrayer, setSelectedPrayer] = useState<Oracao | null>(null);
 
   useEffect(() => {
     fetchPrayers();
@@ -81,6 +97,46 @@ const Oracao = () => {
       return matchesSearch && matchesCategory;
     });
 
+  const handleOracaoSubmit = async (oracao: {
+    message: string;
+    category: string;
+    isAnonymous: boolean;
+  }) => {
+    try {
+      const payload: any = {
+        message: oracao.message,
+        category: oracao.category,
+      };
+
+      if (oracao.isAnonymous) {
+        payload.name = "Anônimo";
+      }
+
+      if (editingOracao) {
+        await api.put(`/oracoes/${editingOracao.id}`, payload);
+        toast({
+          title: "Oração atualizada",
+          description: "Sua oração foi atualizada com sucesso!"
+        });
+      } else {
+        await api.post("/oracoes", payload);
+        toast({
+          title: "Oração compartilhada",
+          description: "Sua oração foi compartilhada com sucesso!"
+        });
+      }
+
+      fetchPrayers();
+      setEditingOracao(null);
+    } catch (error) {
+      toast({
+        title: "Erro ao salvar oração",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleTestimonySubmit = async (testimony: {
     message: string;
     category: string;
@@ -88,33 +144,16 @@ const Oracao = () => {
   }, oracaoId?: number) => {
     try {
       if (oracaoId) {
-        // Criar testemunho a partir de uma oração
         await api.post(`/testemunhos/from-oracao/${oracaoId}`, {
           message: testimony.message
         });
-
-        // Atualizar a oração como respondida
-        await api.put(`/oracoes/${oracaoId}/responded`);
 
         toast({
           title: "Testemunho compartilhado",
           description: "Seu testemunho foi compartilhado e a oração foi marcada como respondida!"
         });
 
-        // Atualizar as listas
         fetchPrayers();
-      } else {
-        // Testemunho regular (não deveria acontecer na página de oração)
-        await api.post("/testemunhos", {
-          message: testimony.message,
-          category: testimony.category,
-          name: testimony.isAnonymous ? "Anônimo" : undefined
-        });
-
-        toast({
-          title: "Testemunho compartilhado",
-          description: "Seu testemunho foi compartilhado com sucesso!"
-        });
       }
     } catch (error) {
       toast({
@@ -123,6 +162,19 @@ const Oracao = () => {
         variant: "destructive"
       });
     }
+  };
+
+  const openOracaoModal = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login necessário",
+        description: "Você precisa estar logado para compartilhar uma oração.",
+        variant: "destructive"
+      });
+      return;
+    }
+    setEditingOracao(null);
+    setIsOracaoModalOpen(true);
   };
 
   const openTestimonyModal = (prayer: Oracao) => {
@@ -136,6 +188,69 @@ const Oracao = () => {
     }
     setTestimonyData(prayer);
     setIsTestimonyModalOpen(true);
+  };
+
+  const handleEdit = (id: number) => {
+    const prayer = prayers.find(p => p.id === id);
+    if (prayer) {
+      setEditingOracao(prayer);
+      setIsOracaoModalOpen(true);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await api.delete(`/oracoes/${id}`);
+      toast({
+        title: "Oração excluída",
+        description: "Sua oração foi excluída com sucesso."
+      });
+      fetchPrayers();
+    } catch (error) {
+      toast({
+        title: "Erro ao excluir",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleMarkAnswered = async (id: number) => {
+    try {
+      await api.put(`/oracoes/${id}/responder`);
+      toast({
+        title: "Oração marcada como respondida",
+        description: "Glória a Deus! Sua oração foi marcada como respondida."
+      });
+      fetchPrayers();
+    } catch (error) {
+      toast({
+        title: "Erro ao atualizar",
+        description: "Tente novamente mais tarde.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const openAnsweredAlert = (prayer: Oracao) => {
+    setSelectedPrayer(prayer);
+    setShowAnsweredAlert(true);
+  };
+
+  const handleAnsweredWithoutTestimony = () => {
+    if (selectedPrayer) {
+      handleMarkAnswered(selectedPrayer.id);
+    }
+    setShowAnsweredAlert(false);
+    setSelectedPrayer(null);
+  };
+
+  const handleAnsweredWithTestimony = () => {
+    if (selectedPrayer) {
+      openTestimonyModal(selectedPrayer);
+    }
+    setShowAnsweredAlert(false);
+    setSelectedPrayer(null);
   };
 
   return (
@@ -190,6 +305,10 @@ const Oracao = () => {
                 {showMyPrayers ? "Todas as Orações" : "Meus Pedidos"}
               </Button>
             )}
+
+            <Button className="bg-church-700 hover:bg-church-800" onClick={openOracaoModal}>
+              <Plus size={18} className="mr-2" /> Compartilhar
+            </Button>
           </div>
         </div>
 
@@ -207,6 +326,9 @@ const Oracao = () => {
                 category={prayer.category}
                 usuario={prayer.usuario}
                 responded={prayer.responded}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onMarkAnswered={() => openAnsweredAlert(prayer)}
                 onCreateTestimony={() => openTestimonyModal(prayer)}
               />
             ))}
@@ -218,6 +340,17 @@ const Oracao = () => {
             </p>
           </div>
         )}
+
+        {/* Modal de oração */}
+        <OracaoFormModal
+          isOpen={isOracaoModalOpen}
+          onClose={() => {
+            setIsOracaoModalOpen(false);
+            setEditingOracao(null);
+          }}
+          onSubmit={handleOracaoSubmit}
+          editingOracao={editingOracao}
+        />
 
         {/* Modal de testemunho */}
         <TestimonyFormModal
@@ -233,6 +366,27 @@ const Oracao = () => {
           oracaoId={testimonyData?.id}
           isFromPrayer={true}
         />
+
+        {/* Alert de oração respondida */}
+        <AlertDialog open={showAnsweredAlert} onOpenChange={setShowAnsweredAlert}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>✨ Que bênção!</AlertDialogTitle>
+              <AlertDialogDescription>
+                Se Deus respondeu sua oração, isso pode fortalecer a fé de outras pessoas. 
+                Você pode apenas concluir ou compartilhar um testemunho contando o que Ele fez!
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={handleAnsweredWithoutTestimony}>
+                ✅ Concluir
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleAnsweredWithTestimony} className="bg-church-700 hover:bg-church-800">
+                📝 Contar Testemunho
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </Layout>
   );
