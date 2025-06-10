@@ -17,10 +17,11 @@ interface TestimonyFormModalProps {
     message: string;
     category: string;
     isAnonymous: boolean;
-  }) => void;
+  }, oracaoId?: number) => void;
   oracaoMessage?: string;
   oracaoCategory?: string;
   oracaoIsAnonymous?: boolean;
+  oracaoId?: number;
 }
 
 const TestimonyFormModal = ({
@@ -29,7 +30,8 @@ const TestimonyFormModal = ({
   onSubmit,
   oracaoMessage = "",
   oracaoCategory = "geral",
-  oracaoIsAnonymous = false
+  oracaoIsAnonymous = false,
+  oracaoId
 }: TestimonyFormModalProps) => {
   const [message, setMessage] = useState("");
 
@@ -48,7 +50,7 @@ const TestimonyFormModal = ({
       message: message.trim(),
       category: oracaoCategory,
       isAnonymous: oracaoIsAnonymous
-    });
+    }, oracaoId);
 
     setMessage("");
     onClose();

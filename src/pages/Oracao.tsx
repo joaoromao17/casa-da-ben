@@ -233,18 +233,27 @@ const Oracao = () => {
     message: string;
     category: string;
     isAnonymous: boolean;
-  }) => {
+  }, oracaoId?: number) => {
     try {
-      await api.post("/testemunhos", testimony);
-      
-      // Marcar oração como respondida
-      if (selectedOracaoForTestimony) {
-        await api.put(`/oracoes/${selectedOracaoForTestimony.id}/responder`);
+      if (oracaoId) {
+        // Testimony from prayer - use specific endpoint
+        await api.post(`/testemunhos/from-oracao/${oracaoId}`, {
+          message: testimony.message
+        });
+      } else {
+        // Regular testimony - use general endpoint
+        await api.post("/testemunhos", {
+          message: testimony.message,
+          category: testimony.category,
+          name: testimony.isAnonymous ? "Anônimo" : undefined
+        });
       }
       
       toast({
         title: "Testemunho compartilhado",
-        description: "Seu testemunho foi compartilhado e sua oração foi marcada como respondida!"
+        description: oracaoId ? 
+          "Seu testemunho foi compartilhado e sua oração foi marcada como respondida!" :
+          "Seu testemunho foi compartilhado com sucesso!"
       });
       
       fetchOracoes();
@@ -455,6 +464,7 @@ const Oracao = () => {
         oracaoMessage={selectedOracaoForTestimony?.message}
         oracaoCategory={selectedOracaoForTestimony?.category}
         oracaoIsAnonymous={selectedOracaoForTestimony?.isAnonymous}
+        oracaoId={selectedOracaoForTestimony?.id}
       />
     </Layout>
   );
