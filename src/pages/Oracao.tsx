@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import OracaoCard from "@/components/ui/OracaoCard";
@@ -41,6 +42,7 @@ const Oracao = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [isTestimonyModalOpen, setIsTestimonyModalOpen] = useState(false);
   const [testimonyData, setTestimonyData] = useState<Oracao | null>(null);
+  const [showMyPrayers, setShowMyPrayers] = useState(false);
 
   useEffect(() => {
     fetchPrayers();
@@ -48,7 +50,8 @@ const Oracao = () => {
 
   const fetchPrayers = async () => {
     try {
-      const response = await api.get("/oracoes");
+      const endpoint = showMyPrayers ? "/oracoes/minhas" : "/oracoes";
+      const response = await api.get(endpoint);
       setPrayers(response.data);
     } catch (error) {
       toast({
@@ -58,6 +61,10 @@ const Oracao = () => {
       });
     }
   };
+
+  useEffect(() => {
+    fetchPrayers();
+  }, [showMyPrayers]);
 
   const filteredPrayers = [...prayers]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -175,9 +182,15 @@ const Oracao = () => {
               </Select>
             </div>
 
-            {/* <Button className="bg-church-700 hover:bg-church-800">
-              <Plus size={18} className="mr-2" /> Adicionar Oração
-            </Button> */}
+            {isAuthenticated && (
+              <Button
+                variant={showMyPrayers ? "default" : "outline"}
+                className={showMyPrayers ? "bg-church-700 hover:bg-church-800" : ""}
+                onClick={() => setShowMyPrayers(!showMyPrayers)}
+              >
+                {showMyPrayers ? "Todas as Orações" : "Meus Pedidos"}
+              </Button>
+            )}
           </div>
         </div>
 
@@ -204,9 +217,6 @@ const Oracao = () => {
             <p className="text-xl text-gray-600">
               Nenhum pedido de oração encontrado.
             </p>
-            {/* <Button className="mt-4 bg-church-700 hover:bg-church-800">
-              Seja o primeiro a compartilhar
-            </Button> */}
           </div>
         )}
 
@@ -224,8 +234,9 @@ const Oracao = () => {
           oracaoId={testimonyData?.id}
           isFromPrayer={true}
         />
-      </Layout>
-    );
-  };
+      </div>
+    </Layout>
+  );
+};
 
-  export default Oracao;
+export default Oracao;
