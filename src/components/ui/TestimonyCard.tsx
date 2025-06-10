@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
@@ -9,10 +10,18 @@ interface TestimonyCardProps {
   date: Date;
   message: string;
   isAnonymous?: boolean;
-  category: string; // Categoria do testemunho
+  category: string;
+  responded?: boolean;
 }
 
-const TestimonyCard = ({ name, date, message, isAnonymous = false, category }: TestimonyCardProps) => {
+const TestimonyCard = ({ 
+  name, 
+  date, 
+  message, 
+  isAnonymous = false, 
+  category,
+  responded = false
+}: TestimonyCardProps) => {
   const formattedDate = format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
   const displayName = isAnonymous ? "Anônimo" : name;
 
@@ -30,9 +39,15 @@ const TestimonyCard = ({ name, date, message, isAnonymous = false, category }: T
             <h3 className="font-semibold text-church-800">{displayName}</h3>
             <p className="text-sm text-gray-500">{formattedDate}</p>
           </div>
-          {/* Exibe a categoria no lugar de "Testemunho" */}
-          <div className="text-xs px-2 py-1 rounded-full bg-church-100 text-church-700">
-            {category} {/* Exibe o tipo de categoria */}
+          <div className="flex items-center gap-2">
+            {responded && (
+              <div className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
+                Deus respondeu essa oração
+              </div>
+            )}
+            <div className="text-xs px-2 py-1 rounded-full bg-church-100 text-church-700">
+              {category}
+            </div>
           </div>
         </div>
       </CardHeader>
