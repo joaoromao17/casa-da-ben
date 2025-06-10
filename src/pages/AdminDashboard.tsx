@@ -14,7 +14,7 @@ import MinistriesTab from "@/components/admin/MinistriesTab";
 import StudiesTab from "@/components/admin/StudiesTab";
 import EventsTab from "@/components/admin/EventsTab";
 import ContributionsTab from "@/components/admin/ContributionsTab";
-import ModerationTab from "@/components/admin/ModerationTab";
+import PrayerTestimonyTab from "@/components/admin/PrayerTestimonyTab";
 import VersesTab from "@/components/admin/VersesTab";
 
 // Role-based protection
@@ -71,7 +71,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="studies">Estudos</TabsTrigger>
             <TabsTrigger value="events">Eventos</TabsTrigger>
             <TabsTrigger value="contributions">Contribuições</TabsTrigger>
-            <TabsTrigger value="moderation">Moderação</TabsTrigger>
+            <TabsTrigger value="prayer-testimony">Oração/Testemunho</TabsTrigger>
             <TabsTrigger value="verses">Versículo do Dia</TabsTrigger>
           </TabsList>
           
@@ -97,8 +97,8 @@ const AdminDashboard = () => {
                 <ContributionsTab />
               </TabsContent>
               
-              <TabsContent value="moderation">
-                <ModerationTab />
+              <TabsContent value="prayer-testimony">
+                <PrayerTestimonyTab />
               </TabsContent>
               
               <TabsContent value="verses">
