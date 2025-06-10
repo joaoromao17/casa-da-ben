@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import OracaoCard from "@/components/ui/OracaoCard";
@@ -208,7 +207,7 @@ const Oracao = () => {
                 category={prayer.category}
                 usuario={prayer.usuario}
                 responded={prayer.responded}
-                onTestimony={() => openTestimonyModal(prayer)}
+                onCreateTestimony={() => openTestimonyModal(prayer)}
               />
             ))}
           </div>
