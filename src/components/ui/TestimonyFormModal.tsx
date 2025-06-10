@@ -47,21 +47,26 @@ const TestimonyFormModal = ({
   const [category, setCategory] = useState("geral");
   const [isAnonymous, setIsAnonymous] = useState(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      if (isFromPrayer && oracaoMessage) {
-        // Vindo de uma oração - usar dados da oração
-        setMessage(oracaoMessage);
-        setCategory(oracaoCategory);
-        setIsAnonymous(oracaoIsAnonymous);
-      } else {
-        // Testemunho novo na página de testemunhos - limpar campos
-        setMessage("");
-        setCategory("geral");
-        setIsAnonymous(false);
-      }
+useEffect(() => {
+  if (isOpen) {
+    if (isFromPrayer && oracaoMessage) {
+      // Vindo de uma oração
+      setMessage(oracaoMessage);
+      setCategory(oracaoCategory);
+      setIsAnonymous(oracaoIsAnonymous);
+    } else if (!isFromPrayer && oracaoMessage) {
+      // Edição de testemunho existente
+      setMessage(oracaoMessage);
+      setCategory(oracaoCategory);
+      setIsAnonymous(oracaoIsAnonymous);
+    } else {
+      // Novo testemunho
+      setMessage("");
+      setCategory("geral");
+      setIsAnonymous(false);
     }
-  }, [isOpen, isFromPrayer, oracaoMessage, oracaoCategory, oracaoIsAnonymous]);
+  }
+}, [isOpen, isFromPrayer, oracaoMessage, oracaoCategory, oracaoIsAnonymous]);
 
   const handleSubmit = () => {
     if (!message.trim()) {

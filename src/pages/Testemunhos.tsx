@@ -255,12 +255,6 @@ const Testemunhos = () => {
             <p className="text-xl text-gray-600">
               Nenhum testemunho encontrado.
             </p>
-            <Button
-              className="mt-4 bg-church-700 hover:bg-church-800"
-              onClick={openNewTestimonyModal}
-            >
-              Seja o primeiro a compartilhar
-            </Button>
           </div>
         )}
 
@@ -293,7 +287,7 @@ const Testemunhos = () => {
         oracaoMessage={editingTestimony?.message}
         oracaoCategory={editingTestimony?.category}
         oracaoIsAnonymous={editingTestimony?.isAnonymous}
-        isFromPrayer={false}
+        isFromPrayer={!!editingTestimony?.oracaoOriginal} // detecta se veio de oração
       />
     </Layout>
   );

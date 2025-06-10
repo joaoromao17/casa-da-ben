@@ -21,6 +21,7 @@ import { useState } from "react";
 
 interface OracaoActionsMenuProps {
   oracaoId: number;
+  responded: boolean;
   onEdit: () => void;
   onDelete: () => void;
   onMarkAnswered: () => void;
@@ -29,6 +30,7 @@ interface OracaoActionsMenuProps {
 
 const OracaoActionsMenu = ({
   oracaoId,
+  responded,
   onEdit,
   onDelete,
   onMarkAnswered,
@@ -49,11 +51,13 @@ const OracaoActionsMenu = ({
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={onMarkAnswered}>
-            <CheckCircle className="mr-2 h-4 w-4" />
-            Fui Respondido
-          </DropdownMenuItem>
-          <DropdownMenuItem 
+          {!responded && (
+            <DropdownMenuItem onClick={onMarkAnswered}>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Fui Respondido
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem
             onClick={() => setShowDeleteAlert(true)}
             className="text-red-600"
           >

@@ -42,17 +42,23 @@ const OracaoCard = ({
   onMarkAnswered,
   onCreateTestimony
 }: OracaoCardProps) => {
-  const { currentUser } = useAuth();
-  const formattedDate = format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
-  
-  const displayName = isAnonymous ? "Anônimo" : name;
-  const isOwnPrayer = currentUser && usuario && currentUser.id === usuario.id;
+const { currentUser } = useAuth();
 
-  const shareOnWhatsApp = () => {
-    const text = `Oração de ${displayName}: "${message}" - Compartilhado da Igreja Casa da Benção`;
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(url, "_blank");
-  };
+const displayName = isAnonymous ? "Anônimo" : name;
+const isOwnPrayer = currentUser && usuario && currentUser.id === usuario.id;
+
+const shareOnWhatsApp = () => {
+  const text = `Oração de ${displayName}: "${message}" - Compartilhado da Igreja Casa da Benção`;
+  const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank");
+};
+
+// Corrige o fuso horário para evitar voltar um dia
+const adjustedDate = new Date(date);
+adjustedDate.setMinutes(adjustedDate.getMinutes() + adjustedDate.getTimezoneOffset());
+
+const formattedDate = format(adjustedDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+
 
   return (
     <Card className="card-church overflow-hidden h-full flex flex-col">
@@ -74,6 +80,7 @@ const OracaoCard = ({
             {isOwnPrayer && onEdit && onDelete && onMarkAnswered && onCreateTestimony && (
               <OracaoActionsMenu
                 oracaoId={id}
+                responded={responded}
                 onEdit={() => onEdit(id)}
                 onDelete={() => onDelete(id)}
                 onMarkAnswered={() => onMarkAnswered(id)}

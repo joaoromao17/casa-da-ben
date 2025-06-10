@@ -6,7 +6,7 @@ import OracaoFormModal from "@/components/ui/OracaoFormModal";
 import TestimonyFormModal from "@/components/ui/TestimonyFormModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Plus } from "lucide-react";
+import { Search, Filter, Plus, Heart } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -82,6 +82,7 @@ const Oracao = () => {
   }, [showMyPrayers]);
 
   const filteredPrayers = [...prayers]
+    .filter(prayer => showMyPrayers || !prayer.responded)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .filter((prayer) => {
       const message = prayer.message ?? "";
@@ -144,9 +145,13 @@ const Oracao = () => {
   }, oracaoId?: number) => {
     try {
       if (oracaoId) {
+        // Envia o testemunho
         await api.post(`/testemunhos/from-oracao/${oracaoId}`, {
           message: testimony.message
         });
+
+        // Marca a oração como respondida
+        await api.put(`/oracoes/${oracaoId}/responder`);
 
         toast({
           title: "Testemunho compartilhado",
@@ -341,6 +346,24 @@ const Oracao = () => {
           </div>
         )}
 
+        {/* Seção inspiradora */}
+        <div className="mt-16 bg-church-50 p-8 rounded-xl text-center">
+          <Heart size={48} className="mx-auto text-church-700 mb-4" />
+          <h2 className="text-2xl font-bold text-church-900 mb-3">Compartilhe o seu pedido</h2>
+          <p className="text-gray-700 mb-6 max-w-3xl mx-auto">
+            E tudo o que vocês pedirem em meu nome, isso farei, a fim de que o Pai seja glorificado no Filho.
+            Se me pedirem alguma coisa em meu nome, eu o farei.
+            <br />
+            <span className="font-medium">João 14:13-14</span>
+          </p>
+          <Button
+            className="bg-church-700 hover:bg-church-800"
+            onClick={openOracaoModal}
+          >
+            Compartilhe sua oração
+          </Button>
+        </div>
+
         {/* Modal de oração */}
         <OracaoFormModal
           isOpen={isOracaoModalOpen}
@@ -373,7 +396,7 @@ const Oracao = () => {
             <AlertDialogHeader>
               <AlertDialogTitle>✨ Que bênção!</AlertDialogTitle>
               <AlertDialogDescription>
-                Se Deus respondeu sua oração, isso pode fortalecer a fé de outras pessoas. 
+                Se Deus respondeu sua oração, isso pode fortalecer a fé de outras pessoas.
                 Você pode apenas concluir ou compartilhar um testemunho contando o que Ele fez!
               </AlertDialogDescription>
             </AlertDialogHeader>
@@ -388,7 +411,7 @@ const Oracao = () => {
           </AlertDialogContent>
         </AlertDialog>
       </div>
-    </Layout>
+    </Layout >
   );
 };
 

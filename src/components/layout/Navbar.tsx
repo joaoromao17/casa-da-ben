@@ -63,12 +63,12 @@ const Navbar = () => {
             <div className="flex space-x-8">
               <Link to="/" className="nav-link">Início</Link>
               <Link to="/sobre" className="nav-link">Sobre</Link>
+              <Link to="/eventos" className="nav-link">Eventos</Link>
               <Link to="/ministerios" className="nav-link">Ministérios</Link>
               <Link to="/estudos" className="nav-link">Estudos</Link>
-              <Link to="/eventos" className="nav-link">Eventos</Link>
-              <Link to="/contribuicoes" className="nav-link">Contribuições</Link>
-              <Link to="/testemunhos" className="nav-link">Testemunhos</Link>
               <Link to="/oracao" className="nav-link">Orações</Link>
+              <Link to="/testemunhos" className="nav-link">Testemunhos</Link>
+              <Link to="/contribuicoes" className="nav-link">Contribuições</Link>
               <Link to="/contato" className="nav-link">Contato</Link>
               {hasAdminAccess && (
                 <Link to="/admin" className="nav-link flex items-center gap-1">
@@ -115,16 +115,16 @@ const Navbar = () => {
             <div className="flex flex-col space-y-3">
               <Link to="/" className="nav-link py-2">Início</Link>
               <Link to="/sobre" className="nav-link py-2">Sobre</Link>
+              <Link to="/eventos" className="nav-link py-2">Eventos</Link>
               <details className="group">
                 <summary className="nav-link py-2 flex cursor-pointer items-center justify-between">
                   Ministérios <ChevronDown className="h-4 w-4" />
                 </summary>
               </details>
               <Link to="/estudos" className="nav-link py-2">Estudos</Link>
-              <Link to="/eventos" className="nav-link py-2">Eventos</Link>
-              <Link to="/contribuicoes" className="nav-link py-2">Contribuições</Link>
-              <Link to="/testemunhos" className="nav-link py-2">Testemunhos</Link>
               <Link to="/oracao" className="nav-link py-2">Orações</Link>
+              <Link to="/testemunhos" className="nav-link py-2">Testemunhos</Link>
+              <Link to="/contribuicoes" className="nav-link py-2">Contribuições</Link>
               <Link to="/contato" className="nav-link py-2">Contato</Link>
               {hasAdminAccess && (
                 <Link to="/admin" className="nav-link py-2 flex items-center gap-1">

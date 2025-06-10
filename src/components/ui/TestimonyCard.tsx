@@ -53,7 +53,9 @@ const TestimonyCard = ({
   const { currentUser } = useAuth();
   const [isPrayerModalOpen, setIsPrayerModalOpen] = useState(false);
   
-  const formattedDate = format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
+  const adjustedDate = new Date(date);
+adjustedDate.setMinutes(adjustedDate.getMinutes() + adjustedDate.getTimezoneOffset());
+const formattedDate = format(adjustedDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
   const displayName = isAnonymous ? "Anônimo" : name;
   const isOwnTestimony = currentUser && usuario && currentUser.id === usuario.id;
 
