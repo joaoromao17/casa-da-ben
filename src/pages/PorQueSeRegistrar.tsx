@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
@@ -12,7 +11,7 @@ import {
   Calendar, 
   HandHeart, 
   UserPlus,
-  Dove
+  Bird
 } from "lucide-react";
 
 const PorQueSeRegistrar = () => {
@@ -136,7 +135,7 @@ const PorQueSeRegistrar = () => {
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Dove className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
+                    <Bird className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
                     <div>
                       <p className="text-gray-700">
                         <strong>Dê um passo de aproximação</strong> com a Casa da Bênção — quem sabe seja o início de uma linda jornada com Cristo!
