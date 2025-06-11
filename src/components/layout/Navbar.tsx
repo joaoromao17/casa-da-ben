@@ -62,6 +62,9 @@ const Navbar = () => {
             <div className="flex space-x-8">
               <Link to="/" className="nav-link">Início</Link>
               <Link to="/sobre" className="nav-link">Sobre</Link>
+              {isLoggedIn && (
+                <Link to="/membros" className="nav-link">Membros</Link>
+              )}
               <Link to="/eventos" className="nav-link">Eventos</Link>
               <Link to="/ministerios" className="nav-link">Ministérios</Link>
               <Link to="/estudos" className="nav-link">Estudos</Link>
@@ -114,6 +117,9 @@ const Navbar = () => {
             <div className="flex flex-col space-y-3">
               <Link to="/" className="nav-link py-2">Início</Link>
               <Link to="/sobre" className="nav-link py-2">Sobre</Link>
+              {isLoggedIn && (
+                <Link to="/membros" className="nav-link py-2">Membros</Link>
+              )}
               <Link to="/eventos" className="nav-link py-2">Eventos</Link>
               <details className="group">
                 <summary className="nav-link py-2 flex cursor-pointer items-center justify-between">
@@ -185,3 +191,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+}

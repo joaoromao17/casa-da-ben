@@ -118,11 +118,8 @@ const Sobre = () => {
       <section className="py-12 bg-white">
         <div className="container-church">
           <Tabs defaultValue="historia" className="w-full">
-            <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-6 mb-6">
+            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-6">
               <TabsTrigger value="historia">História</TabsTrigger>
-              <TabsTrigger value="lideranca">Liderança</TabsTrigger>
-              <TabsTrigger value="membros">Membros</TabsTrigger>
-              <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
               <TabsTrigger value="localizacao">Localização</TabsTrigger>
               <TabsTrigger value="galeria">Galeria</TabsTrigger>
             </TabsList>
@@ -176,84 +173,6 @@ const Sobre = () => {
                   </div>
                 </div>
               </div>
-            </TabsContent>
-            
-            {/* Aba de Liderança */}
-            <TabsContent value="lideranca">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-church-900 mb-4">Nossa Liderança</h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  Conheça os líderes que Deus levantou para servir e conduzir nossa igreja
-                </p>
-              </div>
-              
-              <div className="space-y-12">
-                <LeadershipSection
-                  title="Pastores"
-                  usuarios={leadersData.pastores}
-                  isLoading={loadingStates.pastores}
-                />
-                
-                <LeadershipSection
-                  title="Líderes"
-                  usuarios={leadersData.lideres}
-                  isLoading={loadingStates.lideres}
-                />
-                
-                <LeadershipSection
-                  title="Professores"
-                  usuarios={leadersData.professores}
-                  isLoading={loadingStates.professores}
-                />
-                
-                <LeadershipSection
-                  title="Presbíteros"
-                  usuarios={leadersData.presbiteros}
-                  isLoading={loadingStates.presbiteros}
-                />
-                
-                <LeadershipSection
-                  title="Evangelistas"
-                  usuarios={leadersData.evangelistas}
-                  isLoading={loadingStates.evangelistas}
-                />
-                
-                <LeadershipSection
-                  title="Missionários"
-                  usuarios={leadersData.missionarios}
-                  isLoading={loadingStates.missionarios}
-                />
-                
-                <LeadershipSection
-                  title="Diáconos"
-                  usuarios={leadersData.diaconos}
-                  isLoading={loadingStates.diaconos}
-                />
-                
-                <LeadershipSection
-                  title="Obreiros"
-                  usuarios={leadersData.obreiros}
-                  isLoading={loadingStates.obreiros}
-                />
-              </div>
-              
-              <div className="text-center mt-16">
-                <Link to="/ministerios">
-                  <Button className="btn-primary">
-                    Conhecer Todos os Ministérios <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </TabsContent>
-
-            {/* Nova Aba: Membros */}
-            <TabsContent value="membros">
-              <MembersSection />
-            </TabsContent>
-
-            {/* Nova Aba: Aniversariantes */}
-            <TabsContent value="aniversariantes">
-              <BirthdaysSection />
             </TabsContent>
             
             {/* Aba de Localização */}
@@ -323,7 +242,7 @@ const Sobre = () => {
                 
                 <div className="space-y-8">
                   <div className="rounded-lg overflow-hidden shadow-lg h-80">
-                  <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613%3A0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr" width="600" height="320" loading="lazy"></iframe>
+                  <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr" width="600" height="320" loading="lazy"></iframe>
                     <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                       <p className="text-gray-600 text-lg">Mapa do Google seria carregado aqui</p>
                     </div>
@@ -407,3 +326,5 @@ const Sobre = () => {
 };
 
 export default Sobre;
+
+</edits_to_apply>

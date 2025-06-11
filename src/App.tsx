@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 // Páginas principais
 import Home from "./pages/Home";
 import Sobre from "./pages/Sobre";
+import Membros from "./pages/Membros";
 import Cadastro from "./pages/Cadastro";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
@@ -31,6 +31,8 @@ import EventoDetail from "@/pages/EventoDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import PublicProfilePage from "./pages/PublicProfilePage";
 import PorQueSeRegistrar from "./pages/PorQueSeRegistrar";
+import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
+import TermosUso from "./pages/TermosUso";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +46,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/sobre" element={<Sobre />} />
+            <Route path="/membros" element={<Membros />} />
             <Route path="/cadastro" element={<Cadastro />} />
             <Route path="/login" element={<Login />} />
             <Route path="/redefinir-senha" element={<ResetPassword />} />
@@ -64,6 +67,8 @@ const App = () => (
             <Route path="/profile-public/:id" element={<PublicProfilePage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/por-que-se-registrar" element={<PorQueSeRegistrar />} />
+            <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
+            <Route path="/termos-de-uso" element={<TermosUso />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/eventos/:id" element={<EventoDetail />} />
           </Routes>
