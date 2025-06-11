@@ -337,6 +337,7 @@ const UsersTab = () => {
     { id: "ROLE_PASTORAUXILIAR", label: "Pastor Auxiliar" },
     { id: "ROLE_EVANGELISTA", label: "Evangelista" },
     { id: "ROLE_DIACONO", label: "Diácono" },
+    { id: "ROLE_OBREIRO", label: "Obreiro" },
     { id: "ROLE_MISSIONARIO", label: "Missionário" },
     { id: "ROLE_PRESBITERO", label: "Presbítero" },
     { id: "ROLE_VISITANTE", label: "Visitante" },
