@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { format, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { motion } from "framer-motion"; // Adiciona animação
+import { format as formatDate } from "date-fns-tz";
 
 interface EventoTemplateProps {
   id: number;
@@ -36,11 +37,22 @@ const EventoTemplate = ({
 
   const parsedDate = new Date(date + "T00:00:00"); // Evita conversão errada por fuso
 
-  const isToday = isSameDay(parsedDate , new Date());
+  const isToday = isSameDay(parsedDate, new Date());
 
   const formattedDate = format(parsedDate, "dd 'de' MMMM 'de' yyyy", {
     locale: ptBR,
   });
+
+  const startDateTime = new Date(`${date}T${time}`);
+  const endDateTime = new Date(startDateTime.getTime() + 2 * 60 * 60 * 1000); // +2h
+
+  const formatForGoogle = (dt: Date) => formatDate(dt, "yyyyMMdd'T'HHmmss'Z'", { timeZone: "UTC" });
+
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+    title
+  )}&dates=${formatForGoogle(startDateTime)}/${formatForGoogle(endDateTime)}&details=${encodeURIComponent(
+    description
+  )}&location=${encodeURIComponent(location)}&sf=true&output=xml`;
 
   return (
     <Layout>
@@ -104,14 +116,18 @@ const EventoTemplate = ({
               <div className="p-6 border border-gray-200 rounded-xl shadow-sm bg-gray-50">
                 <h3 className="text-xl font-medium text-church-800 mb-4">Quer participar?</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Confirme sua presença e venha fazer parte desse momento especial conosco!
+                  Adicione o lembrete ao seu calendário para não esquecer!
                 </p>
-                <Link to="/contato">
+                <a
+                  href={googleCalendarUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button className="w-full bg-church-700 hover:bg-church-800 text-white text-md">
-                    <Users className="w-4 h-4 mr-2" />
-                    Confirmar Presença
+                    <CalendarDays className="w-4 h-4 mr-2" />
+                    Adicionar ao Calendário
                   </Button>
-                </Link>
+                </a>
               </div>
             </div>
           </div>

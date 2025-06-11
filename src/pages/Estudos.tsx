@@ -156,11 +156,6 @@ const Estudos = () => {
           <h2 className="text-2xl font-bold mb-4">Escola Bíblica</h2>
           <p className="mb-6">Participe de nossa Escola Bíblica todas as quartas-feiras às 20h e aprofunde seu conhecimento da Palavra.</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/cultos">
-              <Button className="bg-white text-church-900 hover:bg-gray-200">
-                Ver Horários
-              </Button>
-            </Link>
           </div>
         </div>
       </div>

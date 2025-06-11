@@ -8,7 +8,7 @@ import {
   CardTitle
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, Clock, MapPin, Signpost, ClockAlert } from "lucide-react";
+import { CalendarDays, Clock, MapPin, Signpost, ClockAlert, ChevronRight } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { API_BASE_URL } from "@/services/api";
@@ -43,7 +43,7 @@ const EventCard = ({
     ? imageUrl
     : `${API_BASE_URL}${imageUrl}`;
 
-    const isToday = isSameDay(date, new Date());
+  const isToday = isSameDay(date, new Date());
 
   return (
     <Card className="card-church overflow-hidden h-full flex flex-col">
@@ -85,12 +85,9 @@ const EventCard = ({
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Link to={`/eventos/${id}`}>
-          <Button className="btn-primary">Ver Detalhes</Button>
+        <Link to={`/eventos/${id}`} className="w-full">
+          <Button className="w-full flex justify-between items-center btn-outline">Ver Detalhes <ChevronRight size={16} /></Button>
         </Link>
-        <Button variant="outline" className="hover:bg-church-50">
-          Adicionar ao Calendário
-        </Button>
       </CardFooter>
     </Card>
   );

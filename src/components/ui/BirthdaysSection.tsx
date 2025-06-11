@@ -30,27 +30,36 @@ const BirthdaysSection = ({ className }: BirthdaysSectionProps) => {
   }, []);
 
   const formatBirthDate = (birthDate: string) => {
-    const date = new Date(birthDate);
+    if (!birthDate) {
+      return { text: "Data inválida", isToday: false };
+    }
+
+    const parsed = new Date(birthDate + "T12:00:00");
+    if (isNaN(parsed.getTime())) {
+      return { text: "Data inválida", isToday: false };
+    }
+
     const hoje = new Date();
-    
-    const isToday = date.getDate() === hoje.getDate() && 
-                   date.getMonth() === hoje.getMonth();
-    
+    const isToday =
+      parsed.getDate() === hoje.getDate() &&
+      parsed.getMonth() === hoje.getMonth();
+
     if (isToday) {
       return { text: "🎉 É HOJE!", isToday: true };
     }
-    
-    const day = date.getDate();
+
+    const day = parsed.getDate();
     const months = [
-      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
-    
-    return { 
-      text: `${day} de ${months[date.getMonth()]}`, 
-      isToday: false 
+
+    return {
+      text: `${day} de ${months[parsed.getMonth()]}`,
+      isToday: false
     };
   };
+
 
   if (loading) {
     return (
@@ -61,7 +70,7 @@ const BirthdaysSection = ({ className }: BirthdaysSectionProps) => {
             Celebre com os aniversariantes deste mês
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="space-y-3">
@@ -94,8 +103,8 @@ const BirthdaysSection = ({ className }: BirthdaysSectionProps) => {
           {birthdays.map((person) => {
             const birthdayInfo = formatBirthDate(person.birthDate);
             return (
-              <UserCard 
-                usuario={person} 
+              <UserCard
+                usuario={person}
                 key={person.id}
                 birthdayInfo={birthdayInfo}
               />

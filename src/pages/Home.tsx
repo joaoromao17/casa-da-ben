@@ -109,17 +109,20 @@ const Home = () => {
     <section className="relative">
       <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
       <div className="relative h-[70vh] min-h-[500px]">
-        <img src="/lovable-uploads/banner_casa_da_bencao.jpeg" alt="Igreja Casa da Benção" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 flex items-center z-20">
-          <div className="container-church text-white">
+        <img
+          src="/lovable-uploads/banner.jpg"
+          alt="Igreja Casa da Benção"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 flex items-center justify-center z-20">
+          <div className="container-church text-white flex flex-col items-center text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
               Igreja Casa da Benção 610
             </h1>
             <p className="text-xl md:text-2xl mb-8 max-w-2xl">
-              "Porque Deus não nos deu o espírito de covardia, mas de poder, de amor e de moderação."
-              <span className="block mt-2 text-lg italic">2 Timóteo 1:7</span>
+              "Somos uma família para pertencer"
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
               <Link to="/sobre">
                 <Button className="bg-black/80 text-white hover:bg-black/60 text-lg py-6 px-8">
                   Conheça Nossa Igreja
@@ -165,7 +168,7 @@ const Home = () => {
       <div className="container-church">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à Igreja Casa da Benção 610</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à ICB 610</h2>
             <p className="text-lg text-gray-700 mb-6">
               Somos uma igreja comprometida com a propagação do evangelho de Jesus Cristo e o
               desenvolvimento espiritual de cada membro. Nossa missão é impactar vidas através
@@ -191,7 +194,12 @@ const Home = () => {
     {/* Verse of the Day */}
     <section className="py-16 bg-white">
       <div className="container-church max-w-3xl">
-        <h2 className="text-4xl font-bold text-center mb-6">Versículo do Dia</h2>
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-church-800">Versículo do Dia</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Comece seu dia com uma palavra que fortalece, guia e inspira sua fé.
+          </p>
+        </div>
         <VerseCard verse={verseOfDay.verse} reference={verseOfDay.reference} />
         <div className="text-center mt-8">
           <Link to="/estudos">
@@ -206,7 +214,12 @@ const Home = () => {
     {/* Featured Events */}
     <section className="py-16 bg-gray-100">
       <div className="container-church">
-        <h2 className="text-3xl font-bold text-church-800 text-center mb-8">Próximos Eventos</h2>
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-church-800">Próximos Eventos</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Participe, conecte-se e viva algo novo com a gente!
+          </p>
+        </div>
         <div className="grid md:grid-cols-3 gap-8">
           {eventos.map((evento) => (
             <EventCard
