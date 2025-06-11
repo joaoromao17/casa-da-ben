@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,6 @@ const Navbar = () => {
     window.location.reload();
   };
 
-
   return (
     <nav className="bg-white shadow-md">
       <div className="container-church py-4">
@@ -83,12 +83,12 @@ const Navbar = () => {
 
           <div className="hidden lg:flex items-center space-x-4 pr-2">
             {isLoggedIn ? (
-                  <>
-                    <Link to="/minha-conta" className="w-full">
-                      <Button className="btn-primary w-full">Minha Conta</Button>
-                    </Link>
-                    <Button onClick={handleLogout} className="btn-danger">Sair</Button>
-                  </>
+              <>
+                <Link to="/minha-conta" className="w-full">
+                  <Button className="btn-primary w-full">Minha Conta</Button>
+                </Link>
+                <Button onClick={handleLogout} className="btn-danger">Sair</Button>
+              </>
             ) : (
               <>
                 <Link to="/cadastro">
@@ -191,5 +191,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-}

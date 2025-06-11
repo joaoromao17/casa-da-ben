@@ -1,99 +1,15 @@
+
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Phone, Mail, Clock, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import api from "@/services/api";
-import LeadershipSection from "@/components/ui/LeadershipSection";
-import MembersSection from "@/components/ui/MembersSection";
-import BirthdaysSection from "@/components/ui/BirthdaysSection";
 
 // Dados simulados da galeria
 const galeria = ["/lovable-uploads/galeria1.jpg", "/lovable-uploads/galeria2.jpg", "/lovable-uploads/galeria3.jpg", "/lovable-uploads/galeria4.jpg", "/lovable-uploads/galeria5.jpg", "/lovable-uploads/galeria6.jpg"];
 
 const Sobre = () => {
-  const [leadersData, setLeadersData] = useState({
-    pastores: [],
-    lideres: [],
-    professores: [],
-    presbiteros: [],
-    evangelistas: [],
-    missionarios: [],
-    diaconos: [],
-    obreiros: []
-  });
-
-  const [loadingStates, setLoadingStates] = useState({
-    pastores: true,
-    lideres: true,
-    professores: true,
-    presbiteros: true,
-    evangelistas: true,
-    missionarios: true,
-    diaconos: true,
-    obreiros: true
-  });
-
-  useEffect(() => {
-    const fetchUsersByRole = async (role: string) => {
-      try {
-        const response = await api.get(`/users/public/roles/${role}`);
-        return response.data;
-      } catch (error) {
-        console.error(`Erro ao buscar usuários com role ${role}:`, error);
-        return [];
-      }
-    };
-
-    const loadLeadershipData = async () => {
-      try {
-        // Fetch pastores (combinando ROLE_PASTOR e ROLE_PASTORAUXILIAR)
-        const [pastores, pastoresAuxiliares] = await Promise.all([
-          fetchUsersByRole('ROLE_PASTOR'),
-          fetchUsersByRole('ROLE_PASTORAUXILIAR')
-        ]);
-        const todosPastores = [...pastores, ...pastoresAuxiliares];
-        
-        setLeadersData(prev => ({ ...prev, pastores: todosPastores }));
-        setLoadingStates(prev => ({ ...prev, pastores: false }));
-
-        // Fetch outros roles
-        const roles = [
-          { key: 'lideres', role: 'ROLE_LIDER' },
-          { key: 'professores', role: 'ROLE_PROFESSOR' },
-          { key: 'presbiteros', role: 'ROLE_PRESBITERO' },
-          { key: 'evangelistas', role: 'ROLE_EVANGELISTA' },
-          { key: 'missionarios', role: 'ROLE_MISSIONARIO' },
-          { key: 'diaconos', role: 'ROLE_DIACONO' },
-          { key: 'obreiros', role: 'ROLE_OBREIRO' }
-        ];
-
-        for (const { key, role } of roles) {
-          const users = await fetchUsersByRole(role);
-          setLeadersData(prev => ({ ...prev, [key]: users }));
-          setLoadingStates(prev => ({ ...prev, [key]: false }));
-        }
-      } catch (error) {
-        console.error('Erro ao carregar dados de liderança:', error);
-        // Marcar tudo como não carregando em caso de erro
-        setLoadingStates({
-          pastores: false,
-          lideres: false,
-          professores: false,
-          presbiteros: false,
-          evangelistas: false,
-          missionarios: false,
-          diaconos: false,
-          obreiros: false
-        });
-      }
-    };
-
-    loadLeadershipData();
-  }, []);
-
   return (
     <Layout>
       {/* Hero Section */}
@@ -203,7 +119,6 @@ const Sobre = () => {
                       <div>
                         <h3 className="font-semibold text-lg text-church-800">E-mail</h3>
                         <p className="text-gray-700">icbcasadabencao610@gmail.com</p>
-                        
                       </div>
                     </div>
                     
@@ -242,10 +157,7 @@ const Sobre = () => {
                 
                 <div className="space-y-8">
                   <div className="rounded-lg overflow-hidden shadow-lg h-80">
-                  <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr" width="600" height="320" loading="lazy"></iframe>
-                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                      <p className="text-gray-600 text-lg">Mapa do Google seria carregado aqui</p>
-                    </div>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr" width="600" height="320" loading="lazy"></iframe>
                   </div>
                   
                   <div className="bg-church-50 p-6 rounded-lg border border-church-100">
@@ -261,12 +173,11 @@ const Sobre = () => {
                     <h4 className="font-medium text-church-700 mb-2">De Carro:</h4>
                     <ul className="list-disc pl-5 text-gray-700 mb-4">
                       <li>Estacionamento próprio com 30 vagas</li>
-                      
                     </ul>
                     <a href="https://www.google.com/maps/place/Igreja+Casa+Da+Bencao/@-15.8712465,-48.0704318,15z/data=!4m6!3m5!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!8m2!3d-15.8563574!4d-48.0797843!16s%2Fg%2F11cs01rnj5?entry=ttu&g_ep=EgoyMDI1MDQxNi4xIKXMDSoJLDEwMjExNDUzSAFQAw%3D%3D" target="_blank">
-                    <Button className="w-full">
-                      Abrir no Google Maps
-                    </Button>
+                      <Button className="w-full">
+                        Abrir no Google Maps
+                      </Button>
                     </a>
                   </div>
                 </div>
@@ -283,16 +194,18 @@ const Sobre = () => {
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {galeria.map((imagem, index) => <div key={index} className="overflow-hidden rounded-lg shadow-md group">
+                {galeria.map((imagem, index) => (
+                  <div key={index} className="overflow-hidden rounded-lg shadow-md group">
                     <img src={imagem} alt={`Foto da Igreja ${index + 1}`} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110" />
-                  </div>)}
+                  </div>
+                ))}
               </div>
               
               <div className="text-center mt-12">
                 <a href="https://drive.google.com/drive/folders/1-7c8j9A9urrFsOtD_8tBx3e5AOD-9ybY?usp=sharing" target="_blank">
-                <Button className="btn-primary">
-                  Ver Mais Fotos
-                </Button>
+                  <Button className="btn-primary">
+                    Ver Mais Fotos
+                  </Button>
                 </a>
               </div>
             </TabsContent>
@@ -326,5 +239,3 @@ const Sobre = () => {
 };
 
 export default Sobre;
-
-</edits_to_apply>
