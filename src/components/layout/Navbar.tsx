@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -159,28 +158,12 @@ const Navbar = () => {
       <div className="bg-church-900 text-white py-3">
         <div className="container-church flex flex-wrap justify-center sm:justify-between items-center gap-3">
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
-            <Link to="/cadastro">
+            <Link to="/por-que-se-registrar">
               <Button
                 variant="ghost"
                 className="text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
               >
-                <User size={18} /> Cadastre-se
-              </Button>
-            </Link>
-            <Link to="/estudos">
-              <Button
-                variant="ghost"
-                className="text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
-              >
-                <BookOpen size={18} /> Escola Bíblica
-              </Button>
-            </Link>
-            <Link to="/eventos">
-              <Button
-                variant="ghost"
-                className="text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
-              >
-                <CalendarDays size={18} /> Eventos
+                Por que se cadastrar?
               </Button>
             </Link>
           </div>

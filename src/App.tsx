@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,6 +30,7 @@ import MinisterioDetail from "@/pages/MinisterioDetail";
 import EventoDetail from "@/pages/EventoDetail";
 import AdminDashboard from "./pages/AdminDashboard";
 import PublicProfilePage from "./pages/PublicProfilePage";
+import PorQueSeRegistrar from "./pages/PorQueSeRegistrar";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,7 @@ const App = () => (
             <Route path="/ministerios/:id" element={<MinisterioDetail />} />
             <Route path="/profile-public/:id" element={<PublicProfilePage />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/por-que-se-registrar" element={<PorQueSeRegistrar />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/eventos/:id" element={<EventoDetail />} />
           </Routes>
