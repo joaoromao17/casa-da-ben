@@ -1,42 +1,100 @@
+
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, Phone, Mail, Clock, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
-
-// Dados simulados dos líderes
-const lideranca = [{
-  nome: "Pr. Marcial Satil",
-  cargo: "Pastor Presidente",
-  descricao: "Servo de Deus há mais de 20 anos, dedicado à obra e ao crescimento espiritual da igreja.",
-  foto: "/lovable-uploads/pastor.jpg"
-}, {
-  nome: "Pra. Karmosina Soares ",
-  cargo: "Pastora",
-  descricao: "Serva de Deus e casada com o Pastor",
-  foto: "/lovable-uploads/pastora.jpg"
-}, {
-  nome: "Pr. Walter de França",
-  cargo: "Pastor Auxiliador",
-  descricao: "Braço direito do Pastor Marcial",
-  foto: "/lovable-uploads/pr_walter.jpg"
-}, {
-  nome: "Pr. Wesley",
-  cargo: "Pastor Auxiliador",
-  descricao: "Trabalha com pastor auxiliador",
-  foto: "/lovable-uploads/pr_wesley.jpg"
-}, {
-  nome: "Pra. Luciene",
-  cargo: "Pastora Auxiliador",
-  descricao: "Casada com Pr. Wesley",
-  foto: "/lovable-uploads/pra_luciene.JPG"
-}];
+import { useState, useEffect } from "react";
+import api from "@/services/api";
+import LeadershipSection from "@/components/ui/LeadershipSection";
 
 // Dados simulados da galeria
 const galeria = ["/lovable-uploads/galeria1.jpg", "/lovable-uploads/galeria2.jpg", "/lovable-uploads/galeria3.jpg", "/lovable-uploads/galeria4.jpg", "/lovable-uploads/galeria5.jpg", "/lovable-uploads/galeria6.jpg"];
+
 const Sobre = () => {
-  return <Layout>
+  const [leadersData, setLeadersData] = useState({
+    pastores: [],
+    lideres: [],
+    professores: [],
+    presbiteros: [],
+    evangelistas: [],
+    missionarios: [],
+    diaconos: [],
+    obreiros: []
+  });
+
+  const [loadingStates, setLoadingStates] = useState({
+    pastores: true,
+    lideres: true,
+    professores: true,
+    presbiteros: true,
+    evangelistas: true,
+    missionarios: true,
+    diaconos: true,
+    obreiros: true
+  });
+
+  useEffect(() => {
+    const fetchUsersByRole = async (role: string) => {
+      try {
+        const response = await api.get(`/users/public/roles/${role}`);
+        return response.data;
+      } catch (error) {
+        console.error(`Erro ao buscar usuários com role ${role}:`, error);
+        return [];
+      }
+    };
+
+    const loadLeadershipData = async () => {
+      try {
+        // Fetch pastores (combinando ROLE_PASTOR e ROLE_PASTORAUXILIAR)
+        const [pastores, pastoresAuxiliares] = await Promise.all([
+          fetchUsersByRole('ROLE_PASTOR'),
+          fetchUsersByRole('ROLE_PASTORAUXILIAR')
+        ]);
+        const todosPastores = [...pastores, ...pastoresAuxiliares];
+        
+        setLeadersData(prev => ({ ...prev, pastores: todosPastores }));
+        setLoadingStates(prev => ({ ...prev, pastores: false }));
+
+        // Fetch outros roles
+        const roles = [
+          { key: 'lideres', role: 'ROLE_LIDER' },
+          { key: 'professores', role: 'ROLE_PROFESSOR' },
+          { key: 'presbiteros', role: 'ROLE_PRESBITERO' },
+          { key: 'evangelistas', role: 'ROLE_EVANGELISTA' },
+          { key: 'missionarios', role: 'ROLE_MISSIONARIO' },
+          { key: 'diaconos', role: 'ROLE_DIACONO' },
+          { key: 'obreiros', role: 'ROLE_OBREIRO' }
+        ];
+
+        for (const { key, role } of roles) {
+          const users = await fetchUsersByRole(role);
+          setLeadersData(prev => ({ ...prev, [key]: users }));
+          setLoadingStates(prev => ({ ...prev, [key]: false }));
+        }
+      } catch (error) {
+        console.error('Erro ao carregar dados de liderança:', error);
+        // Marcar tudo como não carregando em caso de erro
+        setLoadingStates({
+          pastores: false,
+          lideres: false,
+          professores: false,
+          presbiteros: false,
+          evangelistas: false,
+          missionarios: false,
+          diaconos: false,
+          obreiros: false
+        });
+      }
+    };
+
+    loadLeadershipData();
+  }, []);
+
+  return (
+    <Layout>
       {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
@@ -126,83 +184,57 @@ const Sobre = () => {
                 </p>
               </div>
               
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {lideranca.map((lider, index) => <Card key={index} className="overflow-hidden">
-                    <div className="aspect-square overflow-hidden">
-                      <img src={lider.foto} alt={lider.nome} className="w-full h-full object-cover" />
-                    </div>
-                    <CardContent className="p-6">
-                      <h3 className="text-xl font-bold text-church-800">{lider.nome}</h3>
-                      <p className="text-church-600 font-medium mb-2">{lider.cargo}</p>
-                      <p className="text-gray-600 text-sm">{lider.descricao}</p>
-                    </CardContent>
-                  </Card>)}
-              </div>
-              
-              <div className="mt-16 bg-church-50 p-8 rounded-lg border border-church-100">
-                <h3 className="text-2xl font-semibold text-church-800 mb-6 text-center">Estrutura Ministerial</h3>
+              <div className="space-y-12">
+                <LeadershipSection
+                  title="Pastores"
+                  usuarios={leadersData.pastores}
+                  isLoading={loadingStates.pastores}
+                />
                 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h4 className="text-lg font-semibold text-church-700 mb-3">Ministério Pastoral</h4>
-                    <ul className="text-gray-700 space-y-1">
-                      <li>Pregação e Ensino</li>
-                      <li>Aconselhamento</li>
-                      <li>Visitação</li>
-                      <li>Treinamento de Líderes</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h4 className="text-lg font-semibold text-church-700 mb-3">Ministério de Louvor</h4>
-                    <ul className="text-gray-700 space-y-1">
-                      <li>Equipe de Músicos</li>
-                      <li>Coral</li>
-                      <li>Audiovisual</li>
-                      <li>Treinamento Musical</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h4 className="text-lg font-semibold text-church-700 mb-3">Ministério de Educação</h4>
-                    <ul className="text-gray-700 space-y-1">
-                      <li>Escola Bíblica Dominical</li>
-                      <li>Treinamento de Professores</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h4 className="text-lg font-semibold text-church-700 mb-3">Ministério de Jovens</h4>
-                    <ul className="text-gray-700 space-y-1">
-                      <li>Cultos da Juventude</li>
-                      <li>Discipulado</li>
-                      <li>Eventos Especiais</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h4 className="text-lg font-semibold text-church-700 mb-3">Ministério Infantil</h4>
-                    <ul className="text-gray-700 space-y-1">
-                      <li>Culto Infantil</li>
-                      <li>Berçário</li>
-                      <li>Eventos para Crianças</li>
-                      <li>Capacitação de Professores</li>
-                    </ul>
-                  </div>
-                  
-                  <div className="bg-white p-5 rounded-lg shadow-sm">
-                    <h4 className="text-lg font-semibold text-church-700 mb-3">Ministério de Ação Social</h4>
-                    <ul className="text-gray-700 space-y-1">
-                      <li>Cestas Básicas</li>
-                      <li>Visitas Hospitalares</li>
-                      <li>Auxílio às Famílias</li>
-                      <li>Projetos Comunitários</li>
-                    </ul>
-                  </div>
-                </div>
+                <LeadershipSection
+                  title="Líderes"
+                  usuarios={leadersData.lideres}
+                  isLoading={loadingStates.lideres}
+                />
+                
+                <LeadershipSection
+                  title="Professores"
+                  usuarios={leadersData.professores}
+                  isLoading={loadingStates.professores}
+                />
+                
+                <LeadershipSection
+                  title="Presbíteros"
+                  usuarios={leadersData.presbiteros}
+                  isLoading={loadingStates.presbiteros}
+                />
+                
+                <LeadershipSection
+                  title="Evangelistas"
+                  usuarios={leadersData.evangelistas}
+                  isLoading={loadingStates.evangelistas}
+                />
+                
+                <LeadershipSection
+                  title="Missionários"
+                  usuarios={leadersData.missionarios}
+                  isLoading={loadingStates.missionarios}
+                />
+                
+                <LeadershipSection
+                  title="Diáconos"
+                  usuarios={leadersData.diaconos}
+                  isLoading={loadingStates.diaconos}
+                />
+                
+                <LeadershipSection
+                  title="Obreiros"
+                  usuarios={leadersData.obreiros}
+                  isLoading={loadingStates.obreiros}
+                />
               </div>
               
-              <div className="text-center mt-12">
+              <div className="text-center mt-16">
                 <Link to="/ministerios">
                   <Button className="btn-primary">
                     Conhecer Todos os Ministérios <ChevronRight className="ml-2 h-4 w-4" />
@@ -357,6 +389,8 @@ const Sobre = () => {
           </div>
         </div>
       </section>
-    </Layout>;
+    </Layout>
+  );
 };
+
 export default Sobre;
