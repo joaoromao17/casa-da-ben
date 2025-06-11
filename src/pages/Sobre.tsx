@@ -1,4 +1,3 @@
-
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,6 +7,8 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "@/services/api";
 import LeadershipSection from "@/components/ui/LeadershipSection";
+import MembersSection from "@/components/ui/MembersSection";
+import BirthdaysSection from "@/components/ui/BirthdaysSection";
 
 // Dados simulados da galeria
 const galeria = ["/lovable-uploads/galeria1.jpg", "/lovable-uploads/galeria2.jpg", "/lovable-uploads/galeria3.jpg", "/lovable-uploads/galeria4.jpg", "/lovable-uploads/galeria5.jpg", "/lovable-uploads/galeria6.jpg"];
@@ -117,9 +118,11 @@ const Sobre = () => {
       <section className="py-12 bg-white">
         <div className="container-church">
           <Tabs defaultValue="historia" className="w-full">
-            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 mb-6">
+            <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-6 mb-6">
               <TabsTrigger value="historia">História</TabsTrigger>
               <TabsTrigger value="lideranca">Liderança</TabsTrigger>
+              <TabsTrigger value="membros">Membros</TabsTrigger>
+              <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
               <TabsTrigger value="localizacao">Localização</TabsTrigger>
               <TabsTrigger value="galeria">Galeria</TabsTrigger>
             </TabsList>
@@ -241,6 +244,16 @@ const Sobre = () => {
                   </Button>
                 </Link>
               </div>
+            </TabsContent>
+
+            {/* Nova Aba: Membros */}
+            <TabsContent value="membros">
+              <MembersSection />
+            </TabsContent>
+
+            {/* Nova Aba: Aniversariantes */}
+            <TabsContent value="aniversariantes">
+              <BirthdaysSection />
             </TabsContent>
             
             {/* Aba de Localização */}

@@ -11,11 +11,15 @@ interface UserCardProps {
     profileImageUrl?: string;
     roles: string[];
   };
+  birthdayInfo?: {
+    text: string;
+    isToday: boolean;
+  };
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
-const UserCard = ({ usuario }: UserCardProps) => {
+const UserCard = ({ usuario, birthdayInfo }: UserCardProps) => {
   const navigate = useNavigate();
 
   const getProfileImageUrl = (url: string | null | undefined) => {
@@ -37,9 +41,19 @@ const UserCard = ({ usuario }: UserCardProps) => {
 
   return (
     <Card 
-      className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-200"
+      className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow duration-200 relative"
       onClick={handleCardClick}
     >
+      {birthdayInfo && (
+        <div className={`absolute top-2 right-2 z-10 px-2 py-1 rounded-full text-xs font-bold ${
+          birthdayInfo.isToday 
+            ? 'bg-yellow-400 text-yellow-900 animate-pulse' 
+            : 'bg-blue-100 text-blue-800'
+        }`}>
+          {birthdayInfo.text}
+        </div>
+      )}
+      
       <div className="aspect-square overflow-hidden">
         <img 
           src={getProfileImageUrl(usuario.profileImageUrl)} 
