@@ -91,37 +91,19 @@ const Footer = () => {
 
           {/* Ministries */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Ministérios</h3>
+            <h3 className="text-xl font-bold mb-4">Cultos</h3>
             <ul className="space-y-2">
-              <li>
-                <Link to="/ministerios/louvor" className="text-gray-300 hover:text-white transition-colors">
-                  Louvor
-                </Link>
+                           <li>
+                <span className="text-gray-300">Domingo: 18:30h</span>
               </li>
               <li>
-                <Link to="/ministerios/jovens" className="text-gray-300 hover:text-white transition-colors">
-                  Jovens
-                </Link>
+                <span className="text-gray-300">Terça: 20h</span>
               </li>
               <li>
-                <Link to="/ministerios/casais" className="text-gray-300 hover:text-white transition-colors">
-                  Casais
-                </Link>
+                <span className="text-gray-300">Quarta: 20h</span>
               </li>
               <li>
-                <Link to="/ministerios/infantil" className="text-gray-300 hover:text-white transition-colors">
-                  Infantil
-                </Link>
-              </li>
-              <li>
-                <Link to="/ministerios/intercessao" className="text-gray-300 hover:text-white transition-colors">
-                  Intercessão
-                </Link>
-              </li>
-              <li>
-                <Link to="/ministerios/midia" className="text-gray-300 hover:text-white transition-colors">
-                  Mídia
-                </Link>
+                <span className="text-gray-300">Sexta: 20h</span>
               </li>
             </ul>
           </div>
@@ -134,23 +116,15 @@ const Footer = () => {
                 <MapPin className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
                 <span className="text-gray-300">Qs 610 Samambaia Norte</span>
               </li>
-              <li className="flex items-center">
-                <Phone className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
-                <span className="text-gray-300">(XX) XXXX-XXXX</span>
-              </li>
+              
+                <li className="flex items-center">
+                  <Instagram className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
+                 <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer">@icb_610</a>
+                </li>
+              
               <li className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
-                <span className="text-gray-300">icbcasadabencao610@gmail.com</span>
-              </li>
-              <li className="flex items-start">
-                <Clock className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
-                <div className="text-gray-300">
-                  <p>Cultos:</p>
-                  <p>Domingo: 18:30h</p>
-                  <p>Terça: 20h</p>
-                  <p>Quarta: 19h30</p>
-                  <p>Sexta: 20h</p>
-                </div>
+                <a href="mailto:icbcasadabencao610@gmail.com" className="text-gray-300 hover:underline">icbcasadabencao610@gmail.com</a>
               </li>
             </ul>
           </div>

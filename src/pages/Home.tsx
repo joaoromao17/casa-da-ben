@@ -168,7 +168,7 @@ const Home = () => {
       <div className="container-church">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à ICB 610</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à Família ICB</h2>
             <p className="text-lg text-gray-700 mb-6">
               Somos uma igreja comprometida com a propagação do evangelho de Jesus Cristo e o
               desenvolvimento espiritual de cada membro. Nossa missão é impactar vidas através
@@ -217,7 +217,7 @@ const Home = () => {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-church-800">Próximos Eventos</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Participe, conecte-se e viva algo novo com a gente!
+            Cada evento é uma oportunidade de se aproximar de Deus e da família da fé.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
@@ -378,20 +378,35 @@ const Home = () => {
           </p>
         </div>
 
+        {/*
         <div className="max-w-6xl mx-auto">
           <InstagramWidget />
         </div>
+      */}
 
+        <div className="max-w-2xl mx-auto">
+          <img
+            src="/lovable-uploads/@icb610.png"
+            alt="Igreja Casa da Benção"
+            className="w-full rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105"
+          />
+        </div>
 
         <div className="text-center mt-10">
-          <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center">
-            <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+          <a
+            href="https://www.instagram.com/icb_610/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center"
+          >
+            <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-lg px-6 py-4 rounded-full shadow-md">
               <Instagram className="mr-2 h-5 w-5" /> @icb_610
             </Button>
           </a>
         </div>
       </div>
     </section>
+
 
     {/* CTA Section */}
     <section className="py-20 bg-church-600 text-white">
