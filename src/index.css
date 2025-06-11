@@ -5,17 +5,17 @@
 @tailwind utilities;
 
 :root {
-  /* Church color scheme */
+  /* Church color scheme - restored to original black/gray/white */
   --church-50: #faf9f6;
   --church-100: #f4f2ec;
   --church-200: #e8e3d3;
   --church-300: #d7cfb7;
   --church-400: #c3b799;
   --church-500: #b0a082;
-  --church-600: #8b7355;
-  --church-700: #6b5843;
-  --church-800: #4a3e2f;
-  --church-900: #2d2419;
+  --church-600: #737373;
+  --church-700: #404040;
+  --church-800: #262626;
+  --church-900: #171717;
 
   /* Semantic color tokens */
   --background: 0 0% 100%;
@@ -88,11 +88,11 @@
   }
   
   .btn-primary {
-    @apply bg-church-600 hover:bg-church-700 text-white transition-colors duration-200;
+    @apply bg-church-800 hover:bg-church-700 text-white transition-colors duration-200;
   }
   
   .text-church-gradient {
-    @apply bg-gradient-to-r from-church-600 to-church-800 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-church-700 to-church-900 bg-clip-text text-transparent;
   }
 
   .line-clamp-3 {
