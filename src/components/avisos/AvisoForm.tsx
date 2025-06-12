@@ -22,10 +22,13 @@ interface AvisoFormProps {
 }
 
 export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, ministryId }) => {
+  // Define o tipo baseado no contexto: se tem ministryId é MINISTERIAL, senão é GERAL
+  const avisoType = ministryId ? 'MINISTERIAL' : 'GERAL';
+  
   const [formData, setFormData] = useState({
     titulo: '',
     mensagem: '',
-    tipo: ministryId ? 'MINISTERIAL' : 'GERAL',
+    tipo: avisoType,
     ministerioId: ministryId || '',
     dataExpiracao: ''
   });
@@ -87,17 +90,17 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
       const avisoData = {
         titulo: formData.titulo,
         mensagem: formData.mensagem,
-        tipo: formData.tipo,
+        tipo: avisoType, // Usar o tipo definido pelo contexto
         arquivoUrl,
         dataExpiracao: formData.dataExpiracao || null,
-        ministerioId: formData.tipo === 'MINISTERIAL' ? (ministryId || formData.ministerioId) : null
+        ministerioId: avisoType === 'MINISTERIAL' ? (ministryId || formData.ministerioId) : null
       };
 
       await api.post('/avisos', avisoData);
 
       toast({
         title: "Sucesso",
-        description: "Aviso criado com sucesso!"
+        description: `${avisoType === 'GERAL' ? 'Aviso geral' : 'Aviso ministerial'} criado com sucesso!`
       });
 
       onSuccess();
@@ -116,7 +119,9 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Criar Novo Aviso</CardTitle>
+        <CardTitle>
+          {avisoType === 'GERAL' ? 'Criar Aviso Geral' : 'Criar Aviso Ministerial'}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -141,25 +146,14 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
             />
           </div>
 
-          {!ministryId && (
-            <div>
-              <Label htmlFor="tipo">Tipo *</Label>
-              <Select
-                value={formData.tipo}
-                onValueChange={(value) => setFormData({ ...formData, tipo: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="GERAL">Aviso Geral</SelectItem>
-                  <SelectItem value="MINISTERIAL">Aviso Ministerial</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+          {/* Mostrar informação sobre o tipo de aviso */}
+          <div className="bg-blue-50 p-3 rounded-lg">
+            <p className="text-sm text-blue-800">
+              <strong>Tipo:</strong> {avisoType === 'GERAL' ? 'Aviso Geral da Igreja' : 'Aviso Ministerial'}
+            </p>
+          </div>
 
-          {formData.tipo === 'MINISTERIAL' && !ministryId && (
+          {avisoType === 'MINISTERIAL' && !ministryId && (
             <div>
               <Label htmlFor="ministerio">Ministério *</Label>
               <Select
@@ -243,7 +237,7 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
               disabled={submitting || uploading}
               className="flex-1"
             >
-              {uploading ? 'Enviando arquivo...' : submitting ? 'Criando...' : 'Criar Aviso'}
+              {uploading ? 'Enviando arquivo...' : submitting ? 'Criando...' : `Criar ${avisoType === 'GERAL' ? 'Aviso Geral' : 'Aviso Ministerial'}`}
             </Button>
             <Button
               type="button"

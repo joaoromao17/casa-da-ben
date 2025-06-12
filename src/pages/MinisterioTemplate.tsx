@@ -90,12 +90,6 @@ const MinisterioTemplate = ({
     viceLeaders.some(viceLeader => viceLeader.email === currentUser.email)
   );
 
-  // Check if user has permission to create avisos
-  const canCreateAviso = currentUser && (
-    currentUser.roles?.some(role => ['ROLE_ADMIN', 'ROLE_PASTOR', 'ROLE_LIDER', 'ROLE_VICE_LIDER'].includes(role)) ||
-    isCurrentUserLeader
-  );
-
   useEffect(() => {
     if (ministryId) {
       api
@@ -202,11 +196,10 @@ const MinisterioTemplate = ({
       <section className="py-12 bg-white">
         <div className="container-church">
           <Tabs defaultValue="sobre" className="w-full">
-            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 mb-6">
+            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-6">
               <TabsTrigger value="sobre">Sobre o Ministério</TabsTrigger>
-              <TabsTrigger value="membros">Membros do Ministério</TabsTrigger>
-              <TabsTrigger value="mural">Mural</TabsTrigger>
               <TabsTrigger value="avisos">Avisos</TabsTrigger>
+              <TabsTrigger value="membros">Membros do Ministério</TabsTrigger>
             </TabsList>
 
             <TabsContent value="sobre">
@@ -317,6 +310,46 @@ const MinisterioTemplate = ({
               </div>
             </TabsContent>
 
+            {/* Aba Avisos */}
+            <TabsContent value="avisos">
+              <div className="text-center mb-12">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="text-left">
+                    <h2 className="text-3xl font-bold text-church-900 mb-4">📌 Mural de Avisos</h2>
+                    <p className="text-xl text-gray-600">
+                      Avisos e informações importantes do ministério
+                    </p>
+                  </div>
+                  {!isLoading && isCurrentUserLeader && (
+                    <Button
+                      onClick={() => setIsAvisoModalOpen(true)}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Novo Aviso
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                {avisos.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-500 text-lg">Nenhum aviso disponível no momento.</p>
+                  </div>
+                ) : (
+                  avisos.map((aviso) => (
+                    <AvisoCard
+                      key={aviso.id}
+                      aviso={aviso}
+                      showDelete={isCurrentUserLeader}
+                      onDelete={handleDeleteAviso}
+                    />
+                  ))
+                )}
+              </div>
+            </TabsContent>
+
             {/* Aba Membros */}
             <TabsContent value="membros">
               <div className="text-center mb-12">
@@ -353,56 +386,6 @@ const MinisterioTemplate = ({
               </div>
             </TabsContent>
 
-            {/* Aba Mural */}
-            <TabsContent value="mural">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-church-900 mb-4">Mural</h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto whitespace-pre-line">
-                  {wall || "Nenhum aviso postado ainda."}
-                </p>
-              </div>
-            </TabsContent>
-
-            {/* Aba Avisos */}
-            <TabsContent value="avisos">
-              <div className="text-center mb-12">
-                <div className="flex justify-between items-center mb-6">
-                  <div className="text-left">
-                    <h2 className="text-3xl font-bold text-church-900 mb-4">📌 Mural de Avisos</h2>
-                    <p className="text-xl text-gray-600">
-                      Avisos e informações importantes do ministério
-                    </p>
-                  </div>
-                  {canCreateAviso && (
-                    <Button
-                      onClick={() => setIsAvisoModalOpen(true)}
-                      className="bg-green-600 hover:bg-green-700 text-white"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Novo Aviso
-                    </Button>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                {avisos.length === 0 ? (
-                  <div className="text-center py-12">
-                    <p className="text-gray-500 text-lg">Nenhum aviso disponível no momento.</p>
-                  </div>
-                ) : (
-                  avisos.map((aviso) => (
-                    <AvisoCard
-                      key={aviso.id}
-                      aviso={aviso}
-                      showDelete={canCreateAviso}
-                      onDelete={handleDeleteAviso}
-                    />
-                  ))
-                )}
-              </div>
-            </TabsContent>
-
           </Tabs>
         </div>
       </section>
@@ -416,7 +399,7 @@ const MinisterioTemplate = ({
         onSuccess={handleEditSuccess}
       />
 
-      {/* Aviso Modal */}
+      {/* Aviso Modal - Especifica tipo MINISTERIAL */}
       <AvisoModal
         isOpen={isAvisoModalOpen}
         onClose={() => setIsAvisoModalOpen(false)}
