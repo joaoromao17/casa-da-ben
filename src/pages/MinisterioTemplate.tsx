@@ -1,12 +1,15 @@
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Phone, Mail, Clock, ChevronRight, Edit } from "lucide-react";
+import { Users, Phone, Mail, Clock, ChevronRight, Edit, Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "@/services/api";
 import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import MinistryEditModal from "@/components/ministry/MinistryEditModal";
+import { AvisoCard } from "@/components/avisos/AvisoCard";
+import { AvisoModal } from "@/components/avisos/AvisoModal";
+import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
 interface Usuario {
@@ -19,6 +22,17 @@ interface Usuario {
 
 interface UsuarioComRoles extends Usuario {
   roles: string[];
+}
+
+interface Aviso {
+  id: number;
+  titulo: string;
+  mensagem: string;
+  arquivoUrl?: string;
+  dataCriacao: string;
+  tipo: 'GERAL' | 'MINISTERIAL';
+  nomeMinisterio?: string;
+  nomeAutor: string;
 }
 
 interface MinisterioTemplateProps {
@@ -51,7 +65,10 @@ const MinisterioTemplate = ({
   const navigate = useNavigate();
   const [members, setMembers] = useState<UsuarioComRoles[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAvisoModalOpen, setIsAvisoModalOpen] = useState(false);
+  const [avisos, setAvisos] = useState<Aviso[]>([]);
   const { currentUser, isLoading } = useCurrentUser();
+  const { toast } = useToast();
 
   const fullImageUrl = imageUrl.startsWith("http")
     ? imageUrl
@@ -64,27 +81,20 @@ const MinisterioTemplate = ({
       const response = await api.get('/users');
       return response.data;
     },
-    enabled: isEditModalOpen // Only fetch when modal is open
+    enabled: isEditModalOpen
   });
-
-  // Debug: Log current user and leaders to check the comparison
-  console.log('Current user:', currentUser);
-  console.log('Leaders:', leaders);
-  console.log('Vice leaders:', viceLeaders);
 
   // Check if current user is a leader or vice-leader of this ministry using email
   const isCurrentUserLeader = currentUser && currentUser.email && (
-    leaders.some(leader => {
-      console.log(`Comparing leader email ${leader.email} with current user email ${currentUser.email}`);
-      return leader.email === currentUser.email;
-    }) ||
-    viceLeaders.some(viceLeader => {
-      console.log(`Comparing vice-leader email ${viceLeader.email} with current user email ${currentUser.email}`);
-      return viceLeader.email === currentUser.email;
-    })
+    leaders.some(leader => leader.email === currentUser.email) ||
+    viceLeaders.some(viceLeader => viceLeader.email === currentUser.email)
   );
 
-  console.log('Is current user leader:', isCurrentUserLeader);
+  // Check if user has permission to create avisos
+  const canCreateAviso = currentUser && (
+    currentUser.roles?.some(role => ['ROLE_ADMIN', 'ROLE_PASTOR', 'ROLE_LIDER', 'ROLE_VICE_LIDER'].includes(role)) ||
+    isCurrentUserLeader
+  );
 
   useEffect(() => {
     if (ministryId) {
@@ -94,6 +104,24 @@ const MinisterioTemplate = ({
         .catch((err) => console.error("Erro ao buscar membros:", err));
     }
   }, [ministryId]);
+
+  useEffect(() => {
+    const fetchAvisos = async () => {
+      if (ministryId) {
+        try {
+          const response = await api.get('/avisos/ativos');
+          const avisosMinisteriais = response.data.filter(
+            (aviso: Aviso) => aviso.tipo === 'MINISTERIAL' && aviso.nomeMinisterio === title
+          );
+          setAvisos(avisosMinisteriais);
+        } catch (error) {
+          console.error("Erro ao buscar avisos:", error);
+        }
+      }
+    };
+
+    fetchAvisos();
+  }, [ministryId, title]);
 
   /**
    * Navega para o perfil público do usuário
@@ -105,6 +133,39 @@ const MinisterioTemplate = ({
   const handleEditSuccess = () => {
     // Refresh the page to show updated data
     window.location.reload();
+  };
+
+  const handleAvisoSuccess = () => {
+    // Refresh avisos
+    if (ministryId) {
+      api.get('/avisos/ativos')
+        .then(response => {
+          const avisosMinisteriais = response.data.filter(
+            (aviso: Aviso) => aviso.tipo === 'MINISTERIAL' && aviso.nomeMinisterio === title
+          );
+          setAvisos(avisosMinisteriais);
+        })
+        .catch(error => console.error("Erro ao buscar avisos:", error));
+    }
+  };
+
+  const handleDeleteAviso = async (avisoId: number) => {
+    if (confirm("Tem certeza que deseja excluir este aviso?")) {
+      try {
+        await api.delete(`/avisos/${avisoId}`);
+        setAvisos(avisos.filter(aviso => aviso.id !== avisoId));
+        toast({
+          title: "Sucesso",
+          description: "Aviso excluído com sucesso"
+        });
+      } catch (error) {
+        toast({
+          title: "Erro",
+          description: "Erro ao excluir aviso",
+          variant: "destructive"
+        });
+      }
+    }
   };
 
   const ministryData = {
@@ -141,10 +202,11 @@ const MinisterioTemplate = ({
       <section className="py-12 bg-white">
         <div className="container-church">
           <Tabs defaultValue="sobre" className="w-full">
-            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-6">
+            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 mb-6">
               <TabsTrigger value="sobre">Sobre o Ministério</TabsTrigger>
               <TabsTrigger value="membros">Membros do Ministério</TabsTrigger>
               <TabsTrigger value="mural">Mural</TabsTrigger>
+              <TabsTrigger value="avisos">Avisos</TabsTrigger>
             </TabsList>
 
             <TabsContent value="sobre">
@@ -301,6 +363,46 @@ const MinisterioTemplate = ({
               </div>
             </TabsContent>
 
+            {/* Aba Avisos */}
+            <TabsContent value="avisos">
+              <div className="text-center mb-12">
+                <div className="flex justify-between items-center mb-6">
+                  <div className="text-left">
+                    <h2 className="text-3xl font-bold text-church-900 mb-4">📌 Mural de Avisos</h2>
+                    <p className="text-xl text-gray-600">
+                      Avisos e informações importantes do ministério
+                    </p>
+                  </div>
+                  {canCreateAviso && (
+                    <Button
+                      onClick={() => setIsAvisoModalOpen(true)}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Novo Aviso
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                {avisos.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-500 text-lg">Nenhum aviso disponível no momento.</p>
+                  </div>
+                ) : (
+                  avisos.map((aviso) => (
+                    <AvisoCard
+                      key={aviso.id}
+                      aviso={aviso}
+                      showDelete={canCreateAviso}
+                      onDelete={handleDeleteAviso}
+                    />
+                  ))
+                )}
+              </div>
+            </TabsContent>
+
           </Tabs>
         </div>
       </section>
@@ -312,6 +414,14 @@ const MinisterioTemplate = ({
         ministry={ministryData}
         users={users}
         onSuccess={handleEditSuccess}
+      />
+
+      {/* Aviso Modal */}
+      <AvisoModal
+        isOpen={isAvisoModalOpen}
+        onClose={() => setIsAvisoModalOpen(false)}
+        onSuccess={handleAvisoSuccess}
+        ministryId={ministryId}
       />
     </Layout>
   );

@@ -8,6 +8,7 @@ import MinistryCard from "@/components/ui/MinistryCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Instagram, User, BookOpen, CalendarDays, ArrowRight, ArrowDown } from "lucide-react";
 import InstagramWidget from "@/components/ui/InstagramWidget";
+import { AvisoCard } from "@/components/avisos/AvisoCard";
 import api from "@/services/api";
 
 interface Ministry {
@@ -30,22 +31,35 @@ type Evento = {
   category: string;
 };
 
+interface Aviso {
+  id: number;
+  titulo: string;
+  mensagem: string;
+  arquivoUrl?: string;
+  dataCriacao: string;
+  tipo: 'GERAL' | 'MINISTERIAL';
+  nomeMinisterio?: string;
+  nomeAutor: string;
+}
+
 const Home = () => {
   const [verseOfDay, setVerseOfDay] = useState<{ verse: string; reference: string }>({
     verse: "",
     reference: "",
   });
 
+  const [avisoGeral, setAvisoGeral] = useState<Aviso | null>(null);
+
   useEffect(() => {
     const fetchVerse = async () => {
       try {
-        const res = await api.get('/versiculos/random'); // nova rota da sua API
+        const res = await api.get('/versiculos/random');
         const data = res.data;
 
         console.log("Versículo recebido:", data);
 
         setVerseOfDay({
-          verse: data.verse.trim(), // 'verse' vem do seu modelo Versiculo
+          verse: data.verse.trim(),
           reference: data.reference,
         });
       } catch (error) {
@@ -60,13 +74,27 @@ const Home = () => {
     fetchVerse();
   }, []);
 
+  useEffect(() => {
+    const fetchAvisoGeral = async () => {
+      try {
+        const response = await api.get('/avisos/ativos');
+        const avisoGeralAtivo = response.data.find((aviso: Aviso) => aviso.tipo === 'GERAL');
+        setAvisoGeral(avisoGeralAtivo || null);
+      } catch (error) {
+        console.error("Erro ao buscar aviso geral:", error);
+      }
+    };
+
+    fetchAvisoGeral();
+  }, []);
+
   const [ministries, setMinistries] = useState<Ministry[]>([]);
 
   useEffect(() => {
     async function fetchMinistries() {
       try {
         const response = await api.get("/ministerios");
-        const limited = response.data.slice(0, 3); // limita para 3
+        const limited = response.data.slice(0, 3);
         setMinistries(limited);
       } catch (error) {
         console.error("Erro ao buscar ministérios:", error);
@@ -87,7 +115,7 @@ const Home = () => {
           const [year, month, day] = evento.date.split("-").map(Number);
           return {
             ...evento,
-            date: new Date(year, month - 1, day), // ajusta para data local
+            date: new Date(year, month - 1, day),
           };
         });
 
@@ -138,6 +166,17 @@ const Home = () => {
         </div>
       </div>
     </section>
+
+    {/* Aviso Geral */}
+    {avisoGeral && (
+      <section className="py-8 bg-yellow-50 border-l-4 border-yellow-400">
+        <div className="container-church">
+          <div className="max-w-4xl mx-auto">
+            <AvisoCard aviso={avisoGeral} />
+          </div>
+        </div>
+      </section>
+    )}
 
     {/* Quick Access Buttons (Mobile) */}
     <section className="md:hidden bg-white py-6">
@@ -293,7 +332,6 @@ const Home = () => {
     </section>
 
     {/* Our Ministries */}
-
     <section className="py-16 bg-gray-100">
       <div className="container-church">
         <div className="text-center mb-12">
@@ -325,49 +363,6 @@ const Home = () => {
       </div>
     </section>
 
-
-    {/* Testimonies Section 
-    <section className="py-16 bg-white">
-      <div className="container-church">
-        <div className="flex justify-between items-center mb-10">
-          <h2 className="text-4xl font-bold text-church-800">Testemunhos</h2>
-          <Link to="/testemunhos">
-            <Button variant="ghost" className="text-church-600 hover:text-church-800">
-              Ver Todos <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-
-        <Tabs defaultValue="recent" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-            <TabsTrigger value="recent">Recentes</TabsTrigger>
-            <TabsTrigger value="featured">Destaques</TabsTrigger>
-          </TabsList>
-          <TabsContent value="recent">
-            <div className="grid md:grid-cols-2 gap-8">
-              {recentTestimonies.map((testimony, index) => <TestimonyCard key={index} name={testimony.name} date={testimony.date} content={testimony.content} isAnonymous={testimony.isAnonymous} />)}
-            </div>
-          </TabsContent>
-          <TabsContent value="featured">
-            <div className="grid md:grid-cols-2 gap-8">
-              <TestimonyCard name="João Oliveira" date={new Date(2025, 2, 20)} content="Entrei na igreja quando passava por um momento muito difícil na minha vida. Através das orações e apoio dos irmãos, consegui superar o vício e hoje sou um novo homem. Agradeço a Deus por esta igreja!" isAnonymous={false} />
-              <TestimonyCard name="Ana Beatriz" date={new Date(2025, 1, 15)} content="Participei da campanha de oração pela minha filha que estava hospitalizada. Os médicos não davam esperança, mas Deus operou um milagre e hoje ela está completamente curada. Glória a Deus!" isAnonymous={false} />
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        <div className="text-center mt-12">
-          <Link to="/testemunhos/compartilhar">
-            <Button className="btn-primary">
-              Compartilhe Seu Testemunho <ArrowDown className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </section>
-
-    */}
-
     {/* Instagram Feed */}
     <section className="py-16 bg-gray-50">
       <div className="container-church">
@@ -377,12 +372,6 @@ const Home = () => {
             Acompanhe nossas atividades e mantenha-se atualizado com as novidades da igreja
           </p>
         </div>
-
-        {/*
-        <div className="max-w-6xl mx-auto">
-          <InstagramWidget />
-        </div>
-      */}
 
         <div className="max-w-2xl mx-auto">
           <img
@@ -407,7 +396,6 @@ const Home = () => {
       </div>
     </section>
 
-
     {/* CTA Section */}
     <section className="py-20 bg-church-600 text-white">
       <div className="container-church text-center">
@@ -431,4 +419,5 @@ const Home = () => {
     </section>
   </Layout>;
 };
+
 export default Home;
