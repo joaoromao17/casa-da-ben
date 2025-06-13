@@ -1,5 +1,5 @@
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MinisterioTemplate from "@/pages/MinisterioTemplate";
 import { Loading } from "@/components/ui/loading";
@@ -26,10 +26,19 @@ interface Ministerio {
 
 export default function MinisterioDetail() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [ministerio, setMinisterio] = useState<Ministerio | null>(null);
   const [loading, setLoading] = useState(true);
+  const [membros, setMembros] = useState([]);
 
   useEffect(() => {
+    // Verificar se o usuário está logado
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     if (id) {
       // busca do ministério
       api.get(`/ministerios/${id}`)
@@ -60,9 +69,7 @@ export default function MinisterioDetail() {
           setLoading(false);
         });
     }
-  }, [id]);
-
-  const [membros, setMembros] = useState([]);
+  }, [id, navigate]);
 
   if (loading) {
     return <Loading />;
