@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import MinisterioTemplate from "@/pages/MinisterioTemplate";
 import { Loading } from "@/components/ui/loading";
 import LoginRequiredNotice from "@/components/ui/LoginRequiredNotice";
+import Layout from "@/components/layout/Layout";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import api from "@/services/api";
 
 interface Leader {
@@ -80,16 +83,20 @@ export default function MinisterioDetail() {
 
   if (showLoginNotice) {
     return (
-      <>
+      <Layout>
         <div className="container-church py-12 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Detalhes do Ministério</h1>
           <p className="text-gray-600">Você precisa estar logado para ver os detalhes dos ministérios.</p>
+          <Button onClick={() => navigate("/ministerios")} className="mt-4">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar para Ministérios
+          </Button>
         </div>
         <LoginRequiredNotice
           message="Você precisa estar logado para acessar os detalhes dos ministérios."
           onClose={() => setShowLoginNotice(false)}
         />
-      </>
+      </Layout>
     );
   }
 
