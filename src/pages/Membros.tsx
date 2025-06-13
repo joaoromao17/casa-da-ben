@@ -102,7 +102,7 @@ const Membros = () => {
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
         <div className="relative h-[40vh] min-h-[300px]">
-          <img src="/lovable-uploads/sobre.jpg" alt="Membros da Igreja" className="w-full h-full object-cover" />
+          <img src="/lovable-uploads/sobre_nos.png" alt="Membros da Igreja" className="w-full h-full object-cover" />
           <div className="absolute inset-0 flex items-center z-20">
             <div className="container-church text-white">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
