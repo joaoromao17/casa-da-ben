@@ -3,23 +3,22 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Copy, MessageCircle, Check } from 'lucide-react';
+import { Copy, Check, MessageCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { TransmissionTutorial } from './TransmissionTutorial';
 
 interface WhatsAppMessageModalProps {
   isOpen: boolean;
   onClose: () => void;
   message: string;
   onCopy: (text: string) => Promise<boolean>;
-  onOpenWhatsApp: (message: string) => void;
 }
 
 export const WhatsAppMessageModal: React.FC<WhatsAppMessageModalProps> = ({
   isOpen,
   onClose,
   message,
-  onCopy,
-  onOpenWhatsApp
+  onCopy
 }) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
@@ -42,14 +41,6 @@ export const WhatsAppMessageModal: React.FC<WhatsAppMessageModalProps> = ({
     }
   };
 
-  const handleWhatsApp = () => {
-    onOpenWhatsApp(message);
-    toast({
-      title: "WhatsApp",
-      description: "Abrindo WhatsApp com a mensagem pronta!"
-    });
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
@@ -61,6 +52,16 @@ export const WhatsAppMessageModal: React.FC<WhatsAppMessageModalProps> = ({
         </DialogHeader>
         
         <div className="space-y-4">
+          <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <p className="text-sm text-blue-800 mb-2">
+              <strong>Como usar:</strong> Copie a mensagem abaixo e envie via WhatsApp para os membros.
+            </p>
+            <p className="text-sm text-blue-700 mb-2">
+              💡 Para facilitar, crie uma <strong>Lista de Transmissão</strong> com os membros do ministério.
+            </p>
+            <TransmissionTutorial />
+          </div>
+
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               Mensagem formatada:
@@ -76,7 +77,6 @@ export const WhatsAppMessageModal: React.FC<WhatsAppMessageModalProps> = ({
           <div className="flex gap-3">
             <Button
               onClick={handleCopy}
-              variant="outline"
               className="flex-1"
               disabled={copied}
             >
@@ -94,21 +94,11 @@ export const WhatsAppMessageModal: React.FC<WhatsAppMessageModalProps> = ({
             </Button>
 
             <Button
-              onClick={handleWhatsApp}
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-            >
-              <MessageCircle className="w-4 h-4 mr-2" />
-              Abrir WhatsApp
-            </Button>
-          </div>
-
-          <div className="text-center">
-            <Button
               onClick={onClose}
-              variant="ghost"
-              className="text-gray-500"
+              variant="outline"
+              className="flex-1"
             >
-              Fechar
+              Concluir
             </Button>
           </div>
         </div>

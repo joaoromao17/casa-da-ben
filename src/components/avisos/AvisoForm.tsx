@@ -101,47 +101,23 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
       const avisoData = {
         titulo: formData.titulo,
         mensagem: formData.mensagem,
-        tipo: avisoType, // Usar o tipo definido pelo contexto
+        tipo: avisoType,
         arquivoUrl,
         dataExpiracao: formData.dataExpiracao || null,
         ministerioId: avisoType === 'MINISTERIAL' ? (ministryId || formData.ministerioId) : null
       };
 
-      await api.post('/avisos', avisoData);
-
-      if (avisoType === 'MINISTERIAL' && (ministryId || formData.ministerioId)) {
-        const id = ministryId || formData.ministerioId;
-
-        try {
-          const membrosRes = await api.get(`/users/ministerios/${id}/membros`);
-          const membros = membrosRes.data;
-
-          const mensagem = `*AVISO DO MINISTÉRIO*\n\n` +
-            `*${formData.titulo}*\n\n` +
-            `${formData.mensagem}\n\n` +
-            `Para mais detalhes, acesse www.icb610.com.br`;
-
-          const encodedMensagem = encodeURIComponent(mensagem);
-
-          membros.forEach((membro: any) => {
-            if (membro.phone) {
-              const numeroLimpo = membro.phone.replace(/\D/g, '');
-              const link = `https://wa.me/55${numeroLimpo}?text=${encodedMensagem}`;
-              window.open(link, '_blank');
-            }
-          });
-        } catch (err) {
-          console.error("Erro ao enviar WhatsApp:", err);
-        }
-      }
+      const response = await api.post('/avisos', avisoData);
+      const avisoSalvo = response.data;
 
       toast({
         title: "Sucesso",
         description: `${avisoType === 'GERAL' ? 'Aviso geral' : 'Aviso ministerial'} criado com sucesso!`
       });
 
-      // Mostrar modal do WhatsApp
+      // Mostrar modal do WhatsApp com o ID do aviso salvo
       showWhatsAppModal({
+        id: avisoSalvo.id,
         titulo: formData.titulo,
         mensagem: formData.mensagem,
         arquivoUrl,
@@ -305,7 +281,6 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
           onClose={closeWhatsAppModal}
           message={formatMessage(currentAviso)}
           onCopy={copyToClipboard}
-          onOpenWhatsApp={openWhatsApp}
         />
       )}
     </>

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 
 interface Aviso {
+  id?: number;
   titulo: string;
   mensagem: string;
   arquivoUrl?: string;
@@ -28,7 +29,8 @@ export const useWhatsAppMessage = () => {
       mensagem += `\n\n📎 Arquivo: ${fullUrl}`;
     }
 
-    mensagem += '\n\nPara mais detalhes, acesse www.icb610.com.br';
+    const avisoUrl = aviso.id ? `https://www.icb610.com.br/avisos/${aviso.id}` : 'www.icb610.com.br';
+    mensagem += `\n\nPara mais detalhes, acesse ${avisoUrl}`;
 
     return mensagem;
   };
@@ -41,12 +43,6 @@ export const useWhatsAppMessage = () => {
       console.error('Erro ao copiar:', err);
       return false;
     }
-  };
-
-  const openWhatsApp = (message: string) => {
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
   };
 
   const showModal = (aviso: Aviso) => {
@@ -65,7 +61,6 @@ export const useWhatsAppMessage = () => {
     showModal,
     closeModal,
     formatMessage,
-    copyToClipboard,
-    openWhatsApp
+    copyToClipboard
   };
 };
