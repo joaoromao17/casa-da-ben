@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MinisterioTemplate from "@/pages/MinisterioTemplate";
 import { Loading } from "@/components/ui/loading";
+import LoginRequiredNotice from "@/components/ui/LoginRequiredNotice";
 import api from "@/services/api";
 
 interface Leader {
@@ -30,12 +31,14 @@ export default function MinisterioDetail() {
   const [ministerio, setMinisterio] = useState<Ministerio | null>(null);
   const [loading, setLoading] = useState(true);
   const [membros, setMembros] = useState([]);
+  const [showLoginNotice, setShowLoginNotice] = useState(false);
 
   useEffect(() => {
     // Verificar se o usuário está logado
     const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (!token) {
-      navigate("/login");
+      setShowLoginNotice(true);
+      setLoading(false);
       return;
     }
 
@@ -73,6 +76,21 @@ export default function MinisterioDetail() {
 
   if (loading) {
     return <Loading />;
+  }
+
+  if (showLoginNotice) {
+    return (
+      <>
+        <div className="container-church py-12 text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Detalhes do Ministério</h1>
+          <p className="text-gray-600">Você precisa estar logado para ver os detalhes dos ministérios.</p>
+        </div>
+        <LoginRequiredNotice
+          message="Você precisa estar logado para acessar os detalhes dos ministérios."
+          onClose={() => setShowLoginNotice(false)}
+        />
+      </>
+    );
   }
 
   if (!ministerio) {

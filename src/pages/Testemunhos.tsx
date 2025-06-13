@@ -1,8 +1,8 @@
-
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import TestimonyCard from "@/components/ui/TestimonyCard";
 import TestimonyFormModal from "@/components/ui/TestimonyFormModal";
+import LoginRequiredNotice from "@/components/ui/LoginRequiredNotice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Plus, Heart } from "lucide-react";
@@ -52,6 +52,7 @@ const Testemunhos = () => {
   const [isTestimonyModalOpen, setIsTestimonyModalOpen] = useState(false);
   const [editingTestimony, setEditingTestimony] = useState<Testemunho | null>(null);
   const [showMyTestimonies, setShowMyTestimonies] = useState(false);
+  const [showLoginNotice, setShowLoginNotice] = useState(false);
 
   useEffect(() => {
     fetchTestimonies();
@@ -160,11 +161,7 @@ const Testemunhos = () => {
 
   const openNewTestimonyModal = () => {
     if (!isAuthenticated) {
-      toast({
-        title: "Login necessário",
-        description: "Você precisa estar logado para compartilhar um testemunho.",
-        variant: "destructive"
-      });
+      setShowLoginNotice(true);
       return;
     }
     setEditingTestimony(null);
@@ -289,6 +286,14 @@ const Testemunhos = () => {
         oracaoIsAnonymous={editingTestimony?.isAnonymous}
         isFromPrayer={!!editingTestimony?.oracaoOriginal} // detecta se veio de oração
       />
+
+      {/* Aviso de login necessário */}
+      {showLoginNotice && (
+        <LoginRequiredNotice
+          message="Vous precisa estar logado para compartilhar um testemunho."
+          onClose={() => setShowLoginNotice(false)}
+        />
+      )}
     </Layout>
   );
 };

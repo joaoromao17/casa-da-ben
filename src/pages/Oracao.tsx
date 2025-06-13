@@ -1,9 +1,9 @@
-
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import OracaoCard from "@/components/ui/OracaoCard";
 import OracaoFormModal from "@/components/ui/OracaoFormModal";
 import TestimonyFormModal from "@/components/ui/TestimonyFormModal";
+import LoginRequiredNotice from "@/components/ui/LoginRequiredNotice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Plus, Heart } from "lucide-react";
@@ -58,6 +58,7 @@ const Oracao = () => {
   const [editingOracao, setEditingOracao] = useState<Oracao | null>(null);
   const [showAnsweredAlert, setShowAnsweredAlert] = useState(false);
   const [selectedPrayer, setSelectedPrayer] = useState<Oracao | null>(null);
+  const [showLoginNotice, setShowLoginNotice] = useState(false);
 
   useEffect(() => {
     fetchPrayers();
@@ -171,11 +172,7 @@ const Oracao = () => {
 
   const openOracaoModal = () => {
     if (!isAuthenticated) {
-      toast({
-        title: "Login necessário",
-        description: "Você precisa estar logado para compartilhar uma oração.",
-        variant: "destructive"
-      });
+      setShowLoginNotice(true);
       return;
     }
     setEditingOracao(null);
@@ -184,11 +181,7 @@ const Oracao = () => {
 
   const openTestimonyModal = (prayer: Oracao) => {
     if (!isAuthenticated) {
-      toast({
-        title: "Login necessário",
-        description: "Você precisa estar logado para compartilhar um testemunho.",
-        variant: "destructive"
-      });
+      setShowLoginNotice(true);
       return;
     }
     setTestimonyData(prayer);
@@ -410,6 +403,14 @@ const Oracao = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Aviso de login necessário */}
+        {showLoginNotice && (
+          <LoginRequiredNotice
+            message="Você precisa estar logado para compartilhar uma oração."
+            onClose={() => setShowLoginNotice(false)}
+          />
+        )}
       </div>
     </Layout >
   );

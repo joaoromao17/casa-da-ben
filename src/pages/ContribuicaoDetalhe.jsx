@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Users, Target, Calendar, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import LoginRequiredNotice from "@/components/ui/LoginRequiredNotice";
 import api from "@/services/api";
 
 const ContribuicaoDetalhe = () => {
@@ -14,12 +15,14 @@ const ContribuicaoDetalhe = () => {
   const navigate = useNavigate();
   const [contribuicao, setContribuicao] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showLoginNotice, setShowLoginNotice] = useState(false);
 
   useEffect(() => {
     // Verificar se o usuário está logado
     const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (!token) {
-      navigate("/login");
+      setShowLoginNotice(true);
+      setLoading(false);
       return;
     }
 
@@ -45,6 +48,25 @@ const ContribuicaoDetalhe = () => {
         <div className="container-church py-12 flex justify-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-church-900"></div>
         </div>
+      </Layout>
+    );
+  }
+
+  if (showLoginNotice) {
+    return (
+      <Layout>
+        <div className="container-church py-12 text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Detalhes da Contribuição</h1>
+          <p className="text-gray-600">Você precisa estar logado para ver os detalhes das contribuições.</p>
+          <Button onClick={() => navigate("/contribuicoes")} className="mt-4">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar para Contribuições
+          </Button>
+        </div>
+        <LoginRequiredNotice
+          message="Você precisa estar logado para acessar os detalhes das contribuições."
+          onClose={() => setShowLoginNotice(false)}
+        />
       </Layout>
     );
   }
