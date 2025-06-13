@@ -1,15 +1,9 @@
+
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import ContribuicaoCard from "@/components/ui/ContribuicaoCard";
@@ -17,47 +11,24 @@ import { Loading } from "@/components/ui/loading";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import api from "@/services/api";
 import { 
-  CreditCard, 
-  BanknoteIcon, 
-  Landmark, 
-  HelpCircle, 
-  ChevronDown,
   CheckCircle2,
-  ArrowRight,
-  Settings
+  Settings,
+  Copy,
+  Smartphone,
+  CreditCard,
+  ArrowRight
 } from "lucide-react";
-
-const schema = z.object({
-  nome: z.string().min(3, { message: "Nome deve ter pelo menos 3 caracteres" }),
-  email: z.string().email({ message: "Email inválido" }),
-  valor: z.string().min(1, { message: "Por favor informe um valor" }),
-  mensagem: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof schema>;
 
 const Contribuicoes = () => {
   const navigate = useNavigate();
   const { currentUser } = useCurrentUser();
   
-  const [metodo, setMetodo] = useState<string>("pix");
-  const [showInstructions, setShowInstructions] = useState(false);
   const [activeTab, setActiveTab] = useState("geral");
   const [campanhas, setCampanhas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { toast } = useToast();
   
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      nome: "",
-      email: "",
-      valor: "",
-      mensagem: "",
-    },
-  });
-
   // Check if user has permission to manage contributions
   const canManageContributions = currentUser?.roles?.some(role => 
     ['ROLE_ADMIN', 'ROLE_PASTOR', 'ROLE_PASTORAUXILIAR', 'ROLE_LIDER'].includes(role)
@@ -83,16 +54,12 @@ const Contribuicoes = () => {
     }
   }, [activeTab]);
 
-  const onSubmit = (data: FormValues) => {
-    // Aqui seria implementada a integração com gateway de pagamento
-    console.log("Dados enviados:", { ...data, metodo });
-    
+  const copyPixKey = () => {
+    navigator.clipboard.writeText("icbcasadabencao610@gmail.com");
     toast({
-      title: "Contribuição registrada",
-      description: "Obrigado por sua contribuição! Siga as instruções para finalizar.",
+      title: "Chave PIX copiada!",
+      description: "A chave PIX foi copiada para sua área de transferência.",
     });
-    
-    setShowInstructions(true);
   };
 
   const renderCaixinhasContent = () => {
@@ -199,7 +166,7 @@ const Contribuicoes = () => {
                   
                   <div className="bg-church-50 p-4 rounded-md border border-church-100">
                     <h3 className="flex items-center gap-2 font-medium text-church-900">
-                      <HelpCircle className="h-5 w-5 text-church-700" />
+                      <Smartphone className="h-5 w-5 text-church-700" />
                       Precisa de ajuda?
                     </h3>
                     <p className="text-sm text-gray-600 mt-2">
@@ -209,188 +176,110 @@ const Contribuicoes = () => {
                   </div>
                 </div>
                 
-                {/* Formulário de contribuição */}
+                {/* Seção PIX */}
                 <div className="md:col-span-7">
-                  {!showInstructions ? (
-                    <div className="bg-white p-6 rounded-lg shadow-sm">
-                      <h2 className="text-xl font-bold mb-6 text-church-900">Faça sua contribuição</h2>
-                      
-                      <div className="mb-6">
-                        <Label className="text-base font-medium mb-3 block">Escolha o método de pagamento</Label>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                          <Button
-                            type="button"
-                            variant={metodo === "pix" ? "default" : "outline"}
-                            className={`flex flex-col items-center justify-center h-24 gap-2 ${
-                              metodo === "pix" ? "bg-church-700 hover:bg-church-800" : ""
-                            }`}
-                            onClick={() => setMetodo("pix")}
-                          >
-                            <div className="h-8 w-8 flex items-center justify-center">
-                              <img src="https://logospng.org/download/pix/logo-pix-icone-1024.png" alt="Pix" className="h-8" />
-                            </div>
-                            <span>PIX</span>
-                          </Button>
-                        </div>
+                  <div className="bg-white p-6 rounded-lg shadow-sm">
+                    <div className="text-center mb-6">
+                      <div className="w-16 h-16 bg-church-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <img src="https://logospng.org/download/pix/logo-pix-icone-1024.png" alt="Pix" className="h-10 w-10" />
                       </div>
-                      
+                      <h2 className="text-2xl font-bold text-church-900">Contribua via PIX</h2>
+                      <p className="text-gray-600 mt-2">
+                        Forma rápida, segura e sem taxas para fazer sua contribuição
+                      </p>
                     </div>
-                  ) : (
-                    <div className="bg-white p-6 rounded-lg shadow-sm">
-                      <div className="text-center mb-6">
-                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <CheckCircle2 className="h-8 w-8 text-green-500" />
+                    
+                    {/* Chave PIX */}
+                    <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-700 mb-1">Chave PIX da Igreja:</p>
+                          <p className="text-lg font-mono text-church-800 break-all">
+                            icbcasadabencao610@gmail.com
+                          </p>
                         </div>
-                        <h2 className="text-xl font-bold text-church-900">Contribuição registrada!</h2>
-                        <p className="text-gray-600 mt-2">
-                          Obrigado por sua generosidade. Siga as instruções abaixo para finalizar.
-                        </p>
-                      </div>
-                      
-                      <div className="border rounded-lg overflow-hidden mb-6">
-                        <div className="bg-gray-50 p-4 border-b flex justify-between items-center">
-                          <h3 className="font-medium">Informações de pagamento</h3>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-gray-500"
-                            onClick={() => {
-                              // Função para copiar informações
-                              toast({
-                                title: "Informações copiadas",
-                                description: "As informações de pagamento foram copiadas para a área de transferência."
-                              });
-                            }}
-                          >
-                            Copiar
-                          </Button>
-                        </div>
-                        
-                        <div className="p-4">
-                          {metodo === "pix" && (
-                            <div className="space-y-4">
-                              <p className="text-sm text-gray-600">
-                                Escaneie o QR Code abaixo ou use a chave PIX para realizar sua contribuição:
-                              </p>
-                              
-                              <div className="flex justify-center my-4">
-                                <div className="bg-white p-4 border rounded-md inline-block">
-                                  <img 
-                                    src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" 
-                                    alt="QR Code PIX" 
-                                    className="w-48 h-48"
-                                  />
-                                </div>
-                              </div>
-                              
-                              <div className="bg-gray-50 p-3 rounded-md">
-                                <p className="text-sm font-medium mb-1">Chave PIX:</p>
-                                <p className="text-sm font-mono bg-white p-2 rounded border select-all">
-                                  12345678901
-                                </p>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {metodo === "cartao" && (
-                            <div className="space-y-4">
-                              <p className="text-sm text-gray-600">
-                                Você será redirecionado para a página de pagamento seguro. Clique no botão abaixo:
-                              </p>
-                              
-                              <Button className="w-full bg-church-700 hover:bg-church-800">
-                                Pagar com Cartão <ArrowRight className="ml-2 h-4 w-4" />
-                              </Button>
-                            </div>
-                          )}
-                          
-                          {metodo === "boleto" && (
-                            <div className="space-y-4">
-                              <p className="text-sm text-gray-600">
-                                Seu boleto foi gerado. Você pode imprimi-lo ou copiar o código de barras:
-                              </p>
-                              
-                              <div className="bg-gray-50 p-3 rounded-md">
-                                <p className="text-sm font-medium mb-1">Código de barras:</p>
-                                <p className="text-sm font-mono bg-white p-2 rounded border break-all select-all">
-                                  23790000123456789012345678901234567890123456789
-                                </p>
-                              </div>
-                              
-                              <Button className="w-full">
-                                Imprimir Boleto
-                              </Button>
-                            </div>
-                          )}
-                          
-                          {metodo === "transferencia" && (
-                            <div className="space-y-3">
-                              <p className="text-sm text-gray-600 mb-3">
-                                Utilize os dados bancários abaixo para realizar sua transferência:
-                              </p>
-                              
-                              <div className="space-y-2">
-                                <div className="grid grid-cols-3 text-sm">
-                                  <span className="font-medium">Banco:</span>
-                                  <span className="col-span-2">123 - Banco ICB</span>
-                                </div>
-                                
-                                <div className="grid grid-cols-3 text-sm">
-                                  <span className="font-medium">Agência:</span>
-                                  <span className="col-span-2">1234</span>
-                                </div>
-                                
-                                <div className="grid grid-cols-3 text-sm">
-                                  <span className="font-medium">Conta:</span>
-                                  <span className="col-span-2">12345-6</span>
-                                </div>
-                                
-                                <div className="grid grid-cols-3 text-sm">
-                                  <span className="font-medium">CNPJ:</span>
-                                  <span className="col-span-2">12.345.678/0001-90</span>
-                                </div>
-                                
-                                <div className="grid grid-cols-3 text-sm">
-                                  <span className="font-medium">Favorecido:</span>
-                                  <span className="col-span-2">Igreja ICB 610</span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="mt-6">
-                        <details className="group">
-                          <summary className="flex justify-between items-center text-sm font-medium cursor-pointer">
-                            Não recebemos sua contribuição? 
-                            <ChevronDown className="h-4 w-4 text-gray-500 group-open:rotate-180 transition-transform" />
-                          </summary>
-                          
-                          <div className="mt-3 text-sm text-gray-600">
-                            <p>
-                              Se você já realizou o pagamento e ele ainda não foi confirmado, entre em contato 
-                              com nossa equipe financeira pelo e-mail financeiro@icb610.org ou pelo telefone 
-                              (XX) XXXX-XXXX.
-                            </p>
-                          </div>
-                        </details>
-                      </div>
-                      
-                      <div className="border-t mt-6 pt-6">
-                        <Button 
-                          variant="outline" 
-                          className="w-full"
-                          onClick={() => {
-                            form.reset();
-                            setShowInstructions(false);
-                          }}
+                        <Button
+                          onClick={copyPixKey}
+                          variant="outline"
+                          size="sm"
+                          className="ml-3 flex-shrink-0"
                         >
-                          Fazer outra contribuição
+                          <Copy className="h-4 w-4 mr-1" />
+                          Copiar
                         </Button>
                       </div>
                     </div>
-                  )}
+                    
+                    {/* Tutorial */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-church-900">Como transferir:</h3>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-church-700 text-white rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">
+                            1
+                          </div>
+                          <div>
+                            <p className="font-medium">Abra o aplicativo do seu banco</p>
+                            <p className="text-sm text-gray-600">Acesse a área PIX do seu aplicativo bancário</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-church-700 text-white rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">
+                            2
+                          </div>
+                          <div>
+                            <p className="font-medium">Escolha "Transferir" ou "Enviar PIX"</p>
+                            <p className="text-sm text-gray-600">Selecione a opção de fazer uma transferência PIX</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-church-700 text-white rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">
+                            3
+                          </div>
+                          <div>
+                            <p className="font-medium">Cole a chave PIX</p>
+                            <p className="text-sm text-gray-600">Use a chave copiada: icbcasadabencao610@gmail.com</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-church-700 text-white rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">
+                            4
+                          </div>
+                          <div>
+                            <p className="font-medium">Confirme os dados</p>
+                            <p className="text-sm text-gray-600">Verifique se aparece "Igreja Casa da Benção" como destinatário</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-church-700 text-white rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">
+                            5
+                          </div>
+                          <div>
+                            <p className="font-medium">Insira o valor e confirme</p>
+                            <p className="text-sm text-gray-600">Digite o valor da sua contribuição e finalize a transferência</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mt-6">
+                        <div className="flex items-start gap-3">
+                          <CheckCircle2 className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <h4 className="font-medium text-blue-900">Transferência instantânea</h4>
+                            <p className="text-sm text-blue-700">
+                              O PIX é processado imediatamente e sua contribuição chegará na hora para a igreja. 
+                              Guarde o comprovante para seus registros.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </TabsContent>

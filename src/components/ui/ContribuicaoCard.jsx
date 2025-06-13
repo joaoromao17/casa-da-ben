@@ -5,10 +5,14 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Progress } from "@/components/ui/progress";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 const ContribuicaoCard = ({ contribuicao }) => {
+  const { currentUser } = useCurrentUser();
+  const isLoggedIn = !!currentUser;
+
   const { 
     id, 
     title, 
@@ -28,12 +32,12 @@ const ContribuicaoCard = ({ contribuicao }) => {
   // Use shortDescription if available, otherwise use the first part of the regular description
   const displayDescription = shortDescription || (description ? description.substring(0, 100) + (description.length > 100 ? '...' : '') : '');
 
-  // Calcular a porcentagem de progresso
-  const progressPercentage = isGoalVisible !== false && targetValue 
+  // Calcular a porcentagem de progresso - só mostrar se usuário estiver logado
+  const progressPercentage = isLoggedIn && isGoalVisible !== false && targetValue 
     ? Math.min(Math.round((collectedValue / targetValue) * 100), 100)
     : null;
 
-  // Formatar valores para exibição em reais
+  // Formatar valores para exibição em reais - só mostrar se usuário estiver logado
   const formatarValor = (valor) => {
     return Number(valor).toLocaleString('pt-BR', { 
       style: 'currency', 
@@ -77,7 +81,8 @@ const ContribuicaoCard = ({ contribuicao }) => {
       </CardHeader>
       
       <CardContent className="flex-grow">
-        {isGoalVisible !== false && progressPercentage !== null && (
+        {/* Só mostrar informações financeiras se usuário estiver logado */}
+        {isLoggedIn && isGoalVisible !== false && progressPercentage !== null && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span>Arrecadado: {formatarValor(collectedValue)}</span>
@@ -86,6 +91,15 @@ const ContribuicaoCard = ({ contribuicao }) => {
             <Progress value={progressPercentage} className="h-2" />
             <p className="text-xs text-right text-muted-foreground">
               {progressPercentage}% alcançado
+            </p>
+          </div>
+        )}
+        
+        {/* Mensagem para usuários não logados */}
+        {!isLoggedIn && (
+          <div className="text-center py-4">
+            <p className="text-sm text-gray-500">
+              Faça login para ver o progresso da campanha
             </p>
           </div>
         )}
