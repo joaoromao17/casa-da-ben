@@ -7,11 +7,13 @@ interface Aviso {
   mensagem: string;
   arquivoUrl?: string;
   tipo: 'GERAL' | 'MINISTERIAL';
+  onFinish?: () => void;
 }
 
 export const useWhatsAppMessage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentAviso, setCurrentAviso] = useState<Aviso | null>(null);
+  const [onFinish, setOnFinish] = useState<(() => void) | null>(null);
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -47,12 +49,16 @@ export const useWhatsAppMessage = () => {
 
   const showModal = (aviso: Aviso) => {
     setCurrentAviso(aviso);
+    if (aviso.onFinish) {
+      setOnFinish(() => aviso.onFinish);
+    }
     setIsOpen(true);
   };
 
   const closeModal = () => {
     setIsOpen(false);
     setCurrentAviso(null);
+    setOnFinish(null);
   };
 
   return {
@@ -61,6 +67,7 @@ export const useWhatsAppMessage = () => {
     showModal,
     closeModal,
     formatMessage,
-    copyToClipboard
+    copyToClipboard,
+    onFinish
   };
 };

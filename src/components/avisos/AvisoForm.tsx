@@ -45,7 +45,8 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
     showModal: showWhatsAppModal,
     closeModal: closeWhatsAppModal,
     formatMessage,
-    copyToClipboard
+    copyToClipboard,
+    onFinish
   } = useWhatsAppMessage();
 
   useEffect(() => {
@@ -114,16 +115,15 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
         description: `${avisoType === 'GERAL' ? 'Aviso geral' : 'Aviso ministerial'} criado com sucesso!`
       });
 
-      // Mostrar modal do WhatsApp com o ID do aviso salvo
+      // Mostrar modal do WhatsApp com o ID do aviso salvo e callback
       showWhatsAppModal({
         id: avisoSalvo.id,
         titulo: formData.titulo,
         mensagem: formData.mensagem,
         arquivoUrl,
-        tipo: avisoType
+        tipo: avisoType,
+        onFinish: onSuccess
       });
-
-      onSuccess();
     } catch (error: any) {
       toast({
         title: "Erro",
@@ -280,6 +280,7 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
           onClose={closeWhatsAppModal}
           message={formatMessage(currentAviso)}
           onCopy={copyToClipboard}
+          onFinish={onFinish}
         />
       )}
     </>

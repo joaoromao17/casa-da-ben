@@ -12,13 +12,15 @@ interface WhatsAppMessageModalProps {
   onClose: () => void;
   message: string;
   onCopy: (text: string) => Promise<boolean>;
+  onFinish?: () => void;
 }
 
 export const WhatsAppMessageModal: React.FC<WhatsAppMessageModalProps> = ({
   isOpen,
   onClose,
   message,
-  onCopy
+  onCopy,
+  onFinish
 }) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
@@ -31,7 +33,11 @@ export const WhatsAppMessageModal: React.FC<WhatsAppMessageModalProps> = ({
         title: "Sucesso",
         description: "Mensagem copiada para a área de transferência!"
       });
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => {
+        setCopied(false);
+        onClose();
+        onFinish?.();
+      }, 2000);
     } else {
       toast({
         title: "Erro",
@@ -39,6 +45,11 @@ export const WhatsAppMessageModal: React.FC<WhatsAppMessageModalProps> = ({
         variant: "destructive"
       });
     }
+  };
+
+  const handleConcluir = () => {
+    onClose();
+    onFinish?.();
   };
 
   return (
@@ -94,7 +105,7 @@ export const WhatsAppMessageModal: React.FC<WhatsAppMessageModalProps> = ({
             </Button>
 
             <Button
-              onClick={onClose}
+              onClick={handleConcluir}
               variant="outline"
               className="flex-1"
             >
