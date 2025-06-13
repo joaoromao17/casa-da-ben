@@ -16,7 +16,7 @@ const Sobre = () => {
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
         <div className="relative h-[40vh] min-h-[300px]">
-          <img src="/lovable-uploads/sobre.jpg" alt="Igreja Casa da Benção" className="w-full h-full object-cover" />
+          <img src="/lovable-uploads/sobre_nos.png" alt="Igreja Casa da Benção" className="w-full h-full object-cover" />
           <div className="absolute inset-0 flex items-center z-20">
             <div className="container-church text-white">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -64,7 +64,7 @@ const Sobre = () => {
                   </div>
                 </div>
                 <div className="space-y-8">
-                  <img alt="História da Igreja" className="rounded-lg shadow-lg w-full" src="/lovable-uploads/76ba9a4a-3cc5-402d-9493-a1b9432cd42c.jpg" />
+                  <img alt="História da Igreja" className="rounded-lg shadow-lg w-full" src="/lovable-uploads/historia.jpg" />
                   
                   <div className="bg-church-50 p-6 rounded-lg border border-church-100">
                     <h3 className="text-xl font-semibold text-church-800 mb-3">Nossa Missão</h3>
@@ -103,14 +103,6 @@ const Sobre = () => {
                         <h3 className="font-semibold text-lg text-church-800">Endereço</h3>
                         <p className="text-gray-700">QS 610 - Samambaia Norte</p>
                         <p className="text-gray-700">Brasília - DF, 72320-500</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start space-x-3">
-                      <Phone className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-lg text-church-800">Telefone</h3>
-                        <p className="text-gray-700">(61) 99649-9589</p>
                       </div>
                     </div>
                     
@@ -162,7 +154,7 @@ const Sobre = () => {
                   
                   <div className="bg-church-50 p-6 rounded-lg border border-church-100">
                     <h3 className="text-xl font-semibold text-church-800 mb-3">Como Chegar</h3>
-                    <p className="text-gray-700 mb-4">Nossa igreja está localizada perto do HRSAM e em frente ao um campo de futebol</p>
+                    <p className="text-gray-700 mb-4">Nossa igreja está localizada na avenida do HRSAM</p>
                     
                     <h4 className="font-medium text-church-700 mb-2">Transporte Público:</h4>
                     <ul className="list-disc pl-5 text-gray-700 mb-4">

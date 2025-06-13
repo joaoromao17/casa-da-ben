@@ -178,7 +178,7 @@ const Home = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
       <div className="relative h-[70vh] min-h-[500px]">
         <img
-          src="/lovable-uploads/banner.jpg"
+          src="/lovable-uploads/banner.png"
           alt="Igreja Casa da Benção"
           className="w-full h-full object-cover"
         />
@@ -268,7 +268,7 @@ const Home = () => {
             </Link>
           </div>
           <div>
-            <img alt="Membros da Igreja Casa da Benção" className="rounded-lg shadow-lg max-w-full h-auto object-fill" src="/lovable-uploads/055ba792-c198-4d19-a42c-971ae55b0e51.jpg" />
+            <img alt="Membros da Igreja Casa da Benção" className="rounded-lg shadow-lg max-w-full h-auto object-fill" src="/lovable-uploads/bem_vindo.jpg" />
           </div>
         </div>
       </div>
