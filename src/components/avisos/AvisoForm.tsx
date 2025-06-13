@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, X } from 'lucide-react';
 import api from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
+import { useWhatsAppMessage } from '@/hooks/useWhatsAppMessage';
+import { WhatsAppMessageModal } from './WhatsAppMessageModal';
 
 interface Ministry {
   id: number;
@@ -37,6 +38,16 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
   const [submitting, setSubmitting] = useState(false);
   const [ministries, setMinistries] = useState<Ministry[]>([]);
   const { toast } = useToast();
+  
+  const {
+    isOpen: isWhatsAppModalOpen,
+    currentAviso,
+    showModal: showWhatsAppModal,
+    closeModal: closeWhatsAppModal,
+    formatMessage,
+    copyToClipboard,
+    openWhatsApp
+  } = useWhatsAppMessage();
 
   useEffect(() => {
     if (formData.tipo === 'MINISTERIAL' && !ministryId) {
@@ -76,7 +87,6 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
         setUploading(true);
         const uploadFormData = new FormData();
         uploadFormData.append('file', file);
-
 
         const uploadResponse = await api.post('/avisos/arquivos', uploadFormData, {
           headers: {
@@ -130,6 +140,14 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
         description: `${avisoType === 'GERAL' ? 'Aviso geral' : 'Aviso ministerial'} criado com sucesso!`
       });
 
+      // Mostrar modal do WhatsApp
+      showWhatsAppModal({
+        titulo: formData.titulo,
+        mensagem: formData.mensagem,
+        arquivoUrl,
+        tipo: avisoType
+      });
+
       onSuccess();
     } catch (error: any) {
       toast({
@@ -144,139 +162,152 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>
-          {avisoType === 'GERAL' ? 'Criar Aviso Geral' : 'Criar Aviso Ministerial'}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="titulo">Título *</Label>
-            <Input
-              id="titulo"
-              value={formData.titulo}
-              onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="mensagem">Mensagem *</Label>
-            <Textarea
-              id="mensagem"
-              value={formData.mensagem}
-              onChange={(e) => setFormData({ ...formData, mensagem: e.target.value })}
-              rows={4}
-              required
-            />
-          </div>
-
-          {/* Mostrar informação sobre o tipo de aviso */}
-          <div className="bg-blue-50 p-3 rounded-lg">
-            <p className="text-sm text-blue-800">
-              <strong>Tipo:</strong> {avisoType === 'GERAL' ? 'Aviso Geral da Igreja' : 'Aviso Ministerial'}
-            </p>
-          </div>
-
-          {avisoType === 'MINISTERIAL' && !ministryId && (
+    <>
+      <Card className="w-full max-w-2xl mx-auto">
+        <CardHeader>
+          <CardTitle>
+            {avisoType === 'GERAL' ? 'Criar Aviso Geral' : 'Criar Aviso Ministerial'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="ministerio">Ministério *</Label>
-              <Select
-                value={formData.ministerioId}
-                onValueChange={(value) => setFormData({ ...formData, ministerioId: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione um ministério" />
-                </SelectTrigger>
-                <SelectContent>
-                  {ministries.map((ministry) => (
-                    <SelectItem key={ministry.id} value={ministry.id.toString()}>
-                      {ministry.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          <div>
-            <Label htmlFor="dataExpiracao">Data de Expiração</Label>
-            <Input
-              id="dataExpiracao"
-              type="datetime-local"
-              value={formData.dataExpiracao}
-              onChange={(e) => setFormData({ ...formData, dataExpiracao: e.target.value })}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="arquivo">Arquivo (PDF ou Imagem)</Label>
-            <div className="mt-2">
-              <input
-                type="file"
-                id="arquivo"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={handleFileChange}
-                className="hidden"
+              <Label htmlFor="titulo">Título *</Label>
+              <Input
+                id="titulo"
+                value={formData.titulo}
+                onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
+                required
               />
-              <label
-                htmlFor="arquivo"
-                className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400"
-              >
-                {file ? (
-                  <div className="text-center">
-                    <p className="text-sm font-medium">{file.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
-                    </p>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setFile(null);
-                      }}
-                      className="mt-2"
-                    >
-                      <X className="w-4 h-4 mr-1" />
-                      Remover
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="text-center">
-                    <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                    <p className="text-sm text-gray-600">
-                      Clique para selecionar um arquivo
-                    </p>
-                    <p className="text-xs text-gray-400">PDF, JPG, PNG (máx. 10MB)</p>
-                  </div>
-                )}
-              </label>
             </div>
-          </div>
 
-          <div className="flex gap-4">
-            <Button
-              type="submit"
-              disabled={submitting || uploading}
-              className="flex-1"
-            >
-              {uploading ? 'Enviando arquivo...' : submitting ? 'Criando...' : `Criar ${avisoType === 'GERAL' ? 'Aviso Geral' : 'Aviso Ministerial'}`}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={submitting || uploading}
-            >
-              Cancelar
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+            <div>
+              <Label htmlFor="mensagem">Mensagem *</Label>
+              <Textarea
+                id="mensagem"
+                value={formData.mensagem}
+                onChange={(e) => setFormData({ ...formData, mensagem: e.target.value })}
+                rows={4}
+                required
+              />
+            </div>
+
+            {/* Mostrar informação sobre o tipo de aviso */}
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <strong>Tipo:</strong> {avisoType === 'GERAL' ? 'Aviso Geral da Igreja' : 'Aviso Ministerial'}
+              </p>
+            </div>
+
+            {avisoType === 'MINISTERIAL' && !ministryId && (
+              <div>
+                <Label htmlFor="ministerio">Ministério *</Label>
+                <Select
+                  value={formData.ministerioId}
+                  onValueChange={(value) => setFormData({ ...formData, ministerioId: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione um ministério" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ministries.map((ministry) => (
+                      <SelectItem key={ministry.id} value={ministry.id.toString()}>
+                        {ministry.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <div>
+              <Label htmlFor="dataExpiracao">Data de Expiração</Label>
+              <Input
+                id="dataExpiracao"
+                type="datetime-local"
+                value={formData.dataExpiracao}
+                onChange={(e) => setFormData({ ...formData, dataExpiracao: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="arquivo">Arquivo (PDF ou Imagem)</Label>
+              <div className="mt-2">
+                <input
+                  type="file"
+                  id="arquivo"
+                  accept=".pdf,.jpg,.jpeg,.png"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="arquivo"
+                  className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400"
+                >
+                  {file ? (
+                    <div className="text-center">
+                      <p className="text-sm font-medium">{file.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {(file.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setFile(null);
+                        }}
+                        className="mt-2"
+                      >
+                        <X className="w-4 h-4 mr-1" />
+                        Remover
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="text-center">
+                      <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                      <p className="text-sm text-gray-600">
+                        Clique para selecionar um arquivo
+                      </p>
+                      <p className="text-xs text-gray-400">PDF, JPG, PNG (máx. 10MB)</p>
+                    </div>
+                  )}
+                </label>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <Button
+                type="submit"
+                disabled={submitting || uploading}
+                className="flex-1"
+              >
+                {uploading ? 'Enviando arquivo...' : submitting ? 'Criando...' : `Criar ${avisoType === 'GERAL' ? 'Aviso Geral' : 'Aviso Ministerial'}`}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onCancel}
+                disabled={submitting || uploading}
+              >
+                Cancelar
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Modal do WhatsApp */}
+      {currentAviso && (
+        <WhatsAppMessageModal
+          isOpen={isWhatsAppModalOpen}
+          onClose={closeWhatsAppModal}
+          message={formatMessage(currentAviso)}
+          onCopy={copyToClipboard}
+          onOpenWhatsApp={openWhatsApp}
+        />
+      )}
+    </>
   );
 };
