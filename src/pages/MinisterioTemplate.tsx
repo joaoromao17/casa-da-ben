@@ -11,6 +11,7 @@ import { AvisoCard } from "@/components/avisos/AvisoCard";
 import { AvisoModal } from "@/components/avisos/AvisoModal";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import UserCard from "@/components/ui/UserCard";
 
 interface Usuario {
   id: number;
@@ -362,32 +363,18 @@ const MinisterioTemplate = ({
                   Aqui estão os membros deste ministério
                 </p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                {members.map((member) => {
-                  const imageUrl = member.profileImageUrl?.startsWith("http")
-                    ? member.profileImageUrl
-                    : `${API_BASE_URL}${member.profileImageUrl || "/uploads/profiles/default.jpg"}`;
-                  return (
-                    <div
-                      key={member.id}
-                      className="bg-white rounded-lg shadow p-4 flex flex-col items-center cursor-pointer hover:shadow-lg transition-shadow"
-                      onClick={() => handleUserClick(member.id)}
-                    >
-                      <img
-                        src={imageUrl}
-                        alt={member.name}
-                        className="w-50 h-40 object-cover rounded-full mb-3 border-2 border-church-200"
-                      />
-                      <h3 className="text-lg font-semibold text-church-800 text-center">{member.name}</h3>
-                      <p className="text-sm text-gray-500 text-center">{member.email}</p>
-                      <p className="text-sm text-gray-500 text-center">{member.phone}</p>
-                      <p className="text-sm text-gray-500 text-center">
-                        {member.roles.map(role => role.replace('ROLE_', '').toLowerCase()).join(", ")}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
+              
+              {members.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-600 text-lg">Nenhum membro encontrado</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                  {members.map((member) => (
+                    <UserCard key={member.id} usuario={member} />
+                  ))}
+                </div>
+              )}
             </TabsContent>
 
           </Tabs>
