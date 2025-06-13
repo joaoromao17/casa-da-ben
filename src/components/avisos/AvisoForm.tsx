@@ -45,8 +45,7 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
     showModal: showWhatsAppModal,
     closeModal: closeWhatsAppModal,
     formatMessage,
-    copyToClipboard,
-    openWhatsApp
+    copyToClipboard
   } = useWhatsAppMessage();
 
   useEffect(() => {
