@@ -10,6 +10,7 @@ import { Instagram, User, BookOpen, CalendarDays, ArrowRight, ArrowDown } from "
 import InstagramWidget from "@/components/ui/InstagramWidget";
 import { AvisoCard } from "@/components/avisos/AvisoCard";
 import api from "@/services/api";
+import { useToast } from "@/hooks/use-toast";
 
 interface Ministry {
   name: string;
@@ -49,6 +50,8 @@ const Home = () => {
   });
 
   const [avisoGeral, setAvisoGeral] = useState<Aviso | null>(null);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchVerse = async () => {
@@ -87,6 +90,43 @@ const Home = () => {
 
     fetchAvisoGeral();
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    
+    if (token) {
+      try {
+        // Decodificar o payload do token JWT
+        const payload = token.split(".")[1];
+        const decodedPayload = JSON.parse(atob(payload));
+        setUserRoles(decodedPayload.roles || []);
+      } catch (error) {
+        console.error("Erro ao decodificar token:", error);
+        setUserRoles([]);
+      }
+    }
+  }, []);
+
+  const canDeleteAviso = userRoles.some(role => 
+    role === "ROLE_ADMIN" || role === "ROLE_PASTOR" || role === "ROLE_PASTORAUXILIAR"
+  );
+
+  const handleDeleteAviso = async (avisoId: number) => {
+    try {
+      await api.delete(`/avisos/${avisoId}`);
+      setAvisoGeral(null);
+      toast({
+        title: "Sucesso",
+        description: "Aviso excluído com sucesso!"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro",
+        description: error.response?.data?.message || "Erro ao excluir aviso",
+        variant: "destructive"
+      });
+    }
+  };
 
   const [ministries, setMinistries] = useState<Ministry[]>([]);
 
@@ -172,7 +212,11 @@ const Home = () => {
       <section className="py-8 bg-yellow-50 border-l-4 border-yellow-400">
         <div className="container-church">
           <div className="max-w-4xl mx-auto">
-            <AvisoCard aviso={avisoGeral} />
+            <AvisoCard 
+              aviso={avisoGeral} 
+              showDelete={canDeleteAviso}
+              onDelete={handleDeleteAviso}
+            />
           </div>
         </div>
       </section>

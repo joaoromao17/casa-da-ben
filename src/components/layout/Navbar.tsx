@@ -67,12 +67,16 @@ const Navbar = () => {
       <nav className="bg-white shadow-md">
         <div className="container-church py-4">
           <div className="flex justify-between items-center">
-            <Link to="/" className="flex items-center pl-2">
-              <img src="/lovable-uploads/logo.png" alt="Logo da Casa da Benção" width="75px" />
-            </Link>
+            {/* Logo - sempre visível */}
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center pl-2">
+                <img src="/lovable-uploads/logo.png" alt="Logo da Casa da Benção" width="75px" />
+              </Link>
+            </div>
 
+            {/* Menu Desktop - centralizado */}
             <div className="hidden lg:flex items-center justify-center flex-1 mx-4">
-              <div className="flex space-x-8">
+              <div className="flex space-x-6">
                 <Link to="/" className="nav-link">Início</Link>
                 <Link to="/sobre" className="nav-link">Sobre</Link>
                 {isLoggedIn && (
@@ -87,43 +91,46 @@ const Navbar = () => {
                 <Link to="/contato" className="nav-link">Contato</Link>
                 {hasAdminAccess && (
                   <Link to="/admin" className="nav-link flex items-center gap-1">
-                    <Settings size={16} />
+                    <Settings size={14} />
                     Admin
                   </Link>
                 )}
               </div>
             </div>
 
-            <div className="hidden lg:flex items-center space-x-4 pr-2">
+            {/* Botões de ação - sempre à direita */}
+            <div className="hidden lg:flex items-center space-x-3 flex-shrink-0">
               {isLoggedIn ? (
                 <>
                   {canCreateGeneralAviso && (
                     <Button 
                       onClick={() => setIsAvisoModalOpen(true)}
+                      size="sm"
                       className="bg-green-600 hover:bg-green-700 text-white"
                     >
                       <Plus className="w-4 h-4 mr-1" />
-                      Novo Aviso
+                      Aviso
                     </Button>
                   )}
-                  <Link to="/minha-conta" className="w-full">
-                    <Button className="btn-primary w-full">Minha Conta</Button>
+                  <Link to="/minha-conta">
+                    <Button size="sm" className="btn-primary">Minha Conta</Button>
                   </Link>
-                  <Button onClick={handleLogout} className="btn-danger">Sair</Button>
+                  <Button onClick={handleLogout} size="sm" className="btn-danger">Sair</Button>
                 </>
               ) : (
                 <>
                   <Link to="/cadastro">
-                    <Button className="bg-black/80 text-white hover:bg-black/70 hover:text-white">Cadastre-se</Button>
+                    <Button size="sm" className="bg-black/80 text-white hover:bg-black/70 hover:text-white">Cadastre-se</Button>
                   </Link>
                   <Link to="/login">
-                    <Button className="bg-black/80 text-white hover:bg-black/70 hover:text-white">Entrar</Button>
+                    <Button size="sm" className="bg-black/80 text-white hover:bg-black/70 hover:text-white">Entrar</Button>
                   </Link>
                 </>
               )}
             </div>
 
-            <div className="lg:hidden">
+            {/* Menu Mobile Toggle */}
+            <div className="lg:hidden flex-shrink-0">
               <button onClick={toggleMenu} className="text-church-900 focus:outline-none">
                 {isMenuOpen ? (
                   <X className="h-6 w-6" />
@@ -134,6 +141,7 @@ const Navbar = () => {
             </div>
           </div>
 
+          {/* Menu Mobile */}
           {isMenuOpen && (
             <div className="lg:hidden mt-4 pb-4">
               <div className="flex flex-col space-y-3">
