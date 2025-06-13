@@ -37,8 +37,8 @@ export const AvisoCard: React.FC<AvisoCardProps> = ({ aviso, showDelete = false,
 
   const handleFileClick = () => {
     if (aviso.arquivoUrl) {
-      const fullUrl = aviso.arquivoUrl.startsWith('http') 
-        ? aviso.arquivoUrl 
+      const fullUrl = aviso.arquivoUrl.startsWith('http')
+        ? aviso.arquivoUrl
         : `${API_BASE_URL}${aviso.arquivoUrl}`;
       window.open(fullUrl, '_blank');
     }
@@ -85,11 +85,11 @@ export const AvisoCard: React.FC<AvisoCardProps> = ({ aviso, showDelete = false,
       </CardHeader>
       <CardContent>
         <p className="text-gray-700 mb-4 whitespace-pre-line">{aviso.mensagem}</p>
-        
+
         {aviso.arquivoUrl && (
           <div className="mt-4">
             {isImage(aviso.arquivoUrl) ? (
-              <div className="cursor-pointer" onClick={handleFileClick}>
+              <div className="flex justify-center cursor-pointer" onClick={handleFileClick}>
                 <img
                   src={aviso.arquivoUrl.startsWith('http') ? aviso.arquivoUrl : `${API_BASE_URL}${aviso.arquivoUrl}`}
                   alt="Anexo"

@@ -107,7 +107,9 @@ const MinisterioTemplate = ({
           const avisosMinisteriais = response.data.filter(
             (aviso: Aviso) => aviso.tipo === 'MINISTERIAL' && aviso.nomeMinisterio === title
           );
-          setAvisos(avisosMinisteriais);
+          setAvisos(
+            avisosMinisteriais.sort((a, b) => new Date(b.dataCriacao).getTime() - new Date(a.dataCriacao).getTime())
+          );
         } catch (error) {
           console.error("Erro ao buscar avisos:", error);
         }
@@ -137,7 +139,9 @@ const MinisterioTemplate = ({
           const avisosMinisteriais = response.data.filter(
             (aviso: Aviso) => aviso.tipo === 'MINISTERIAL' && aviso.nomeMinisterio === title
           );
-          setAvisos(avisosMinisteriais);
+          setAvisos(
+            avisosMinisteriais.sort((a, b) => new Date(b.dataCriacao).getTime() - new Date(a.dataCriacao).getTime())
+          );
         })
         .catch(error => console.error("Erro ao buscar avisos:", error));
     }

@@ -24,7 +24,7 @@ interface AvisoFormProps {
 export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, ministryId }) => {
   // Define o tipo baseado no contexto: se tem ministryId é MINISTERIAL, senão é GERAL
   const avisoType = ministryId ? 'MINISTERIAL' : 'GERAL';
-  
+
   const [formData, setFormData] = useState({
     titulo: '',
     mensagem: '',
@@ -75,14 +75,15 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
       if (file) {
         setUploading(true);
         const uploadFormData = new FormData();
-        uploadFormData.append('arquivo', file);
+        uploadFormData.append('file', file);
+
 
         const uploadResponse = await api.post('/avisos/arquivos', uploadFormData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        arquivoUrl = uploadResponse.data.arquivoUrl;
+        arquivoUrl = uploadResponse.data;
         setUploading(false);
       }
 
@@ -97,6 +98,32 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
       };
 
       await api.post('/avisos', avisoData);
+
+      if (avisoType === 'MINISTERIAL' && (ministryId || formData.ministerioId)) {
+        const id = ministryId || formData.ministerioId;
+
+        try {
+          const membrosRes = await api.get(`/users/ministerios/${id}/membros`);
+          const membros = membrosRes.data;
+
+          const mensagem = `*AVISO DO MINISTÉRIO*\n\n` +
+            `*${formData.titulo}*\n\n` +
+            `${formData.mensagem}\n\n` +
+            `Para mais detalhes, acesse www.icb610.com.br`;
+
+          const encodedMensagem = encodeURIComponent(mensagem);
+
+          membros.forEach((membro: any) => {
+            if (membro.phone) {
+              const numeroLimpo = membro.phone.replace(/\D/g, '');
+              const link = `https://wa.me/55${numeroLimpo}?text=${encodedMensagem}`;
+              window.open(link, '_blank');
+            }
+          });
+        } catch (err) {
+          console.error("Erro ao enviar WhatsApp:", err);
+        }
+      }
 
       toast({
         title: "Sucesso",
