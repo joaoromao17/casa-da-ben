@@ -8,7 +8,7 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { TextareaWithCounter } from "@/components/ui/TextareaWithCounter";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -118,11 +118,12 @@ const OracaoFormModal = ({
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               Mensagem da oração:
             </label>
-            <Textarea
+            <TextareaWithCounter
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Compartilhe seu pedido de oração..."
               className="h-32"
+              maxLength={500}
             />
           </div>
 

@@ -21,7 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { TextareaWithCounter } from "@/components/ui/TextareaWithCounter";
 import { Checkbox } from "@/components/ui/checkbox";
 
 // Form schema for verse
@@ -60,8 +60,6 @@ const VersesTab = () => {
       reference: "",
     },
   });
-
-
 
   // Create verse mutation
   const createVerseMutation = useMutation({
@@ -193,7 +191,6 @@ const VersesTab = () => {
     { key: "reference", title: "Referência" },
   ];
 
-
   if (error) {
     return <div className="text-center text-red-500">Erro ao carregar versículos.</div>;
   }
@@ -243,9 +240,10 @@ const VersesTab = () => {
                 <FormItem>
                   <FormLabel>Versículo</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <TextareaWithCounter
                       placeholder="Digite o texto do versículo"
                       rows={4}
+                      maxLength={500}
                       {...field}
                     />
                   </FormControl>

@@ -8,7 +8,7 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { TextareaWithCounter } from "@/components/ui/TextareaWithCounter";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -141,11 +141,12 @@ useEffect(() => {
             <label className="text-sm font-medium text-gray-700 mb-2 block">
               {isFromPrayer ? "Edite sua mensagem de testemunho:" : "Sua mensagem de testemunho:"}
             </label>
-            <Textarea
+            <TextareaWithCounter
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder={isFromPrayer ? "Edite como quiser compartilhar seu testemunho..." : "Compartilhe como Deus tem agido em sua vida..."}
               className="h-32"
+              maxLength={500}
             />
           </div>
 

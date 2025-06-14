@@ -173,7 +173,9 @@ const Membros = () => {
                 />
                 
                 <LeadershipSection
-                  title="Diáconos"
+                  title="Diá
+
+coração"
                   usuarios={leadersData.diaconos}
                   isLoading={loadingStates.diaconos}
                 />
