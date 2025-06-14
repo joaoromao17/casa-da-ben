@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+import { TextareaWithCounter } from "../ui/TextareaWithCounter";
 
 interface Event {
   id: string;
@@ -316,9 +317,10 @@ const EventsTab = () => {
                 <FormItem>
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <TextareaWithCounter
                       placeholder="Descreva o evento"
-                      rows={4}
+                      maxLength={500}
+                      className="h-32"
                       {...field}
                     />
                   </FormControl>

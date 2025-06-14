@@ -62,6 +62,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { TextareaWithCounter } from "../ui/TextareaWithCounter"
 
 // Form schema for contribution campaign - aligned with backend
 const contributionFormSchema = z.object({
@@ -454,9 +455,10 @@ const ContributionsTab = () => {
                 <FormItem>
                   <FormLabel>Descrição</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <TextareaWithCounter
                       placeholder="Descreva o propósito desta campanha"
-                      rows={4}
+                      className="h-32"
+                      maxLength={500}
                       {...field}
                     />
                   </FormControl>

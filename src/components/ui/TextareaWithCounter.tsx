@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
@@ -8,8 +7,27 @@ export interface TextareaWithCounterProps
 }
 
 const TextareaWithCounter = React.forwardRef<HTMLTextAreaElement, TextareaWithCounterProps>(
-  ({ className, maxLength, value, onChange, ...props }, ref) => {
-    const currentLength = typeof value === 'string' ? value.length : 0;
+  (
+    {
+      className,
+      maxLength,
+      onChange,
+      onBlur,
+      name,
+      defaultValue,
+      ...props
+    },
+    ref
+  ) => {
+    const [currentLength, setCurrentLength] = React.useState(() => {
+      if (typeof defaultValue === "string") return defaultValue.length;
+      return 0;
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setCurrentLength(e.target.value.length);
+      onChange?.(e); // repassa o evento para o RHF
+    };
 
     return (
       <div className="space-y-2">
@@ -19,17 +37,21 @@ const TextareaWithCounter = React.forwardRef<HTMLTextAreaElement, TextareaWithCo
             className
           )}
           ref={ref}
-          value={value}
-          onChange={onChange}
+          name={name}
+          onChange={handleChange}
+          onBlur={onBlur}
           maxLength={maxLength}
+          defaultValue={defaultValue}
           {...props}
         />
         <div className="flex justify-end">
-          <span className={cn(
-            "text-sm text-gray-500",
-            currentLength > maxLength * 0.9 && "text-orange-500",
-            currentLength === maxLength && "text-red-500"
-          )}>
+          <span
+            className={cn(
+              "text-sm text-gray-500",
+              currentLength > maxLength * 0.9 && "text-orange-500",
+              currentLength === maxLength && "text-red-500"
+            )}
+          >
             {currentLength}/{maxLength} caracteres
           </span>
         </div>

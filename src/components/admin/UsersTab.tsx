@@ -24,16 +24,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue 
+  SelectValue
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { TextareaWithCounter } from "../ui/TextareaWithCounter";
 
 // Form schema for user edit
 const userFormSchema = z.object({
@@ -68,10 +69,10 @@ const UsersTab = () => {
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
 
   // Fetch users
-  const { 
-    data: users = [], 
-    isLoading, 
-    error 
+  const {
+    data: users = [],
+    isLoading,
+    error
   } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
@@ -112,17 +113,17 @@ const UsersTab = () => {
   const updateUserMutation = useMutation({
     mutationFn: async (data: UserFormData & { id: string }) => {
       const { id, ministries: selectedMinistries, ...userData } = data;
-      
+
       // Convert ministry IDs to ministry objects for backend
       const ministryObjects = selectedMinistries?.map(id => ({ id })) || [];
-      
+
       const payload = {
         ...userData,
         ministries: ministryObjects
       };
-      
+
       console.log('Sending user data:', payload);
-      
+
       return await api.put(`/users/${id}`, payload);
     },
     onSuccess: () => {
@@ -215,12 +216,12 @@ const UsersTab = () => {
 
   const handleEditUser = (user: any) => {
     setSelectedUser(user);
-    
+
     // Garantindo que ministries seja sempre um array de números (IDs)
-    const userMinistries = user.ministries 
+    const userMinistries = user.ministries
       ? user.ministries.map((m: any) => typeof m === 'object' ? m.id : m)
       : [];
-    
+
     // Reset form with user data
     form.reset({
       name: user.name,
@@ -236,7 +237,7 @@ const UsersTab = () => {
       active: user.active !== false,
       ministries: userMinistries,
     });
-    
+
     setIsModalOpen(true);
   };
 
@@ -284,12 +285,12 @@ const UsersTab = () => {
 
   // Filter users based on search term and role filter
   const filteredUsers = users.filter((user: any) => {
-    const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          user.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesRoleFilter = !roleFilter || roleFilter === 'todas' || 
-                              (user.roles && user.roles.includes(roleFilter));
-    
+    const matchesSearch = user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesRoleFilter = !roleFilter || roleFilter === 'todas' ||
+      (user.roles && user.roles.includes(roleFilter));
+
     return matchesSearch && matchesRoleFilter;
   });
 
@@ -297,20 +298,20 @@ const UsersTab = () => {
     { key: "name", title: "Nome" },
     { key: "email", title: "Email" },
     { key: "phone", title: "Telefone" },
-    { 
-      key: "roles", 
+    {
+      key: "roles",
       title: "Funções",
       render: (roles: string[]) => roles?.map(formatRoleName).join(", ") || "-"
     },
-    { 
-      key: "member", 
-      title: "Membro", 
+    {
+      key: "member",
+      title: "Membro",
       render: (isMember: boolean) => isMember ? "Sim" : "Não"
     },
-    { 
-      key: "active", 
-      title: "Status", 
-      render: (active: boolean) => 
+    {
+      key: "active",
+      title: "Status",
+      render: (active: boolean) =>
         active !== false ? (
           <span className="inline-block px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
             Ativo
@@ -354,7 +355,7 @@ const UsersTab = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Usuários</h2>
-      
+
       {/* Search and Filter */}
       <div className="mb-6 p-4 bg-gray-50 rounded-lg">
         <div className="flex flex-col md:flex-row gap-4">
@@ -368,8 +369,8 @@ const UsersTab = () => {
             />
           </div>
           <div className="w-full md:w-64">
-            <Select 
-              value={roleFilter || "todas"} 
+            <Select
+              value={roleFilter || "todas"}
               onValueChange={(value) => setRoleFilter(value)}
             >
               <SelectTrigger>
@@ -385,7 +386,7 @@ const UsersTab = () => {
           </div>
         </div>
       </div>
-      
+
       <AdminTable
         data={filteredUsers}
         columns={columns}
@@ -486,11 +487,12 @@ const UsersTab = () => {
                     <FormItem className="md:col-span-2">
                       <FormLabel>Biografia</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder="Biografia do usuário..." 
+                        <TextareaWithCounter
+                          placeholder="Biografia do usuário..."
                           className="min-h-[100px]"
-                          {...field} 
-                          value={field.value || ""} 
+                          maxLength={500}
+                          {...field}
+                          value={field.value || ""}
                         />
                       </FormControl>
                       <FormMessage />
@@ -555,7 +557,7 @@ const UsersTab = () => {
                                     field.onChange(updatedRoles);
                                   }}
                                 />
-                                <label 
+                                <label
                                   htmlFor={`role-${role.id}`}
                                   className="text-sm font-medium leading-none"
                                 >
@@ -592,7 +594,7 @@ const UsersTab = () => {
                                 }
                               }}
                             />
-                            <label 
+                            <label
                               htmlFor={`ministry-${ministry.id}`}
                               className="text-sm font-medium leading-none"
                             >
@@ -712,7 +714,7 @@ const UsersTab = () => {
           <DialogHeader>
             <DialogTitle>Detalhes do Usuário</DialogTitle>
           </DialogHeader>
-          
+
           {selectedUser && (
             <div className="py-4 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -755,7 +757,7 @@ const UsersTab = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Batizado</h3>
@@ -766,14 +768,14 @@ const UsersTab = () => {
                   <p className="mt-1">{selectedUser.member ? "Sim" : "Não"}</p>
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Funções</h3>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {selectedUser.roles && selectedUser.roles.length > 0 ? (
                     selectedUser.roles.map((role: string) => (
-                      <span 
-                        key={role} 
+                      <span
+                        key={role}
                         className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800"
                       >
                         {formatRoleName(role)}
@@ -784,20 +786,20 @@ const UsersTab = () => {
                   )}
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Ministérios</h3>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {selectedUser.ministries && selectedUser.ministries.length > 0 ? (
                     selectedUser.ministries.map((ministry: any) => {
                       const ministryId = ministry.id || ministry;
-                      const ministryName = ministry.name || 
-                        ministries.find((m: any) => m.id === ministryId)?.name || 
+                      const ministryName = ministry.name ||
+                        ministries.find((m: any) => m.id === ministryId)?.name ||
                         "Ministério";
-                      
+
                       return (
-                        <span 
-                          key={ministryId} 
+                        <span
+                          key={ministryId}
                           className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800"
                         >
                           {ministryName}
@@ -809,10 +811,10 @@ const UsersTab = () => {
                   )}
                 </div>
               </div>
-              
+
               <div className="pt-4 flex justify-end">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setViewUserOpen(false)}
                 >
                   Fechar

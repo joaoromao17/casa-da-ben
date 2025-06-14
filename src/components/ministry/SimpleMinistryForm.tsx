@@ -4,6 +4,7 @@ import { UseFormReturn } from 'react-hook-form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { TextareaWithCounter } from '../ui/TextareaWithCounter';
 
 export interface MinistryEditFormData {
   name: string;
@@ -54,14 +55,17 @@ const SimpleMinistryForm: React.FC<SimpleMinistryFormProps> = ({ form, selectedM
 
       <div>
         <Label htmlFor="description">Descrição</Label>
-        <Textarea
+        <TextareaWithCounter
           id="description"
+          maxLength={500}
+          placeholder="Descreva o conteúdo..."
+          className={`h-32 ${errors.description ? 'border-red-500' : ''}`}
           {...register('description')}
-          className={errors.description ? 'border-red-500' : ''}
-          rows={4}
         />
         {errors.description && (
-          <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+          <p className="text-red-500 text-sm mt-1">
+            {errors.description.message}
+          </p>
         )}
       </div>
 

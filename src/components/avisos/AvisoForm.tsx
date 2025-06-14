@@ -10,6 +10,7 @@ import api from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import { useWhatsAppMessage } from '@/hooks/useWhatsAppMessage';
 import { WhatsAppMessageModal } from './WhatsAppMessageModal';
+import { TextareaWithCounter } from '../ui/TextareaWithCounter';
 
 interface Ministry {
   id: number;
@@ -38,7 +39,7 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
   const [submitting, setSubmitting] = useState(false);
   const [ministries, setMinistries] = useState<Ministry[]>([]);
   const { toast } = useToast();
-  
+
   const {
     isOpen: isWhatsAppModalOpen,
     currentAviso,
@@ -158,12 +159,17 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
 
             <div>
               <Label htmlFor="mensagem">Mensagem *</Label>
-              <Textarea
+              <TextareaWithCounter
                 id="mensagem"
                 value={formData.mensagem}
-                onChange={(e) => setFormData({ ...formData, mensagem: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, mensagem: e.target.value })
+                }
                 rows={4}
                 required
+                maxLength={500}
+                className="h-32"
+                placeholder="Digite sua mensagem..."
               />
             </div>
 

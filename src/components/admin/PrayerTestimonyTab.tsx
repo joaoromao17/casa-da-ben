@@ -25,26 +25,27 @@ import {
 } from "@/components/ui/table";
 
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import { TextareaWithCounter } from "../ui/TextareaWithCounter";
 
 const PrayerTestimonyTab = () => {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("prayers");
-  
+
   // Modal states
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  
+
   // Edit form states
   const [editMessage, setEditMessage] = useState("");
   const [editCategory, setEditCategory] = useState("");
   const [editAnonymous, setEditAnonymous] = useState(false);
 
   // Fetch prayers
-  const { 
-    data: prayers = [], 
-    isLoading: prayersLoading, 
+  const {
+    data: prayers = [],
+    isLoading: prayersLoading,
   } = useQuery({
     queryKey: ['admin-prayers'],
     queryFn: async () => {
@@ -54,9 +55,9 @@ const PrayerTestimonyTab = () => {
   });
 
   // Fetch testimonies
-  const { 
-    data: testimonies = [], 
-    isLoading: testimoniesLoading, 
+  const {
+    data: testimonies = [],
+    isLoading: testimoniesLoading,
   } = useQuery({
     queryKey: ['admin-testimonies'],
     queryFn: async () => {
@@ -262,9 +263,9 @@ const PrayerTestimonyTab = () => {
                       <Button variant="ghost" size="icon" onClick={() => handleEdit(prayer)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleDelete(prayer)}
                         className="text-red-600 hover:text-red-700"
                       >
@@ -325,9 +326,9 @@ const PrayerTestimonyTab = () => {
                       <Button variant="ghost" size="icon" onClick={() => handleEdit(testimony)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={() => handleDelete(testimony)}
                         className="text-red-600 hover:text-red-700"
                       >
@@ -347,10 +348,10 @@ const PrayerTestimonyTab = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6">Oração/Testemunho</h2>
-      
-      <Tabs 
-        defaultValue="prayers" 
-        value={activeTab} 
+
+      <Tabs
+        defaultValue="prayers"
+        value={activeTab}
         onValueChange={setActiveTab}
         className="w-full"
       >
@@ -358,7 +359,7 @@ const PrayerTestimonyTab = () => {
           <TabsTrigger value="prayers">Pedidos de Oração</TabsTrigger>
           <TabsTrigger value="testimonies">Testemunhos</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="prayers" className="space-y-8">
           {prayersLoading ? (
             <div className="text-center py-4">Carregando...</div>
@@ -369,7 +370,7 @@ const PrayerTestimonyTab = () => {
             </>
           )}
         </TabsContent>
-        
+
         <TabsContent value="testimonies">
           {testimoniesLoading ? (
             <div className="text-center py-4">Carregando...</div>
@@ -378,7 +379,7 @@ const PrayerTestimonyTab = () => {
           )}
         </TabsContent>
       </Tabs>
-      
+
       {/* View Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
         <DialogContent className="sm:max-w-[600px]">
@@ -387,7 +388,7 @@ const PrayerTestimonyTab = () => {
               {activeTab === "prayers" ? "Detalhes do Pedido de Oração" : "Detalhes do Testemunho"}
             </DialogTitle>
           </DialogHeader>
-          
+
           {selectedItem && (
             <div className="space-y-4 mt-4">
               <div className="grid grid-cols-2 gap-4">
@@ -427,7 +428,7 @@ const PrayerTestimonyTab = () => {
           )}
         </DialogContent>
       </Dialog>
-      
+
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent className="sm:max-w-[600px]">
@@ -436,7 +437,7 @@ const PrayerTestimonyTab = () => {
               Editar {activeTab === "prayers" ? "Pedido de Oração" : "Testemunho"}
             </DialogTitle>
           </DialogHeader>
-          
+
           <div className="space-y-4 mt-4">
             <div>
               <Label htmlFor="category">Categoria</Label>
@@ -453,18 +454,20 @@ const PrayerTestimonyTab = () => {
                 </SelectContent>
               </Select>
             </div>
-            
+
             <div>
               <Label htmlFor="message">Mensagem</Label>
-              <Textarea
+              <TextareaWithCounter
                 id="message"
                 value={editMessage}
                 onChange={(e) => setEditMessage(e.target.value)}
                 rows={6}
                 placeholder="Digite sua mensagem..."
+                maxLength={500}
+                className="h-40"
               />
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="anonymous"
@@ -473,12 +476,12 @@ const PrayerTestimonyTab = () => {
               />
               <Label htmlFor="anonymous">Compartilhar anonimamente</Label>
             </div>
-            
+
             <div className="flex justify-end gap-2 mt-6">
               <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
                 Cancelar
               </Button>
-              <Button 
+              <Button
                 onClick={handleSaveEdit}
                 disabled={updatePrayerMutation.isPending || updateTestimonyMutation.isPending}
               >
@@ -488,7 +491,7 @@ const PrayerTestimonyTab = () => {
           </div>
         </DialogContent>
       </Dialog>
-      
+
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog
         isOpen={deleteDialogOpen}
