@@ -1,11 +1,22 @@
 
 import { useState, useEffect } from 'react';
 
+interface Ministry {
+  id: number;
+  name: string;
+  description: string;
+  imageUrl: string;
+  meetingDay: string;
+  atividades: string[];
+  wall: any;
+}
+
 interface CurrentUser {
   id: number;
   name: string;
   email: string;
   roles: string[];
+  ministries?: Ministry[];
 }
 
 export const useCurrentUser = () => {
@@ -31,7 +42,7 @@ useEffect(() => {
       if (!response.ok) throw new Error("Erro ao buscar usuário");
 
       const user = await response.json();
-      setCurrentUser(user); // Já virá com id, name, email, roles
+      setCurrentUser(user); // Já virá com id, name, email, roles e ministries
       console.log("Usuário logado via /users/profile:", user);
     } catch (error) {
       console.error("Erro ao buscar usuário atual:", error);
@@ -42,7 +53,6 @@ useEffect(() => {
 
   fetchUser();
 }, []);
-
 
   return { currentUser, isLoading };
 };
