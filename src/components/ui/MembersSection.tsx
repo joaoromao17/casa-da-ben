@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -126,7 +125,6 @@ const MembersSection = () => {
               <UserCard
                 key={member.id}
                 usuario={member}
-                onClick={() => navigate(`/membros/${member.id}`)}
               />
             ))}
           </div>
