@@ -77,6 +77,14 @@ const ContribuicaoDetalhe = () => {
     }
   };
 
+  // Função para formatar valores monetários de forma segura
+  const formatarValorSeguro = (valor) => {
+    if (valor === null || valor === undefined || isNaN(valor)) {
+      return "R$ 0,00";
+    }
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -120,7 +128,9 @@ const ContribuicaoDetalhe = () => {
     );
   }
 
-  const progressPercentage = contribuicao.meta > 0 ? (contribuicao.arrecadado / contribuicao.meta) * 100 : 0;
+  const meta = contribuicao.meta || 0;
+  const arrecadado = contribuicao.arrecadado || 0;
+  const progressPercentage = meta > 0 ? (arrecadado / meta) * 100 : 0;
   const formattedDate = formatarDataSegura(contribuicao.prazo);
 
   return (
@@ -204,19 +214,19 @@ const ContribuicaoDetalhe = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Meta:</span>
                       <span className="font-semibold">
-                        R$ {contribuicao.meta.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        {formatarValorSeguro(meta)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Arrecadado:</span>
                       <span className="font-semibold text-church-600">
-                        R$ {contribuicao.arrecadado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        {formatarValorSeguro(arrecadado)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-600">Restante:</span>
                       <span className="font-semibold">
-                        R$ {Math.max(0, contribuicao.meta - contribuicao.arrecadado).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        {formatarValorSeguro(Math.max(0, meta - arrecadado))}
                       </span>
                     </div>
                   </div>
