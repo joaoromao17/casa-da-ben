@@ -22,7 +22,6 @@ interface Ministry {
 
 const Ministerios = () => {
   const [ministries, setMinistries] = useState<Ministry[]>([]);
-  const [myMinistries, setMyMinistries] = useState<Ministry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,16 +41,6 @@ const Ministerios = () => {
 
         if (Array.isArray(data)) {
           setMinistries(data);
-          
-          // Buscar meus ministérios se o usuário estiver logado
-          if (currentUser) {
-            try {
-              const myMinistriesResponse = await api.get(`/users/${currentUser.id}/ministerios`);
-              setMyMinistries(myMinistriesResponse.data);
-            } catch (error) {
-              console.error("Erro ao buscar meus ministérios:", error);
-            }
-          }
         } else {
           throw new Error("Resposta inesperada da API.");
         }
@@ -64,13 +53,15 @@ const Ministerios = () => {
     };
 
     fetchMinistries();
-  }, [currentUser]);
+  }, []);
 
   const filteredMinistries = ministries.filter(ministry =>
     ministry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     ministry.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Filtrar meus ministérios usando os dados que já vêm no perfil do usuário
+  const myMinistries = currentUser?.ministries || [];
   const filteredMyMinistries = myMinistries.filter(ministry =>
     ministry.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     ministry.description.toLowerCase().includes(searchTerm.toLowerCase())
