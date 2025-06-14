@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
@@ -5,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Users, Target, Calendar, DollarSign } from "lucide-react";
-import { format } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import LoginRequiredNotice from "@/components/ui/LoginRequiredNotice";
 import api from "@/services/api";
@@ -41,6 +42,40 @@ const ContribuicaoDetalhe = () => {
       fetchContribuicao();
     }
   }, [id, navigate]);
+
+  // Função para formatar data de forma segura
+  const formatarDataSegura = (data) => {
+    if (!data) return "Data não informada";
+    
+    try {
+      let dateObj;
+      
+      // Tentar diferentes formatos de data
+      if (typeof data === 'string') {
+        // Se for string, tentar parsear como ISO
+        dateObj = parseISO(data);
+        
+        // Se não funcionou, tentar criar diretamente
+        if (!isValid(dateObj)) {
+          dateObj = new Date(data);
+        }
+      } else {
+        // Se já for um objeto Date
+        dateObj = new Date(data);
+      }
+      
+      // Verificar se a data é válida
+      if (!isValid(dateObj)) {
+        console.error("Data inválida recebida:", data);
+        return "Data inválida";
+      }
+      
+      return format(dateObj, "dd/MM/yyyy", { locale: ptBR });
+    } catch (error) {
+      console.error("Erro ao formatar data:", error, "Data recebida:", data);
+      return "Erro na data";
+    }
+  };
 
   if (loading) {
     return (
@@ -86,7 +121,7 @@ const ContribuicaoDetalhe = () => {
   }
 
   const progressPercentage = contribuicao.meta > 0 ? (contribuicao.arrecadado / contribuicao.meta) * 100 : 0;
-  const formattedDate = format(new Date(contribuicao.prazo), "dd/MM/yyyy", { locale: ptBR });
+  const formattedDate = formatarDataSegura(contribuicao.prazo);
 
   return (
     <Layout>
