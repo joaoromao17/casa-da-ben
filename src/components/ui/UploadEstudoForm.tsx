@@ -1,4 +1,6 @@
+
 import { useState, useEffect } from "react";
+import { TextareaWithCounter } from "@/components/ui/TextareaWithCounter";
 import api from "@/services/api";
 
 type UploadEstudoFormProps = {
@@ -107,12 +109,12 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
 
           <div className="space-y-2">
             <label className="block text-sm font-medium">Descrição</label>
-            <textarea
+            <TextareaWithCounter
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
-              required
+              placeholder="Descreva o conteúdo do estudo..."
+              className="h-32"
+              maxLength={500}
             />
           </div>
 
