@@ -1,5 +1,7 @@
+
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Phone, Mail, Clock, ChevronRight, Edit, Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
@@ -167,6 +169,26 @@ const MinisterioTemplate = ({
     }
   };
 
+  const handleWhatsAppContact = () => {
+    if (leaders.length > 0) {
+      const leader = leaders[0];
+      const phone = leader.phone?.replace(/\D/g, ''); // Remove non-digits
+      const message = `Olá, eu gostaria de participar do ministério ${title}. Como eu faço?`;
+      const whatsappUrl = `https://wa.me/55${phone}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  };
+
+  // Ordenar membros alfabeticamente
+  const sortedMembers = [...members].sort((a, b) => a.name.localeCompare(b.name));
+
+  // Função para verificar se é líder ou vice-líder
+  const getUserLeadershipType = (userId: number) => {
+    if (leaders.some(leader => leader.id === userId)) return 'Líder';
+    if (viceLeaders.some(viceLeader => viceLeader.id === userId)) return 'Vice-Líder';
+    return null;
+  };
+
   const ministryData = {
     id: ministryId,
     name: title,
@@ -302,12 +324,14 @@ const MinisterioTemplate = ({
                       )}
 
                       <div className="mt-6">
-                        <Link to="/contato">
-                          <Button className="w-full bg-church-700 hover:bg-church-800">
-                            <Users className="w-4 h-4 mr-2" />
-                            Faça Parte
-                          </Button>
-                        </Link>
+                        <Button 
+                          className="w-full bg-church-700 hover:bg-church-800"
+                          onClick={handleWhatsAppContact}
+                          disabled={leaders.length === 0 || !leaders[0].phone}
+                        >
+                          <Users className="w-4 h-4 mr-2" />
+                          Faça Parte
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -364,15 +388,28 @@ const MinisterioTemplate = ({
                 </p>
               </div>
               
-              {members.length === 0 ? (
+              {sortedMembers.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-gray-600 text-lg">Nenhum membro encontrado</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {members.map((member) => (
-                    <UserCard key={member.id} usuario={member} />
-                  ))}
+                  {sortedMembers.map((member) => {
+                    const leadershipType = getUserLeadershipType(member.id);
+                    return (
+                      <div key={member.id} className="relative">
+                        <UserCard usuario={member} />
+                        {leadershipType && (
+                          <Badge 
+                            className="absolute -top-2 -right-2 bg-church-700 text-white text-xs px-2 py-1"
+                            variant="default"
+                          >
+                            {leadershipType}
+                          </Badge>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </TabsContent>
@@ -390,7 +427,7 @@ const MinisterioTemplate = ({
         onSuccess={handleEditSuccess}
       />
 
-      {/* Aviso Modal - Especifica tipo MINISTERIAL */}
+      {/* Aviso Modal */}
       <AvisoModal
         isOpen={isAvisoModalOpen}
         onClose={() => setIsAvisoModalOpen(false)}
