@@ -16,6 +16,7 @@ interface User {
   profileImageUrl: string;
   biography?: string;
   phone?: string;
+  roles: string[];
 }
 
 const ITEMS_PER_PAGE = 20; // 5 linhas x 4 colunas
@@ -124,7 +125,7 @@ const MembersSection = () => {
             {currentMembers.map((member) => (
               <UserCard
                 key={member.id}
-                user={member}
+                usuario={member}
                 onClick={() => navigate(`/membros/${member.id}`)}
               />
             ))}
