@@ -5,10 +5,12 @@ import EventCard from "@/components/ui/EventCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDays, Search } from "lucide-react";
+import { CalendarDays, Search, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "@/services/api";
 import ErrorAlert from "@/components/ui/ErrorAlert";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import EventCreateForm from "@/components/events/EventCreateForm";
 
 const categories = ["Todos", "Culto", "Oração", "Ação Social", "Retiro"];
 
@@ -29,6 +31,10 @@ const Eventos = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { currentUser } = useCurrentUser();
+
+  // Check if user is admin
+  const isAdmin = currentUser?.roles?.includes("ROLE_ADMIN") || false;
 
   useEffect(() => {
     const fetchEventos = async () => {
@@ -76,11 +82,25 @@ const Eventos = () => {
       <div className="container-church py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-church-900 mb-4">Eventos</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Confira nossa agenda de eventos e participe das atividades da igreja.
-            Todos são bem-vindos para crescer na fé e em comunhão.
-          </p>
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex-1">
+              <h1 className="text-3xl md:text-4xl font-bold text-church-900 mb-4">Eventos</h1>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Confira nossa agenda de eventos e participe das atividades da igreja.
+                Todos são bem-vindos para crescer na fé e em comunhão.
+              </p>
+            </div>
+            {isAdmin && (
+              <div className="flex-shrink-0 ml-4">
+                <EventCreateForm>
+                  <Button className="bg-church-600 hover:bg-church-700">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Adicionar Evento
+                  </Button>
+                </EventCreateForm>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Search and Filter */}

@@ -158,7 +158,8 @@ const Cadastro = () => {
         maritalStatus: data.maritalStatus || null,
         baptized: data.baptized === true,
         ministries: data.ministries?.map(id => ({ id })) || [],
-        acceptedTerms: data.acceptedTerms
+        acceptedTerms: data.acceptedTerms,
+        profileImageUrl: "/uploads/profiles/default-profile.jpg"
       };
 
       await api.post("/users", payload);
