@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import TestimonyCard from "@/components/ui/TestimonyCard";
@@ -61,7 +60,7 @@ const Testemunhos = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-  const [searchTerm, setSearchTem] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [isTestimonyModalOpen, setIsTestimonyModalOpen] = useState(false);
   const [editingTestimony, setEditingTestimony] = useState<Testemunho | null>(null);
