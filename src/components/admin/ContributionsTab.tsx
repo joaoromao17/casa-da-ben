@@ -508,7 +508,7 @@ const ContributionsTab = () => {
                           Meta Visível
                         </FormLabel>
                         <p className="text-sm text-muted-foreground">
-                          Mostrar a meta e barra de progresso no frontend
+                          Mostrar a meta e barra de progresso
                         </p>
                       </div>
                     </FormItem>

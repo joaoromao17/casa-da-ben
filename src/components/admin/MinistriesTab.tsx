@@ -71,8 +71,8 @@ const MinistriesTab = () => {
         return leader.id.toString();
       }
       // Caso contrário, busque pelo email ou nome
-      const user = users.find(u => 
-        u.email === leader.email || 
+      const user = users.find(u =>
+        u.email === leader.email ||
         u.name === (typeof leader === 'string' ? leader : leader.name)
       );
       return user ? user.id?.toString() : '';
@@ -85,8 +85,8 @@ const MinistriesTab = () => {
         return viceLeader.id.toString();
       }
       // Caso contrário, busque pelo email ou nome
-      const user = users.find(u => 
-        u.email === viceLeader.email || 
+      const user = users.find(u =>
+        u.email === viceLeader.email ||
         u.name === (typeof viceLeader === 'string' ? viceLeader : viceLeader.name)
       );
       return user ? user.id?.toString() : '';
@@ -96,7 +96,7 @@ const MinistriesTab = () => {
     form.reset({
       name: ministry.name || "",
       description: ministry.description || "",
-      meetingDay: ministry.meetingDay || ministry.schedule || ministry.meetingSchedule || "", 
+      meetingDay: ministry.meetingDay || ministry.schedule || ministry.meetingSchedule || "",
       image: undefined,
       leaderIds: leaderIds,
       viceLeaders: viceLeaderIds,
@@ -123,7 +123,7 @@ const MinistriesTab = () => {
 
   const onSubmit = (data: MinistryFormData) => {
     console.log("Dados do formulário:", data);
-    
+
     if (isCreating) {
       createMinistryMutation.mutate(data, {
         onSuccess: handleCloseModal
@@ -154,43 +154,20 @@ const MinistriesTab = () => {
       render: (desc: string) => desc?.length > 50 ? `${desc.substring(0, 50)}...` : desc
     },
     {
-      key: "leaders",
+      key: "leaderIds",
       title: "Líder",
-      render: (leaders: any[]) => {
-        if (!leaders || leaders.length === 0) return "-";
-        // Buscar os nomes dos líderes pelos emails ou usar nomes já existentes
-        return leaders.map(leader => {
-          if (typeof leader === 'object' && leader.name) {
-            return leader.name;
-          }
-          if (typeof leader === 'string') {
-            // Se for string, pode ser email ou nome
-            const user = users.find(u => u.email === leader || u.name === leader);
-            return user ? user.name : leader;
-          }
-          return leader;
-        }).join(", ");
+      render: (leaderIds: number[]) => {
+        if (!leaderIds || leaderIds.length === 0) return "-";
+
+        const leaderNames = leaderIds.map(id => {
+          const user = users.find(u => u.id === id);
+          return user ? user.name : "-";
+        }).filter(name => name !== "-");
+
+        return leaderNames.length > 0 ? leaderNames.join(", ") : "-";
       }
-    },
-    {
-      key: "viceLeaders",
-      title: "Vice-Líder",
-      render: (viceLeaders: any[]) => {
-        if (!viceLeaders || viceLeaders.length === 0) return "-";
-        // Buscar os nomes dos vice-líderes pelos emails ou usar nomes já existentes
-        return viceLeaders.map(viceLeader => {
-          if (typeof viceLeader === 'object' && viceLeader.name) {
-            return viceLeader.name;
-          }
-          if (typeof viceLeader === 'string') {
-            // Se for string, pode ser email ou nome
-            const user = users.find(u => u.email === viceLeader || u.name === viceLeader);
-            return user ? user.name : viceLeader;
-          }
-          return viceLeader;
-        }).join(", ");
-      }
-    },
+    }
+    ,
   ];
 
   if (error) {

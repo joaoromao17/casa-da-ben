@@ -333,6 +333,7 @@ const UsersTab = () => {
     { id: "ROLE_ADMIN", label: "Administrador" },
     { id: "ROLE_PASTOR", label: "Pastor" },
     { id: "ROLE_LIDER", label: "Líder" },
+    { id: "ROLE_VICELIDER", label: "Vice-Líder" },
     { id: "ROLE_MEMBRO", label: "Membro" },
     { id: "ROLE_PROFESSOR", label: "Professor" },
     { id: "ROLE_PASTORAUXILIAR", label: "Pastor Auxiliar" },
