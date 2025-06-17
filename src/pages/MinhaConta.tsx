@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
@@ -6,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Pencil, Key, LogOut } from "lucide-react";
+import { Pencil, Key, LogOut, Mail } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -15,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import api from "@/services/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
+import InputMask from "react-input-mask";
 
 interface Ministry {
   id: number;
@@ -61,7 +61,6 @@ const MinhaConta = () => {
     name: "",
     phone: "",
     address: "",
-    email: "",
     birthDate: "",
     maritalStatus: "",
     baptized: false,
@@ -77,6 +76,14 @@ const MinhaConta = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
+  };
+
+  // Função para solicitar mudança de email
+  const handleRequestEmailChange = () => {
+    const subject = "MUDANÇA DE EMAIL";
+    const body = `Solicito mudança de email para:\n\nNome do Usuario: ${userData?.name || ""}`;
+    const mailtoUrl = `mailto:icbcasadabencao610@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoUrl, '_blank');
   };
 
   const [ministriesOptions, setMinistriesOptions] = useState<Ministry[]>([]);
@@ -374,8 +381,6 @@ const MinhaConta = () => {
                     const baseData = {
                       name: userData.name,
                       phone: userData.phone,
-                      email: userData.email,
-                      member: userData.member,
                       biography: userData.biography || "",
                     };
 
@@ -389,6 +394,7 @@ const MinhaConta = () => {
                       acceptedTerms: userData.acceptedTerms,
                       profileImageUrl: userData.profileImageUrl || "",
                       roles: userData.roles,
+                      member: userData.member,
                     };
 
                     setEditData(
@@ -405,6 +411,7 @@ const MinhaConta = () => {
                             acceptedTerms: userData.acceptedTerms ?? true,
                             profileImageUrl: userData.profileImageUrl || "",
                             roles: userData.roles || [],
+                            member: userData.member,
                           }
                     );
                     setIsEditModalOpen(true);
@@ -413,6 +420,11 @@ const MinhaConta = () => {
               >
                 <Pencil size={18} />
                 Editar Informações
+              </Button>
+
+              <Button variant="outline" className="flex items-center gap-2" onClick={handleRequestEmailChange}>
+                <Mail size={18} />
+                Solicitar mudança de email
               </Button>
 
               <Button variant="outline" className="flex items-center gap-2" onClick={() => setIsPasswordModalOpen(true)}>
@@ -448,14 +460,6 @@ const MinhaConta = () => {
               />
             </div>
             <div>
-              <Label>Email</Label>
-              <Input
-                type="email"
-                value={editData.email}
-                onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-              />
-            </div>
-            <div>
               <Label>Biografia</Label>
               <Textarea
                 value={editData.biography}
@@ -471,10 +475,13 @@ const MinhaConta = () => {
             </div>
             <div>
               <Label>Telefone</Label>
-              <Input
+              <InputMask
+                mask="(99) 99999-9999"
                 value={editData.phone}
                 onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-              />
+              >
+                {(inputProps: any) => <Input {...inputProps} placeholder="(XX) XXXXX-XXXX" />}
+              </InputMask>
             </div>
 
             {/* Campos exclusivos para membros */}

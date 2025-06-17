@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import StudyCard from "@/components/ui/StudyCard";
@@ -51,7 +50,11 @@ const Estudos = () => {
       
       // Se a API não retorna dados paginados, simular paginação
       if (Array.isArray(response.data)) {
-        const allData = response.data;
+        let allData = response.data;
+        
+        // Ordenar por data mais recente primeiro
+        allData = allData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        
         const startIndex = (page - 1) * pageSize;
         const endIndex = startIndex + pageSize;
         const paginatedData = allData.slice(startIndex, endIndex);
@@ -62,7 +65,11 @@ const Estudos = () => {
       } else {
         // API já retorna dados paginados
         const data: PageResponse = response.data;
-        setStudies(data.content);
+        
+        // Ordenar por data mais recente primeiro
+        const sortedStudies = data.content.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        
+        setStudies(sortedStudies);
         setTotalPages(data.totalPages);
         setCurrentPage(data.number + 1);
       }
