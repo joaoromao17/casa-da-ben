@@ -64,36 +64,14 @@ const MinistriesTab = () => {
 
     console.log("Ministry data for edit:", ministry);
 
-    // Melhorar a lógica de extração dos IDs dos líderes
-    const leaderIds = (ministry.leaders || ministry.leaderIds || [])
-      .map((leader: any) => {
-        // Se o leader já tem um ID, use-o diretamente
-        if (typeof leader === 'object' && leader.id) {
-          return leader.id.toString();
-        }
-        // Caso contrário, busque pelo nome ou email
-        const found = users.find(u => 
-          u.name === (typeof leader === 'string' ? leader : leader.name) ||
-          u.email === (typeof leader === 'string' ? leader : leader.email)
-        );
-        return found?.id?.toString();
-      })
+    // Corrigir a extração dos IDs dos líderes baseado no formato do backend
+    const leaderIds = (ministry.leaderIds || [])
+      .map((leaderId: number) => leaderId.toString())
       .filter(Boolean);
 
-    // Melhorar a lógica de extração dos IDs dos vice-líderes
-    const viceLeaderIds = (ministry.viceLeaders || ministry.viceLeaderIds || [])
-      .map((vice: any) => {
-        // Se o vice já tem um ID, use-o diretamente
-        if (typeof vice === 'object' && vice.id) {
-          return vice.id.toString();
-        }
-        // Caso contrário, busque pelo nome ou email
-        const found = users.find(u => 
-          u.name === (typeof vice === 'string' ? vice : vice.name) ||
-          u.email === (typeof vice === 'string' ? vice : vice.email)
-        );
-        return found?.id?.toString();
-      })
+    // Corrigir a extração dos IDs dos vice-líderes baseado no formato do backend
+    const viceLeaderIds = (ministry.viceLeaderIds || [])
+      .map((viceLeaderId: number) => viceLeaderId.toString())
       .filter(Boolean);
 
     console.log('leaderIds:', leaderIds);
@@ -163,20 +141,13 @@ const MinistriesTab = () => {
       render: (desc: string) => desc?.length > 50 ? `${desc.substring(0, 50)}...` : desc
     },
     {
-      key: "leaderIds",
+      key: "leaderNames",
       title: "Líder",
-      render: (leaderIds: number[]) => {
-        if (!leaderIds || leaderIds.length === 0) return "-";
-
-        const leaderNames = leaderIds.map(id => {
-          const user = users.find(u => u.id === id);
-          return user ? user.name : "-";
-        }).filter(name => name !== "-");
-
-        return leaderNames.length > 0 ? leaderNames.join(", ") : "-";
+      render: (leaderNames: string[]) => {
+        if (!leaderNames || leaderNames.length === 0) return "-";
+        return leaderNames.join(", ");
       }
-    }
-    ,
+    },
   ];
 
   if (error) {
@@ -226,8 +197,13 @@ const MinistriesTab = () => {
         onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={confirmDelete}
         title="Confirmar Exclusão"
-        description={`Tem certeza que deseja excluir o ministério ${selectedMinistry?.name}? Esta ação não pode ser desfeita.`}
+        description={
+          selectedMinistry?.memberCount > 0 
+            ? `Não é possível excluir o ministério "${selectedMinistry?.name}" pois ele possui ${selectedMinistry?.memberCount} membro(s). Para excluir, o ministério não pode ter nenhum membro.`
+            : `Tem certeza que deseja excluir o ministério ${selectedMinistry?.name}? Esta ação não pode ser desfeita.`
+        }
         isDeleting={deleteMinistryMutation.isPending}
+        disableConfirm={selectedMinistry?.memberCount > 0}
       />
     </div>
   );

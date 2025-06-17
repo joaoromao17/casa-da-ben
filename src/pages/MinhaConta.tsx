@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Pencil, Key, LogOut, Mail } from "lucide-react";
+import { Pencil, Key, LogOut, Mail, Trash2 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,16 @@ import api from "@/services/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
 import InputMask from "react-input-mask";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Ministry {
   id: number;
@@ -57,6 +67,7 @@ const MinhaConta = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
   const [editData, setEditData] = useState({
     name: "",
     phone: "",
@@ -84,6 +95,31 @@ const MinhaConta = () => {
     const body = `Solicito mudança de email para:\n\nNome do Usuario: ${userData?.name || ""}`;
     const mailtoUrl = `mailto:icbcasadabencao610@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.open(mailtoUrl, '_blank');
+  };
+
+  // Função para excluir conta
+  const handleDeleteAccount = async () => {
+    try {
+      await api.delete("/users/profile");
+      
+      // Remover tokens de autenticação
+      localStorage.removeItem("authToken");
+      sessionStorage.removeItem("authToken");
+      
+      toast({
+        title: "Conta excluída",
+        description: "Sua conta foi excluída com sucesso.",
+      });
+      
+      navigate("/");
+    } catch (error: any) {
+      console.error("Erro ao excluir conta:", error);
+      toast({
+        title: "Erro",
+        description: error.response?.data || "Não foi possível excluir sua conta. Tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   const [ministriesOptions, setMinistriesOptions] = useState<Ministry[]>([]);
@@ -436,6 +472,15 @@ const MinhaConta = () => {
                 <LogOut size={18} />
                 Sair
               </Button>
+
+              <Button 
+                variant="destructive" 
+                className="flex items-center gap-2 bg-red-600 hover:bg-red-700" 
+                onClick={() => setIsDeleteAccountOpen(true)}
+              >
+                <Trash2 size={18} />
+                Excluir Conta
+              </Button>
             </div>
           </div>
         ) : (
@@ -694,6 +739,32 @@ const MinhaConta = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Dialog de Confirmação para Excluir Conta */}
+      <AlertDialog open={isDeleteAccountOpen} onOpenChange={setIsDeleteAccountOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir Conta</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir sua conta permanentemente? 
+              <br />
+              <br />
+              <strong>⚠️ Esta ação não pode ser desfeita!</strong>
+              <br />
+              <br />
+              Todos os seus dados, incluindo perfil, mensagens e participações em ministérios serão removidos definitivamente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Sim, excluir minha conta
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Layout>
   );
 };

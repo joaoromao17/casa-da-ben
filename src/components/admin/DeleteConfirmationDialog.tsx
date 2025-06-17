@@ -1,13 +1,13 @@
 
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
 
@@ -17,7 +17,8 @@ interface DeleteConfirmationDialogProps {
   onConfirm: () => void;
   title: string;
   description: string;
-  isDeleting: boolean;
+  isDeleting?: boolean;
+  disableConfirm?: boolean;
 }
 
 const DeleteConfirmationDialog = ({
@@ -26,10 +27,11 @@ const DeleteConfirmationDialog = ({
   onConfirm,
   title,
   description,
-  isDeleting
+  isDeleting = false,
+  disableConfirm = false,
 }: DeleteConfirmationDialogProps) => {
   return (
-    <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
@@ -37,12 +39,9 @@ const DeleteConfirmationDialog = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction 
-            onClick={(e) => { 
-              e.preventDefault();
-              onConfirm(); 
-            }} 
-            disabled={isDeleting}
+          <AlertDialogAction
+            onClick={onConfirm}
+            disabled={isDeleting || disableConfirm}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             {isDeleting ? (
@@ -51,7 +50,7 @@ const DeleteConfirmationDialog = ({
                 Excluindo...
               </>
             ) : (
-              'Excluir'
+              "Excluir"
             )}
           </AlertDialogAction>
         </AlertDialogFooter>
