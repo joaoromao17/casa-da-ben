@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,9 +10,12 @@ import MinistryForm from "./ministries/MinistryForm";
 import MinistryViewDialog from "./ministries/MinistryViewDialog";
 import { useMinistryOperations } from "./ministries/useMinistryOperations";
 import { ministryFormSchema, MinistryFormData } from "./ministries/ministryFormSchema";
+import api from "@/services/api";
+import { useToast } from "@/hooks/use-toast";
 
 const MinistriesTab = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedMinistry, setSelectedMinistry] = useState<any>(null);
@@ -64,12 +66,12 @@ const MinistriesTab = () => {
 
     console.log("Ministry data for edit:", ministry);
 
-    // Corrigir a extração dos IDs dos líderes baseado no formato do backend
+    // Extrair IDs dos líderes diretamente do campo leaderIds
     const leaderIds = (ministry.leaderIds || [])
       .map((leaderId: number) => leaderId.toString())
       .filter(Boolean);
 
-    // Corrigir a extração dos IDs dos vice-líderes baseado no formato do backend
+    // Extrair IDs dos vice-líderes diretamente do campo viceLeaderIds
     const viceLeaderIds = (ministry.viceLeaderIds || [])
       .map((viceLeaderId: number) => viceLeaderId.toString())
       .filter(Boolean);
@@ -93,9 +95,25 @@ const MinistriesTab = () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteMinistry = (ministry: any) => {
-    setSelectedMinistry(ministry);
-    setIsDeleteDialogOpen(true);
+  const handleDeleteMinistry = async (ministry: any) => {
+    try {
+      const response = await api.get(`/users/ministerios/${ministry.id}/membros`);
+      const membros = response.data || [];
+
+      setSelectedMinistry({
+        ...ministry,
+        memberCount: membros.length,
+      });
+
+      setIsDeleteDialogOpen(true);
+    } catch (error) {
+      console.error("Erro ao buscar membros do ministério:", error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível verificar os membros do ministério",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleViewMinistry = (ministry: any) => {
