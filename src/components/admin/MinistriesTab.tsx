@@ -40,7 +40,7 @@ const MinistriesTab = () => {
       image: undefined,
       leaderIds: [],
       activities: [''],
-      viceLeaders: [],
+      viceLeaderIds: [],
     },
   });
 
@@ -52,7 +52,7 @@ const MinistriesTab = () => {
       meetingDay: "",
       image: undefined,
       leaderIds: [],
-      viceLeaders: [],
+      viceLeaderIds: [],
       activities: [''],
     });
     setIsModalOpen(true);
@@ -96,11 +96,13 @@ const MinistriesTab = () => {
     form.reset({
       name: ministry.name || "",
       description: ministry.description || "",
-      meetingDay: ministry.meetingDay || ministry.schedule || ministry.meetingSchedule || "",
+      meetingDay: ministry.meetingDay || "",
       image: undefined,
       leaderIds: leaderIds,
-      viceLeaders: viceLeaderIds,
-      activities: (ministry.activities && ministry.activities.length > 0) ? ministry.activities : [''],
+      viceLeaderIds: viceLeaderIds,
+      activities: Array.isArray(ministry.activities) && ministry.activities.length > 0
+        ? ministry.activities
+        : [''],
     });
 
     setIsModalOpen(true);

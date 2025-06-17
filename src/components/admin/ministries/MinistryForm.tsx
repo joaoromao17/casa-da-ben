@@ -139,7 +139,7 @@ const MinistryForm = ({ form, users, isCreating, selectedMinistry }: MinistryFor
 
       <Controller
         control={form.control}
-        name="viceLeaders"
+        name="viceLeaderIds"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Vice-líder(es)</FormLabel>

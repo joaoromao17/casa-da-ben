@@ -49,13 +49,13 @@ const MinistryEditForm: React.FC<MinistryEditFormProps> = ({
       name: ministry.name || '',
       description: ministry.description || '',
       leaderIds: ministry.leader ? [ministry.leader.id.toString()] : [],
-      viceLeaders: ministry.viceLeader ? [ministry.viceLeader.id.toString()] : [],
+      viceLeaderIds: ministry.viceLeader ? [ministry.viceLeader.id.toString()] : [],
       activities: [''],
     },
   });
 
   const leaderIds = watch('leaderIds') || [];
-  const viceLeaders = watch('viceLeaders') || [];
+  const viceLeaderIds = watch('viceLeaderIds') || [];
 
   const handleLeaderToggle = (userId: string) => {
     const currentLeaders = leaderIds;
@@ -66,11 +66,11 @@ const MinistryEditForm: React.FC<MinistryEditFormProps> = ({
   };
 
   const handleViceLeaderToggle = (userId: string) => {
-    const currentViceLeaders = viceLeaders;
+    const currentViceLeaders = viceLeaderIds;
     const newViceLeaders = currentViceLeaders.includes(userId)
       ? currentViceLeaders.filter(id => id !== userId)
       : [...currentViceLeaders, userId];
-    setValue('viceLeaders', newViceLeaders);
+    setValue('viceLeaderIds', newViceLeaders);
   };
 
   return (
@@ -131,7 +131,7 @@ const MinistryEditForm: React.FC<MinistryEditFormProps> = ({
             <div key={user.id} className="flex items-center space-x-2">
               <Checkbox
                 id={`vice-leader-${user.id}`}
-                checked={viceLeaders.includes(user.id.toString())}
+                checked={viceLeaderIds.includes(user.id.toString())}
                 onCheckedChange={() => handleViceLeaderToggle(user.id.toString())}
               />
               <label htmlFor={`vice-leader-${user.id}`} className="text-sm flex-1">
@@ -140,8 +140,8 @@ const MinistryEditForm: React.FC<MinistryEditFormProps> = ({
             </div>
           ))}
         </div>
-        {errors.viceLeaders && (
-          <p className="text-red-500 text-sm mt-1">{errors.viceLeaders.message}</p>
+        {errors.viceLeaderIds && (
+          <p className="text-red-500 text-sm mt-1">{errors.viceLeaderIds.message}</p>
         )}
       </div>
 

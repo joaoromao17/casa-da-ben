@@ -55,9 +55,9 @@ export const useMinistryOperations = () => {
         });
       }
       
-      if (data.viceLeaders && data.viceLeaders.length > 0) {
-        data.viceLeaders.forEach(id => {
-          formData.append("viceLeaders", id.toString());
+      if (data.viceLeaderIds && data.viceLeaderIds.length > 0) {
+        data.viceLeaderIds.forEach(id => {
+          formData.append("viceLeaderIds", id.toString());
         });
       }
       
@@ -108,7 +108,7 @@ export const useMinistryOperations = () => {
         description: data.description,
         meetingDay: data.meetingDay || null,
         leaderIds: data.leaderIds?.map(id => parseInt(id)) || [],
-        viceLeaderIds: data.viceLeaders?.map(id => parseInt(id)) || [],
+        viceLeaderIds: data.viceLeaderIds?.map(id => parseInt(id)) || [],
         activities: data.activities?.filter(activity => activity && activity.trim() !== "") || [],
         wall: null,
       };

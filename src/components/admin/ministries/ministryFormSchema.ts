@@ -7,7 +7,7 @@ export const ministryFormSchema = z.object({
   meetingDay: z.string().optional(),
   image: z.any().optional(),
   leaderIds: z.array(z.string()).default([]),
-  viceLeaders: z.array(z.string()).default([]),
+  viceLeaderIds: z.array(z.string()).default([]),
   activities: z.array(z.string()).optional(),
 });
 
