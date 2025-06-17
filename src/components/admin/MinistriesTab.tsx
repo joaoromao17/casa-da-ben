@@ -64,33 +64,40 @@ const MinistriesTab = () => {
 
     console.log("Ministry data for edit:", ministry);
 
-    // Buscar IDs dos líderes pelos emails
-    const leaderIds = ministry.leaders?.map((leader: any) => {
-      // Se o leader já tem um ID, use-o diretamente
-      if (typeof leader === 'object' && leader.id) {
-        return leader.id.toString();
-      }
-      // Caso contrário, busque pelo email ou nome
-      const user = users.find(u =>
-        u.email === leader.email ||
-        u.name === (typeof leader === 'string' ? leader : leader.name)
-      );
-      return user ? user.id?.toString() : '';
-    }).filter(Boolean) || [];
+    // Melhorar a lógica de extração dos IDs dos líderes
+    const leaderIds = (ministry.leaders || ministry.leaderIds || [])
+      .map((leader: any) => {
+        // Se o leader já tem um ID, use-o diretamente
+        if (typeof leader === 'object' && leader.id) {
+          return leader.id.toString();
+        }
+        // Caso contrário, busque pelo nome ou email
+        const found = users.find(u => 
+          u.name === (typeof leader === 'string' ? leader : leader.name) ||
+          u.email === (typeof leader === 'string' ? leader : leader.email)
+        );
+        return found?.id?.toString();
+      })
+      .filter(Boolean);
 
-    // Buscar IDs dos vice-líderes pelos emails
-    const viceLeaderIds = ministry.viceLeaders?.map((viceLeader: any) => {
-      // Se o viceLeader já tem um ID, use-o diretamente
-      if (typeof viceLeader === 'object' && viceLeader.id) {
-        return viceLeader.id.toString();
-      }
-      // Caso contrário, busque pelo email ou nome
-      const user = users.find(u =>
-        u.email === viceLeader.email ||
-        u.name === (typeof viceLeader === 'string' ? viceLeader : viceLeader.name)
-      );
-      return user ? user.id?.toString() : '';
-    }).filter(Boolean) || [];
+    // Melhorar a lógica de extração dos IDs dos vice-líderes
+    const viceLeaderIds = (ministry.viceLeaders || ministry.viceLeaderIds || [])
+      .map((vice: any) => {
+        // Se o vice já tem um ID, use-o diretamente
+        if (typeof vice === 'object' && vice.id) {
+          return vice.id.toString();
+        }
+        // Caso contrário, busque pelo nome ou email
+        const found = users.find(u => 
+          u.name === (typeof vice === 'string' ? vice : vice.name) ||
+          u.email === (typeof vice === 'string' ? vice : vice.email)
+        );
+        return found?.id?.toString();
+      })
+      .filter(Boolean);
+
+    console.log('leaderIds:', leaderIds);
+    console.log('viceLeaderIds:', viceLeaderIds);
 
     // Reset form with ministry data
     form.reset({
