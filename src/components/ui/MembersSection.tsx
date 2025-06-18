@@ -26,13 +26,18 @@ const MembersSection = ({ className }: MembersSectionProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const pageSize = 20; // 5 linhas x 4 colunas
+  const pageSize = 20;
 
   const fetchMembers = async (page: number, search: string = "") => {
     try {
       setLoading(true);
-      // Por enquanto, vamos ignorar o parâmetro de busca até a API estar pronta
-      const response = await api.get(`/users/public/membros?page=${page}&size=${pageSize}`);
+      const response = await api.get(`/users/public/membros`, {
+        params: {
+          page,
+          size: pageSize,
+          search: search.trim(),
+        },
+      });
       console.log("Membros carregados:", response.data);
       
       const data: PageResponse = response.data;
@@ -48,18 +53,21 @@ const MembersSection = ({ className }: MembersSectionProps) => {
   };
 
   useEffect(() => {
-    fetchMembers(0);
-  }, []);
+    const delayDebounce = setTimeout(() => {
+      fetchMembers(currentPage, searchTerm);
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [currentPage, searchTerm]);
 
   const handlePageChange = (page: number) => {
-    fetchMembers(page);
-    // Scroll to top when changing pages
+    setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    // Por enquanto, não fazemos busca real até a API estar implementada
+    setCurrentPage(0); // Reset to first page when searching
   };
 
   if (loading) {
@@ -74,19 +82,16 @@ const MembersSection = ({ className }: MembersSectionProps) => {
             Conheça os membros da nossa comunidade de fé
           </p>
           
-          {/* Campo de Pesquisa - Temporariamente desabilitado */}
           <div className="max-w-md mx-auto mb-6">
             <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
               <Input
-                placeholder="Pesquisar membros... (em breve)"
-                className="pl-10 bg-gray-50"
+                placeholder="Pesquisar membros..."
+                className="pl-10"
                 value={searchTerm}
                 onChange={handleSearchChange}
-                disabled
               />
             </div>
-            <p className="text-xs text-gray-500 mt-1">Funcionalidade de busca será implementada em breve</p>
           </div>
         </div>
         
@@ -115,26 +120,31 @@ const MembersSection = ({ className }: MembersSectionProps) => {
           Conheça os membros da nossa comunidade de fé
         </p>
         
-        {/* Campo de Pesquisa - Temporariamente desabilitado */}
         <div className="max-w-md mx-auto mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Pesquisar membros... (em breve)"
-              className="pl-10 bg-gray-50"
+              placeholder="Pesquisar membros..."
+              className="pl-10"
               value={searchTerm}
               onChange={handleSearchChange}
-              disabled
             />
           </div>
-          <p className="text-xs text-gray-500 mt-1">Funcionalidade de busca será implementada em breve</p>
+          {searchTerm.length > 1 && (
+            <p className="text-sm text-gray-600 mt-2">
+              Exibindo resultados para: "{searchTerm}"
+            </p>
+          )}
         </div>
       </div>
 
       {members.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-church-700 mb-4">
-            Nenhum membro cadastrado ainda.
+            {searchTerm.length > 1 
+              ? "Nenhum membro encontrado com esse nome."
+              : "Nenhum membro cadastrado ainda."
+            }
           </p>
         </div>
       ) : (
