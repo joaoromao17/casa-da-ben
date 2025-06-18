@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loading } from "@/components/ui/loading";
 import ErrorAlert from "@/components/ui/ErrorAlert";
-import { LoginRequiredNotice } from "@/components/ui/LoginRequiredNotice";
+import LoginRequiredNotice from "@/components/ui/LoginRequiredNotice";
 import {
   AlertDialog,
   AlertDialogAction,
