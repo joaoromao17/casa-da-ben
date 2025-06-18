@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import StudyCard from "@/components/ui/StudyCard";
@@ -44,13 +45,41 @@ const Estudos = () => {
   const fetchStudies = async (page: number, search: string = "", category: string = "Todos") => {
     try {
       setLoading(true);
-      const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
-      const categoryParam = category !== "Todos" ? `&category=${encodeURIComponent(category)}` : "";
-      const response = await api.get(`/estudos?page=${page - 1}&size=${pageSize}${searchParam}${categoryParam}`);
+      
+      // Construir parâmetros da query
+      const params: any = {
+        page: page - 1,
+        size: pageSize
+      };
+      
+      if (search.trim()) {
+        params.search = search.trim();
+      }
+      
+      if (category !== "Todos") {
+        params.category = category;
+      }
+
+      console.log("Buscando estudos com parâmetros:", params);
+      
+      const response = await api.get('/estudos', { params });
       
       // Se a API não retorna dados paginados, simular paginação
       if (Array.isArray(response.data)) {
         let allData = response.data;
+        
+        // Aplicar filtros manualmente se necessário
+        if (search.trim()) {
+          allData = allData.filter(study => 
+            study.title.toLowerCase().includes(search.toLowerCase()) ||
+            study.description.toLowerCase().includes(search.toLowerCase()) ||
+            study.author.toLowerCase().includes(search.toLowerCase())
+          );
+        }
+        
+        if (category !== "Todos") {
+          allData = allData.filter(study => study.category === category);
+        }
         
         // Ordenar por data mais recente primeiro
         allData = allData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -81,12 +110,13 @@ const Estudos = () => {
     }
   };
 
+  // Aplicar debounce para pesquisa
   useEffect(() => {
-    fetchStudies(1, searchTerm, selectedCategory);
-  }, []);
+    const delayDebounce = setTimeout(() => {
+      fetchStudies(1, searchTerm, selectedCategory);
+    }, 300);
 
-  useEffect(() => {
-    fetchStudies(1, searchTerm, selectedCategory);
+    return () => clearTimeout(delayDebounce);
   }, [searchTerm, selectedCategory]);
 
   const handlePageChange = (page: number) => {
@@ -128,7 +158,7 @@ const Estudos = () => {
                 />
               </div>
               <div className="flex-shrink-0">
-                <Tabs defaultValue="Todos" onValueChange={handleCategoryChange}>
+                <Tabs value={selectedCategory} onValueChange={handleCategoryChange}>
                   <TabsList className="bg-white overflow-x-auto">
                     {categories.map((category) => (
                       <TabsTrigger key={category} value={category}>{category}</TabsTrigger>
@@ -210,7 +240,7 @@ const Estudos = () => {
               />
             </div>
             <div className="flex-shrink-0">
-              <Tabs defaultValue="Todos" onValueChange={handleCategoryChange}>
+              <Tabs value={selectedCategory} onValueChange={handleCategoryChange}>
                 <TabsList className="bg-white overflow-x-auto">
                   {categories.map((category) => (
                     <TabsTrigger key={category} value={category}>{category}</TabsTrigger>
@@ -282,7 +312,12 @@ const Estudos = () => {
             </>
           ) : (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <p className="text-gray-600">Nenhum estudo encontrado para sua pesquisa.</p>
+              <p className="text-gray-600">
+                {searchTerm || selectedCategory !== "Todos" 
+                  ? "Nenhum estudo encontrado para sua pesquisa." 
+                  : "Nenhum estudo disponível."
+                }
+              </p>
               <Button
                 variant="outline"
                 className="mt-4"

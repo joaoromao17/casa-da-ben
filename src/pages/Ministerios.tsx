@@ -27,6 +27,9 @@ const Ministerios = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { currentUser } = useCurrentUser();
 
+  // Define a aba padrão baseada no status de login
+  const defaultTab = currentUser ? "meus" : "todos";
+
   useEffect(() => {
     const fetchMinistries = async () => {
       try {
@@ -118,35 +121,13 @@ const Ministerios = () => {
               </AlertDescription>
             </Alert>
           ) : (
-            <Tabs defaultValue="todos" className="w-full">
+            <Tabs defaultValue={defaultTab} className="w-full">
               {currentUser && (
                 <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
                   <TabsTrigger value="meus">Meus Ministérios</TabsTrigger>
                   <TabsTrigger value="todos">Todos os Ministérios</TabsTrigger>
                 </TabsList>
               )}
-
-              <TabsContent value="todos">
-                {filteredMinistries.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p className="text-church-700 mb-4">
-                      {searchTerm ? "Nenhum ministério encontrado para sua pesquisa." : "Nenhum ministério cadastrado ainda."}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                    {filteredMinistries.map((ministry) => (
-                      <MinistryCard
-                        key={ministry.id}
-                        title={ministry.name}
-                        description={ministry.description}
-                        imageUrl={ministry.imageUrl}
-                        slug={ministry.id.toString()}
-                      />
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
 
               {currentUser && (
                 <TabsContent value="meus">
@@ -171,6 +152,28 @@ const Ministerios = () => {
                   )}
                 </TabsContent>
               )}
+
+              <TabsContent value="todos">
+                {filteredMinistries.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-church-700 mb-4">
+                      {searchTerm ? "Nenhum ministério encontrado para sua pesquisa." : "Nenhum ministério cadastrado ainda."}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                    {filteredMinistries.map((ministry) => (
+                      <MinistryCard
+                        key={ministry.id}
+                        title={ministry.name}
+                        description={ministry.description}
+                        imageUrl={ministry.imageUrl}
+                        slug={ministry.id.toString()}
+                      />
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
             </Tabs>
           )}
         </div>
