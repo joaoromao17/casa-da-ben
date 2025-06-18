@@ -231,7 +231,7 @@ const EventsTab = () => {
       // Add default image URL when no image is provided
       const eventoWithDefault = {
         ...evento,
-        imageUrl: "/images/eventos/eventos_default.jpg"
+        imageUrl: "/uploads/eventos/eventos_default.jpg"
       };
       formData.delete("evento");
       formData.append("evento", new Blob([JSON.stringify(eventoWithDefault)], { type: "application/json" }));
