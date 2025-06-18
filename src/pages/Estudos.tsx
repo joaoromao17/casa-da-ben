@@ -191,7 +191,7 @@ const Estudos = () => {
       <div className="container-church py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-church-900 mb-4">Estudos Bíblicos</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-church-900 mb-4">Escola Bíblica</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Explore nossa coleção de estudos bíblicos, materiais de ensino e recursos para aprofundar sua fé e conhecimento das escrituras.
           </p>

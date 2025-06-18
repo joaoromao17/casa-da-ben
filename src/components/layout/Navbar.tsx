@@ -84,7 +84,7 @@ const Navbar = () => {
                 )}
                 <Link to="/eventos" className="nav-link">Eventos</Link>
                 <Link to="/ministerios" className="nav-link">Ministérios</Link>
-                <Link to="/estudos" className="nav-link">Estudos</Link>
+                <Link to="/estudos" className="nav-link">Escola Bíblica</Link>
                 <Link to="/oracao" className="nav-link">Orações</Link>
                 <Link to="/testemunhos" className="nav-link">Testemunhos</Link>
                 <Link to="/contribuicoes" className="nav-link">Contribuições</Link>

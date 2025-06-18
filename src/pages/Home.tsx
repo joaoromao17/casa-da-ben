@@ -342,7 +342,7 @@ const Home = () => {
           <div className="bg-church-700/50 p-8 rounded-lg text-center">
             <h3 className="text-2xl font-bold mb-3">Domingo</h3>
             <p className="text-lg mb-2">Culto da Família</p>
-            <p className="text-church-gold font-bold">18:30</p>
+            <p className="text-church-gold font-bold">18h30</p>
           </div>
 
           <div className="bg-church-700/50 p-8 rounded-lg text-center">
@@ -360,7 +360,7 @@ const Home = () => {
           <div className="bg-church-700/50 p-8 rounded-lg text-center">
             <h3 className="text-2xl font-bold mb-3">Sexta-feira</h3>
             <p className="text-lg mb-2">Culto de Libertação</p>
-            <p className="text-church-gold font-bold">20:00</p>
+            <p className="text-church-gold font-bold">20h</p>
           </div>
         </div>
 
@@ -416,7 +416,10 @@ const Home = () => {
             Acompanhe nossas atividades e mantenha-se atualizado com as novidades da igreja
           </p>
         </div>
-
+          <a
+            href="https://www.instagram.com/icb_610/"
+            target="_blank"
+          >
         <div className="max-w-2xl mx-auto">
           <img
             src="/lovable-uploads/@icb610.png"
@@ -424,6 +427,7 @@ const Home = () => {
             className="w-full rounded-2xl shadow-lg transition-transform duration-300 hover:scale-105"
           />
         </div>
+        </a>
 
         <div className="text-center mt-10">
           <a

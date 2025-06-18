@@ -291,7 +291,7 @@ const Oracao = () => {
           <div className="flex flex-col items-center text-center mb-10">
             <h1 className="text-4xl font-bold text-church-900 mb-4">Pedidos de Oração</h1>
             <p className="text-xl text-gray-600 max-w-3xl">
-              Compartilhe sua necessidade e deixe que a comunidade interceda por você.
+              Compartilhe sua necessidade e deixe que a Igreja interceda por você.
             </p>
           </div>
 
@@ -365,7 +365,7 @@ const Oracao = () => {
         <div className="flex flex-col items-center text-center mb-10">
           <h1 className="text-4xl font-bold text-church-900 mb-4">Pedidos de Oração</h1>
           <p className="text-xl text-gray-600 max-w-3xl">
-            Compartilhe sua necessidade e deixe que a comunidade interceda por você.
+            Compartilhe sua necessidade e deixe que a Igreja interceda por você.
           </p>
         </div>
 
