@@ -1,4 +1,5 @@
 
+
 import { Link } from "react-router-dom";
 import {
   Instagram,
@@ -7,7 +8,8 @@ import {
   MapPin,
   Phone,
   Mail,
-  Clock
+  Clock,
+  Bug
 } from "lucide-react";
 
 const Footer = () => {
@@ -150,6 +152,11 @@ const Footer = () => {
             <Link to="/termos-de-uso" className="hover:text-white transition-colors">
               Termos de Uso
             </Link>
+            {" • "}
+            <Link to="/relatar-bug" className="hover:text-white transition-colors flex items-center justify-center gap-1 mt-2">
+              <Bug size={16} />
+              Relatar Bug
+            </Link>
           </p>
         </div>
       </div>
@@ -158,3 +165,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

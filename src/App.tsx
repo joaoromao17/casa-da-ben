@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -33,6 +34,7 @@ import PublicProfilePage from "./pages/PublicProfilePage";
 import PorQueSeRegistrar from "./pages/PorQueSeRegistrar";
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import TermosUso from "./pages/TermosUso";
+import RelatarBug from "./pages/RelatarBug";
 
 const queryClient = new QueryClient();
 
@@ -69,6 +71,7 @@ const App = () => (
             <Route path="/por-que-se-registrar" element={<PorQueSeRegistrar />} />
             <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
             <Route path="/termos-de-uso" element={<TermosUso />} />
+            <Route path="/relatar-bug" element={<RelatarBug />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/eventos/:id" element={<EventoDetail />} />
           </Routes>
