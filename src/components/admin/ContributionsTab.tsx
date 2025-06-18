@@ -142,11 +142,12 @@ const ContributionsTab = () => {
         targetValue: data.hasGoal ? (data.targetValue || 0) : 0,
         collectedValue: data.collectedValue || 0,
         isGoalVisible: data.hasGoal ? data.isGoalVisible : false,
-        startDate: new Date().toISOString().split("T")[0], // <- ✅ aqui
+        startDate: new Date().toISOString().split("T")[0],
         endDate: data.hasEndDate && data.endDate ? format(data.endDate, 'yyyy-MM-dd') : null,
         status: "ATIVA",
         createdBy: data.createdBy,
         pixKey: data.pixKey,
+        imageUrl: !data.image || data.image.length === 0 ? "/uploads/contribuicoes/contribuicao_default.jpg" : undefined
       };
 
       const response = await api.post('/contribuicoes', contributionData);
@@ -196,7 +197,7 @@ const ContributionsTab = () => {
         createdBy: contributionData.createdBy,
         pixKey: contributionData.pixKey,
         imageUrl: !contributionData.image || contributionData.image.length === 0
-          ? selectedContribution.imageUrl // se não trocou a imagem, mantém a atual
+          ? selectedContribution.imageUrl || "/uploads/contribuicoes/contribuicao_default.jpg" // mantém a atual ou usa padrão
           : undefined, // vai ser atualizada depois pelo endpoint de upload
       };
 

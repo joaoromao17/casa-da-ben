@@ -126,6 +126,14 @@ const EventCreateForm = ({ children }: EventCreateFormProps) => {
 
     if (data.image && data.image.length > 0) {
       formData.append("image", data.image[0]);
+    } else {
+      // Add default image URL when no image is provided
+      const eventoWithDefault = {
+        ...evento,
+        imageUrl: "/images/eventos/eventos_default.jpg"
+      };
+      formData.delete("evento");
+      formData.append("evento", new Blob([JSON.stringify(eventoWithDefault)], { type: "application/json" }));
     }
 
     createEventMutation.mutate(formData);

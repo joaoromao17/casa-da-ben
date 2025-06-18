@@ -129,14 +129,20 @@ const MinistriesTab = () => {
   const onSubmit = (data: MinistryFormData) => {
     console.log("Dados do formulário:", data);
 
+    // Prepare the form data with default image if none provided
+    const formDataWithDefaults = {
+      ...data,
+      imageUrl: !data.image ? "/images/ministerios/ministerio_default.jpg" : undefined
+    };
+
     if (isCreating) {
-      createMinistryMutation.mutate(data, {
+      createMinistryMutation.mutate(formDataWithDefaults, {
         onSuccess: handleCloseModal
       });
     } else if (selectedMinistry) {
       updateMinistryMutation.mutate({
         id: selectedMinistry.id,
-        ...data,
+        ...formDataWithDefaults,
       }, {
         onSuccess: handleCloseModal
       });
