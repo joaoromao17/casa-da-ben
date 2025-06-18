@@ -63,7 +63,7 @@ const Oracao = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("todos");
   const [isOracaoModalOpen, setIsOracaoModalOpen] = useState(false);
   const [isTestimonyModalOpen, setIsTestimonyModalOpen] = useState(false);
   const [testimonyData, setTestimonyData] = useState<Oracao | null>(null);
@@ -78,9 +78,21 @@ const Oracao = () => {
     try {
       setLoading(true);
       const endpoint = showMyPrayers ? "/oracoes/minhas" : "/oracoes";
-      const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
-      const categoryParam = category && category !== "todos" ? `&category=${encodeURIComponent(category)}` : "";
-      const response = await api.get(`${endpoint}?page=${page - 1}&size=${pageSize}${searchParam}${categoryParam}`);
+      
+      const params: any = {
+        page: page - 1,
+        size: pageSize
+      };
+
+      if (search.trim()) {
+        params.search = search.trim();
+      }
+
+      if (category && category !== "todos") {
+        params.category = category;
+      }
+
+      const response = await api.get(endpoint, { params });
       
       // Se a API não retorna dados paginados, simular paginação
       if (Array.isArray(response.data)) {
@@ -119,15 +131,17 @@ const Oracao = () => {
     }
   };
 
+  // Debounce para pesquisa e filtros
   useEffect(() => {
-    fetchPrayers(1, searchTerm, selectedCategory);
-  }, [showMyPrayers]);
+    const delayDebounce = setTimeout(() => {
+      fetchPrayers(1, searchTerm, selectedCategory);
+    }, 300);
 
-  useEffect(() => {
-    fetchPrayers(1, searchTerm, selectedCategory);
-  }, [searchTerm, selectedCategory]);
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm, selectedCategory, showMyPrayers]);
 
   const handlePageChange = (page: number) => {
+    setCurrentPage(page);
     fetchPrayers(page, searchTerm, selectedCategory);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -418,6 +432,13 @@ const Oracao = () => {
           </div>
         </div>
 
+        {/* Feedback de pesquisa */}
+        {searchTerm.length > 1 && (
+          <div className="mb-4 text-sm text-gray-600">
+            Exibindo resultados para: "<span className="font-medium">{searchTerm}</span>"
+          </div>
+        )}
+
         {/* Lista de Orações */}
         {prayers.length > 0 ? (
           <>
@@ -453,7 +474,10 @@ const Oracao = () => {
         ) : (
           <div className="text-center py-12">
             <p className="text-xl text-gray-600">
-              Nenhum pedido de oração encontrado.
+              {searchTerm.length > 1 
+                ? "Nenhuma oração encontrada com esse termo." 
+                : "Nenhum pedido de oração encontrado."
+              }
             </p>
           </div>
         )}
