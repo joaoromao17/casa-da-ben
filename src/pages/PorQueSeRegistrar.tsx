@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
@@ -11,7 +12,9 @@ import {
   Calendar, 
   HandHeart, 
   UserPlus,
-  Bird
+  Bird,
+  FileText,
+  Lock
 } from "lucide-react";
 
 const PorQueSeRegistrar = () => {
@@ -147,10 +150,26 @@ const PorQueSeRegistrar = () => {
             </div>
 
             {/* Botão de Cadastro */}
-            <div className="text-center">
+            <div className="text-center mb-8">
               <Link to="/cadastro">
                 <Button className="btn-primary text-lg px-8 py-3 hover:scale-105 transition-transform">
                   Cadastre-se
+                </Button>
+              </Link>
+            </div>
+
+            {/* Botões de Política de Privacidade e Termos de Uso */}
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8 pt-8 border-t border-gray-200">
+              <Link to="/politica-de-privacidade">
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Lock className="h-4 w-4" />
+                  Política de Privacidade
+                </Button>
+              </Link>
+              <Link to="/termos-de-uso">
+                <Button variant="outline" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Termos de Uso
                 </Button>
               </Link>
             </div>

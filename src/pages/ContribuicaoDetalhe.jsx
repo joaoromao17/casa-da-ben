@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loading } from "@/components/ui/loading";
 import ErrorAlert from "@/components/ui/ErrorAlert";
+import { LoginRequiredNotice } from "@/components/ui/LoginRequiredNotice";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,10 +47,24 @@ const ContribuicaoDetalhe = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [formData, setFormData] = useState({
     valor: ''
   });
+
+  useEffect(() => {
+    // Verificar se o usuário está logado
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    setIsLoggedIn(!!token);
+    
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    carregarContribuicao();
+  }, [id]);
 
   const carregarContribuicao = async () => {
     try {
@@ -64,9 +79,27 @@ const ContribuicaoDetalhe = () => {
     }
   };
 
-  useEffect(() => {
-    carregarContribuicao();
-  }, [id]);
+  // Se não estiver logado, mostrar aviso de login necessário
+  if (!loading && !isLoggedIn) {
+    return (
+      <Layout>
+        <div className="container-church py-12">
+          <div className="mb-6">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/contribuicoes')}
+              className="flex items-center"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para Contribuições
+            </Button>
+          </div>
+          <LoginRequiredNotice 
+            message="Para acessar os detalhes de uma campanha de contribuição, você precisa estar logado."
+          />
+        </div>
+      </Layout>
+    );
+  }
 
   // Função para exibir o status da campanha
   const getStatusBadge = () => {
@@ -161,12 +194,10 @@ const ContribuicaoDetalhe = () => {
         description: "Agradecemos sua generosidade. Sua doação foi registrada com sucesso."
       });
 
-      // Limpar formulário
       setFormData({
         valor: ''
       });
 
-      // Recarregar os dados da campanha
       await carregarContribuicao();
 
     } catch (error) {
