@@ -83,8 +83,10 @@ const ContribuicaoDetalhe = () => {
   if (!loading && !isLoggedIn) {
     return (
       <Layout>
-        <div className="container-church py-12">
+        <div className="container-church py-12 text-center">
           <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Detalhes do Caixinha de Contribuição</h1>
+            <p className="text-gray-600">Você precisa estar logado para ver os detalhes.</p>
             <Button
               variant="outline"
               onClick={() => navigate('/contribuicoes')}

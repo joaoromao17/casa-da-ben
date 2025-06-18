@@ -87,7 +87,7 @@ export default function MinisterioDetail() {
         <div className="container-church py-12 text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Detalhes do Ministério</h1>
           <p className="text-gray-600">Você precisa estar logado para ver os detalhes dos ministérios.</p>
-          <Button onClick={() => navigate("/ministerios")} className="mt-4">
+          <Button onClick={() => navigate("/ministerios")} className="flex items-center">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Voltar para Ministérios
           </Button>
