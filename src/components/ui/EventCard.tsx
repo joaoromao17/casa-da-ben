@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -39,9 +40,9 @@ const EventCard = ({
     locale: ptBR
   });
 
-  const fullImageUrl = imageUrl.startsWith("http")
+  const fullImageUrl = imageUrl && imageUrl.startsWith("http")
     ? imageUrl
-    : `${API_BASE_URL}${imageUrl}`;
+    : `${API_BASE_URL}${imageUrl || '/images/eventos/eventos_default.jpg'}`;
 
   const isToday = isSameDay(date, new Date());
 
