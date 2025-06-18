@@ -1,5 +1,4 @@
 
-
 import { Link } from "react-router-dom";
 import {
   Instagram,
@@ -9,7 +8,8 @@ import {
   Phone,
   Mail,
   Clock,
-  Bug
+  Bug,
+  Heart
 } from "lucide-react";
 
 const Footer = () => {
@@ -157,6 +157,11 @@ const Footer = () => {
               <Bug size={16} />
               Relatar Bug
             </Link>
+            {" • "}
+            <Link to="/apoiar-desenvolvedor" className="hover:text-white transition-colors flex items-center justify-center gap-1 mt-2">
+              <Heart size={16} />
+              Apoiar Desenvolvedor
+            </Link>
           </p>
         </div>
       </div>
@@ -165,4 +170,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

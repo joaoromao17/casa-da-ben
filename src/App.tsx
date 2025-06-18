@@ -35,6 +35,7 @@ import PorQueSeRegistrar from "./pages/PorQueSeRegistrar";
 import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import TermosUso from "./pages/TermosUso";
 import RelatarBug from "./pages/RelatarBug";
+import ApoiarDesenvolvedor from "./pages/ApoiarDesenvolvedor";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,7 @@ const App = () => (
             <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
             <Route path="/termos-de-uso" element={<TermosUso />} />
             <Route path="/relatar-bug" element={<RelatarBug />} />
+            <Route path="/apoiar-desenvolvedor" element={<ApoiarDesenvolvedor />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/eventos/:id" element={<EventoDetail />} />
           </Routes>
