@@ -279,8 +279,8 @@ const MinisterioTemplate = ({
                                 className="w-55 h-20 rounded-full object-cover mb-2"
                               />
                               <p className="font-semibold text-church-800">{leader.name}</p>
-                              {leader.email && <p className="text-gray-500">{leader.email}</p>}
-                              {leader.phone && <p className="text-gray-500">{leader.phone}</p>}
+                             {/* {leader.email && <p className="text-gray-500">{leader.email}</p>}
+                              {leader.phone && <p className="text-gray-500">{leader.phone}</p>} */}
                             </div>
                           ))}
                         </div>
@@ -299,11 +299,11 @@ const MinisterioTemplate = ({
                                 <img
                                   src={`${API_BASE_URL}${vice.profileImageUrl || '/uploads/profiles/default.jpg'}`}
                                   alt={vice.name}
-                                  className="w-12 h-12 rounded-full object-cover mb-2"
+                                  className="w-55 h-20 rounded-full object-cover mb-2"
                                 />
                                 <p className="font-semibold text-church-800">{vice.name}</p>
-                                {vice.email && <p className="text-gray-500">{vice.email}</p>}
-                                {vice.phone && <p className="text-gray-500">{vice.phone}</p>}
+                                {/* {vice.email && <p className="text-gray-500">{vice.email}</p>}
+                                {vice.phone && <p className="text-gray-500">{vice.phone}</p>} */}
                               </div>
                             ))}
                           </div>
