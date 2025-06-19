@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import api from "@/services/api";
 
 import AdminTable from "./AdminTable";
@@ -23,6 +25,7 @@ const StudiesTab = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedStudy, setSelectedStudy] = useState<Study | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Fetch studies
   const { 
@@ -103,6 +106,14 @@ const StudiesTab = () => {
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
+  // Filter studies based on search term
+  const filteredStudies = studies.filter((study: Study) =>
+    study.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    study.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    study.author?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    study.category?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const columns = [
     { key: "title", title: "Título" },
     { 
@@ -127,8 +138,21 @@ const StudiesTab = () => {
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Estudos</h2>
       
+      {/* Campo de Pesquisa */}
+      <div className="mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <Input
+            placeholder="Pesquisar estudos por título, descrição, autor ou categoria..."
+            className="pl-10"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+      
       <AdminTable
-        data={studies}
+        data={filteredStudies}
         columns={columns}
         isLoading={isLoading}
         onView={handleViewStudy}
