@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 import AdminTable from "./AdminTable";
 import AdminFormModal from "./AdminFormModal";
@@ -21,6 +23,7 @@ const MinistriesTab = () => {
   const [selectedMinistry, setSelectedMinistry] = useState<any>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [viewMinistryOpen, setViewMinistryOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const {
     ministries,
@@ -66,12 +69,10 @@ const MinistriesTab = () => {
 
     console.log("Ministry data for edit:", ministry);
 
-    // Extrair IDs dos líderes diretamente do campo leaderIds
     const leaderIds = (ministry.leaderIds || [])
       .map((leaderId: number) => leaderId.toString())
       .filter(Boolean);
 
-    // Extrair IDs dos vice-líderes diretamente do campo viceLeaderIds
     const viceLeaderIds = (ministry.viceLeaderIds || [])
       .map((viceLeaderId: number) => viceLeaderId.toString())
       .filter(Boolean);
@@ -79,7 +80,6 @@ const MinistriesTab = () => {
     console.log('leaderIds:', leaderIds);
     console.log('viceLeaderIds:', viceLeaderIds);
 
-    // Reset form with ministry data
     form.reset({
       name: ministry.name || "",
       description: ministry.description || "",
@@ -129,7 +129,6 @@ const MinistriesTab = () => {
   const onSubmit = (data: MinistryFormData) => {
     console.log("Dados do formulário:", data);
 
-    // Prepare the form data with default image if none provided
     const formDataWithDefaults = {
       ...data,
       imageUrl: !data.image ? "/uploads/ministerios/ministerio_default.jpg" : undefined
@@ -157,6 +156,15 @@ const MinistriesTab = () => {
     }
   };
 
+  // Filter ministries based on search term
+  const filteredMinistries = ministries.filter(ministry =>
+    ministry.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ministry.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ministry.leaderNames?.some((name: string) => 
+      name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
   const columns = [
     { key: "name", title: "Nome" },
     {
@@ -182,8 +190,21 @@ const MinistriesTab = () => {
     <div>
       <h2 className="text-2xl font-bold mb-6">Gerenciamento de Ministérios</h2>
 
+      {/* Campo de Pesquisa */}
+      <div className="mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <Input
+            placeholder="Pesquisar ministérios por nome, descrição ou líder..."
+            className="pl-10"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
       <AdminTable
-        data={ministries}
+        data={filteredMinistries}
         columns={columns}
         isLoading={isLoading}
         onView={handleViewMinistry}

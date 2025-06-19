@@ -1,11 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, Eye, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Eye, Edit, Trash2, Search } from "lucide-react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useToast } from "@/hooks/use-toast";
 import UploadEstudoForm from "@/components/ui/UploadEstudoForm";
@@ -32,6 +32,7 @@ const EstudosGerenciar = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedStudy, setSelectedStudy] = useState<Study | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   // Verificar permissões de acesso
   useEffect(() => {
@@ -110,7 +111,6 @@ const EstudosGerenciar = () => {
     }
   };
 
-
   const handleUploadSuccess = () => {
     setShowAddModal(false);
     setShowEditModal(false);
@@ -125,6 +125,14 @@ const EstudosGerenciar = () => {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
+
+  // Filter studies based on search term
+  const filteredStudies = studies.filter(study =>
+    study.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    study.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    study.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    study.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (isLoading) {
     return (
@@ -161,8 +169,17 @@ const EstudosGerenciar = () => {
           </p>
         </div>
 
-        {/* Botão Adicionar Novo */}
-        <div className="mb-6">
+        {/* Pesquisa e Botão Adicionar */}
+        <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Input
+              placeholder="Pesquisar estudos por título, descrição, autor ou categoria..."
+              className="pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           <Button
             onClick={() => setShowAddModal(true)}
             className="bg-church-900 text-white hover:bg-church-700 flex items-center gap-2"
@@ -189,14 +206,14 @@ const EstudosGerenciar = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {studies.length === 0 ? (
+                {filteredStudies.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                      Nenhum estudo encontrado
+                      {searchTerm ? "Nenhum estudo encontrado para sua pesquisa" : "Nenhum estudo encontrado"}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  studies.map((study) => (
+                  filteredStudies.map((study) => (
                     <TableRow key={study.id}>
                       <TableCell className="font-medium">{study.title}</TableCell>
                       <TableCell className="max-w-xs truncate">
@@ -269,7 +286,7 @@ const EstudosGerenciar = () => {
               {selectedStudy && (
                 <UploadEstudoForm
                   onUploadSuccess={handleUploadSuccess}
-                  initialData={selectedStudy} // <-- esta é a parte que estava faltando
+                  initialData={selectedStudy}
                 />
               )}
             </div>
