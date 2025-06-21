@@ -4,8 +4,9 @@ import { Users, Clock, CalendarDays, MapPin, Signpost, ClockAlert } from "lucide
 import { Link } from "react-router-dom";
 import { format, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { motion } from "framer-motion"; // Adiciona animação
+import { motion } from "framer-motion";
 import { format as formatDate } from "date-fns-tz";
+import { API_BASE_URL } from "@/services/api";
 
 interface EventoTemplateProps {
   id: number;
@@ -17,8 +18,6 @@ interface EventoTemplateProps {
   imageUrl: string;
   category: string;
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 const EventoTemplate = ({
   title,

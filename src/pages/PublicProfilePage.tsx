@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
@@ -7,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowLeft, Phone, MessageCircle } from "lucide-react";
 import { Loading } from "@/components/ui/loading";
-import api from "@/services/api";
+import api, { API_BASE_URL } from "@/services/api";
 
 interface PublicUserData {
   id: number;
@@ -18,8 +17,6 @@ interface PublicUserData {
   ministerios: string[];
   phone?: string;
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 /**
  * Página pública de perfil do usuário

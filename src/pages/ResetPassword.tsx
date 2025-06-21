@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -11,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { toast } from "@/components/ui/use-toast";
 import { Mail, ArrowLeft, Loader2, Check } from "lucide-react";
+import api from "@/services/api";
 
 // Schema para validação do email
 const resetPasswordSchema = z.object({
@@ -37,15 +37,9 @@ const ResetPassword = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("http://localhost:8080/api/users/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email }),
-      });
+      const response = await api.post("/users/forgot-password", { email: data.email });
 
-      if (!response.ok) throw new Error("Erro ao solicitar redefinição de senha");
-
-      setEmailSentTo(data.email); // <- salvando email
+      setEmailSentTo(data.email);
       setEmailSent(true);
       toast({
         title: "Email enviado!",

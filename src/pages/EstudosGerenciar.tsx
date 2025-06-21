@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
@@ -9,7 +10,6 @@ import { ArrowLeft, Plus, Eye, Edit, Trash2, Search } from "lucide-react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useToast } from "@/hooks/use-toast";
 import UploadEstudoForm from "@/components/ui/UploadEstudoForm";
-import axios from "axios";
 import api from "@/services/api";
 
 interface Study {
@@ -49,7 +49,7 @@ const EstudosGerenciar = () => {
   const fetchStudies = async () => {
     try {
       setLoadingStudies(true);
-      const response = await axios.get("http://localhost:8080/api/estudos");
+      const response = await api.get("/estudos");
       setStudies(response.data);
     } catch (error) {
       console.error("Erro ao buscar estudos:", error);

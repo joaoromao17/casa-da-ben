@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from "@/components/layout/Layout";
@@ -22,7 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import api from "@/services/api";
+import api, { API_BASE_URL } from "@/services/api";
 import {
   ArrowLeft,
   Calendar,
@@ -251,7 +252,6 @@ const ContribuicaoDetalhe = () => {
     : null;
 
   // Obter URL completa da imagem
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
   const imageUrl = contribuicao?.imageUrl
     ? (contribuicao.imageUrl.startsWith('http')
       ? contribuicao.imageUrl
