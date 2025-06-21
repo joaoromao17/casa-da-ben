@@ -171,7 +171,7 @@ const ApoiarDesenvolvedor = () => {
               <CardContent className="p-6">
                 <Heart className="h-8 w-8 text-red-500 mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-church-900 mb-2">
-                  Muito Obrigado!
+                  Se tem interesse em fazer um site, só entrar em contato. Muito Obrigado!
                 </h3>
                 <p className="text-gray-700">
                   Sua ajuda faz toda a diferença na jornada de um desenvolvedor iniciante. 

@@ -1,12 +1,13 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080';
+// Usa variável de ambiente VITE_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
 });
 
-// Interceptador para adicionar o token
+// Interceptador para adicionar o token JWT
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   if (token) {
