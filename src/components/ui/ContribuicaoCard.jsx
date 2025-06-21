@@ -6,8 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+import { API_BASE_URL } from "@/services/api";
 
 const ContribuicaoCard = ({ contribuicao }) => {
   const { currentUser } = useCurrentUser();

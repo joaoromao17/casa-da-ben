@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, FileText, Image, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { API_BASE_URL } from "@/services/api";
 
 interface Aviso {
   id: number;
@@ -22,8 +23,6 @@ interface AvisoCardProps {
   showDelete?: boolean;
   onDelete?: (id: number) => void;
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 export const AvisoCard: React.FC<AvisoCardProps> = ({ aviso, showDelete = false, onDelete }) => {
   const formatDate = (dateString: string) => {

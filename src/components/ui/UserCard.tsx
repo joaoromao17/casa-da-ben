@@ -2,6 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "@/services/api";
 
 interface UserCardProps {
   usuario: {
@@ -16,8 +17,6 @@ interface UserCardProps {
     isToday: boolean;
   };
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 const UserCard = ({ usuario, birthdayInfo }: UserCardProps) => {
   const navigate = useNavigate();
@@ -91,6 +90,5 @@ const UserCard = ({ usuario, birthdayInfo }: UserCardProps) => {
     </Card>
   );
 };
-
 
 export default UserCard;

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
+import { API_BASE_URL } from "@/services/api";
 
 interface MinistryCardProps {
   title: string;
@@ -18,8 +19,6 @@ interface MinistryCardProps {
   imageUrl: string;
   slug: string;
 }
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 const MinistryCard = ({ title, description, imageUrl, slug }: MinistryCardProps) => {
   const fullImageUrl = imageUrl && imageUrl.startsWith("http") ? imageUrl : `${API_BASE_URL}${imageUrl || ''}`;

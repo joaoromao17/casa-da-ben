@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { MinistryFormData } from "./ministryFormSchema";
+import { API_BASE_URL } from "@/services/api";
 
 interface MinistryFormProps {
   form: UseFormReturn<MinistryFormData>;
@@ -98,7 +99,7 @@ const MinistryForm = ({ form, users, isCreating, selectedMinistry }: MinistryFor
                 <img 
                   src={selectedMinistry.imageUrl.startsWith('http') 
                     ? selectedMinistry.imageUrl 
-                    : `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'}${selectedMinistry.imageUrl}`
+                    : `${API_BASE_URL}${selectedMinistry.imageUrl}`
                   } 
                   alt="Imagem atual" 
                   className="w-32 h-32 object-cover rounded"
