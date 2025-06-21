@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import api from "@/services/api";
 
 interface Ministry {
   id: number;
@@ -23,36 +24,28 @@ export const useCurrentUser = () => {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-useEffect(() => {
-  const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+  useEffect(() => {
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 
-  if (!token) {
-    setIsLoading(false);
-    return;
-  }
-
-  const fetchUser = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/users/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) throw new Error("Erro ao buscar usuário");
-
-      const user = await response.json();
-      setCurrentUser(user); // Já virá com id, name, email, roles e ministries
-      console.log("Usuário logado via /users/profile:", user);
-    } catch (error) {
-      console.error("Erro ao buscar usuário atual:", error);
-    } finally {
+    if (!token) {
       setIsLoading(false);
+      return;
     }
-  };
 
-  fetchUser();
-}, []);
+    const fetchUser = async () => {
+      try {
+        const response = await api.get("/users/profile");
+        setCurrentUser(response.data);
+        console.log("Usuário logado via /users/profile:", response.data);
+      } catch (error) {
+        console.error("Erro ao buscar usuário atual:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return { currentUser, isLoading };
 };

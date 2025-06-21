@@ -60,7 +60,6 @@ const BirthdaysSection = ({ className }: BirthdaysSectionProps) => {
     };
   };
 
-
   if (loading) {
     return (
       <div className={className}>

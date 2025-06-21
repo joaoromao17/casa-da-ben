@@ -1,3 +1,4 @@
+
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import EventoTemplate from "@/pages/EventoTemplate";
@@ -56,14 +57,14 @@ export default function EventoDetail() {
 
   return (
     <EventoTemplate
-    id={evento.id}
-    title={evento.title}
-    description={evento.description}
-    date={evento.date}
-    time={evento.time}
-    location={evento.location}
-    imageUrl={evento.imageUrl}
-    category={evento.category}
+      id={evento.id}
+      title={evento.title}
+      description={evento.description}
+      date={evento.date}
+      time={evento.time}
+      location={evento.location}
+      imageUrl={evento.imageUrl}
+      category={evento.category}
     />
   );
 }
