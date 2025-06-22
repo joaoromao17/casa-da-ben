@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -20,6 +19,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Eye, EyeOff } from "lucide-react";
 import { User, UserCheck, Mail, Phone, MessageSquareText, Loader2, Lock } from "lucide-react";
 import api from "@/services/api";
+import { verificarEmailReal } from "@/utils/verificarEmailReal";
 
 // Schema para validação dos dados do formulário
 const cadastroSchema = z.object({
@@ -83,20 +83,6 @@ const Cadastro = () => {
   const isMembro = form.watch("member") === true;
 
 
-  const verificarEmailReal = async (email: string): Promise<boolean> => {
-    try {
-      const res = await fetch(`http://apilayer.net/api/check?access_key=ee5c6e9beae86c9c83973b84176b5d88&email=${email}&smtp=1&format=1`);
-      const data = await res.json();
-
-      // Verifica se o email é válido e entregável
-      return data.format_valid && data.smtp_check;
-    } catch (err) {
-      console.error("Erro ao verificar email:", err);
-      return false;
-    }
-  };
-
-
   useEffect(() => {
     const fetchMinisterios = async () => {
       try {
@@ -137,7 +123,7 @@ const Cadastro = () => {
     if (!emailValido) {
       toast({
         title: "E-mail inválido",
-        description: "O e-mail informado não parece ser válido ou está inativo. Por favor, verifique.",
+        description: "O e-mail informado parece inválido ou é de domínio descartável. Por favor, use outro.",
         variant: "destructive",
       });
       setIsSubmitting(false);
