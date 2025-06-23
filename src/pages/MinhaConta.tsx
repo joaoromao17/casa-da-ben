@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
@@ -254,37 +255,42 @@ const MinhaConta = () => {
         ) : userData ? (
           <div className="space-y-8">
             <Card>
-              <CardHeader className="flex flex-row items-center gap-4 md:gap-8">
-                <Avatar className="h-24 w-24 border-2 border-church-500">
-                  <AvatarImage
-                    src={getProfileImageUrl(userData.profileImageUrl)}
-                    alt={userData.name}
-                  />
-                  <AvatarFallback className="text-2xl bg-church-100 text-church-700">
-                    {userData.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <CardTitle className="text-2xl mb-2">{userData.name}</CardTitle>
-                  <div className="text-muted-foreground mb-3">
-                    <p>{userData.email}</p>
-                  </div>
-                  {userData.biography && (
-                    <div className="text-gray-700 text-sm">
-                      <p className="line-clamp-3">{userData.biography}</p>
-                    </div>
-                  )}
-                  <div className="mt-3">
+              <CardContent className="p-6">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
+                  <Avatar className="h-24 w-24 border-2 border-church-500 flex-shrink-0">
+                    <AvatarImage
+                      src={getProfileImageUrl(userData.profileImageUrl)}
+                      alt={userData.name}
+                    />
+                    <AvatarFallback className="text-2xl bg-church-100 text-church-700">
+                      {userData.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
+                    <h2 className="text-2xl font-semibold mb-2 text-church-800 break-words">
+                      {userData.name}
+                    </h2>
+                    <p className="text-muted-foreground mb-3 break-all">
+                      {userData.email}
+                    </p>
+                    {userData.biography && (
+                      <div className="text-gray-700 text-sm mb-4">
+                        <p className="whitespace-pre-line break-words">
+                          {userData.biography}
+                        </p>
+                      </div>
+                    )}
                     <Button
                       variant="outline"
                       size="sm"
-                      className="mr-2"
                       onClick={handleSelectPhoto}
                       disabled={uploading}
+                      className="w-full sm:w-auto"
                     >
                       {uploading ? "Enviando..." : "Alterar Foto"}
                     </Button>
@@ -298,7 +304,7 @@ const MinhaConta = () => {
                     />
                   </div>
                 </div>
-              </CardHeader>
+              </CardContent>
             </Card>
 
             <Card>
@@ -310,17 +316,17 @@ const MinhaConta = () => {
                   <TableBody>
                     <TableRow>
                       <TableCell className="font-medium w-1/3">Nome Completo</TableCell>
-                      <TableCell>{userData.name}</TableCell>
+                      <TableCell className="break-words">{userData.name}</TableCell>
                     </TableRow>
                     <TableRow>
                       <TableCell className="font-medium">E-mail</TableCell>
-                      <TableCell>{userData.email}</TableCell>
+                      <TableCell className="break-all">{userData.email}</TableCell>
                     </TableRow>
                     {userData.biography && (
                       <TableRow>
                         <TableCell className="font-medium">Biografia</TableCell>
                         <TableCell>
-                          <p className="whitespace-pre-line">{userData.biography}</p>
+                          <p className="whitespace-pre-line break-words">{userData.biography}</p>
                         </TableCell>
                       </TableRow>
                     )}
@@ -363,11 +369,11 @@ const MinhaConta = () => {
                       <>
                         <TableRow>
                           <TableCell className="font-medium">Telefone</TableCell>
-                          <TableCell>{userData.phone}</TableCell>
+                          <TableCell className="break-words">{userData.phone}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Endereço</TableCell>
-                          <TableCell>{userData.address}</TableCell>
+                          <TableCell className="break-words">{userData.address}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell className="font-medium">Data de Nascimento</TableCell>
@@ -392,7 +398,7 @@ const MinhaConta = () => {
                               {userData.ministries && userData.ministries.map((ministry) => (
                                 <span
                                   key={ministry.id}
-                                  className="bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs"
+                                  className="bg-church-100 text-church-800 rounded-full px-3 py-1 text-xs break-words"
                                 >
                                   {ministry.name}
                                 </span>
@@ -409,7 +415,7 @@ const MinhaConta = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 w-full sm:w-auto"
                 onClick={() => {
                   if (userData) {
                     const baseData = {
@@ -456,24 +462,24 @@ const MinhaConta = () => {
                 Editar Informações
               </Button>
 
-              <Button variant="outline" className="flex items-center gap-2" onClick={handleRequestEmailChange}>
+              <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto" onClick={handleRequestEmailChange}>
                 <Mail size={18} />
                 Solicitar mudança de email
               </Button>
 
-              <Button variant="outline" className="flex items-center gap-2" onClick={() => setIsPasswordModalOpen(true)}>
+              <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto" onClick={() => setIsPasswordModalOpen(true)}>
                 <Key size={18} />
                 Alterar Senha
               </Button>
 
-              <Button variant="destructive" className="flex items-center gap-2" onClick={handleLogout}>
+              <Button variant="destructive" className="flex items-center gap-2 w-full sm:w-auto" onClick={handleLogout}>
                 <LogOut size={18} />
                 Sair
               </Button>
 
               <Button 
                 variant="destructive" 
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700" 
+                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 w-full sm:w-auto" 
                 onClick={() => setIsDeleteAccountOpen(true)}
               >
                 <Trash2 size={18} />
