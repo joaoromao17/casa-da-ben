@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
@@ -6,7 +7,7 @@ import VerseCard from "@/components/ui/VerseCard";
 import EventCard from "@/components/ui/EventCard";
 import MinistryCard from "@/components/ui/MinistryCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Instagram, User, BookOpen, CalendarDays, ArrowRight, ArrowDown } from "lucide-react";
+import { Instagram, User, BookOpen, CalendarDays, ArrowRight, ArrowDown, Clock } from "lucide-react";
 import InstagramWidget from "@/components/ui/InstagramWidget";
 import { AvisoCard } from "@/components/avisos/AvisoCard";
 import api from "@/services/api";
@@ -303,28 +304,45 @@ const Home = () => {
             Cada evento é uma oportunidade de se aproximar de Deus e da família da fé.
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          {eventos.map((evento) => (
-            <EventCard
-              key={evento.id}
-              id={evento.id.toString()}
-              title={evento.title}
-              description={evento.description}
-              date={new Date(evento.date)}
-              time={evento.time}
-              location={evento.location}
-              imageUrl={evento.imageUrl}
-              category={evento.category}
-            />
-          ))}
-        </div>
-        <div className="text-center mt-12">
-          <Link to="/eventos">
-            <Button className="btn-primary">
-              Ver todos os eventos <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
+
+        {eventos.length > 0 ? (
+          <>
+            <div className="grid md:grid-cols-3 gap-8">
+              {eventos.map((evento) => (
+                <EventCard
+                  key={evento.id}
+                  id={evento.id.toString()}
+                  title={evento.title}
+                  description={evento.description}
+                  date={new Date(evento.date)}
+                  time={evento.time}
+                  location={evento.location}
+                  imageUrl={evento.imageUrl}
+                  category={evento.category}
+                />
+              ))}
+            </div>
+            <div className="text-center mt-12">
+              <Link to="/eventos">
+                <Button className="btn-primary">
+                  Ver todos os eventos <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </>
+        ) : (
+          <div className="text-center">
+            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+              Não temos nenhuma programação especial no momento, mas ainda sim temos os nossos cultos da semana. Não Perca!!
+            </p>
+            <Link to="/cultos">
+              <Button className="btn-primary">
+                <Clock className="mr-2 h-4 w-4" />
+                Horário dos Cultos
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
 
