@@ -31,7 +31,7 @@ export const useWhatsAppMessage = () => {
       mensagem += `\n\n📎 Arquivo: ${fullUrl}`;
     }
 
-    const avisoUrl = aviso.id ? `https://www.icb610.com.br/avisos/${aviso.id}` : 'www.icb610.com.br';
+    const avisoUrl = aviso.id ? `https://casa-da-ben.vercel.app/avisos/${aviso.id}` : 'https://casa-da-ben.vercel.app';
     mensagem += `\n\nPara mais detalhes, acesse ${avisoUrl}`;
 
     return mensagem;

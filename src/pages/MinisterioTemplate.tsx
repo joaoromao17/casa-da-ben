@@ -1,4 +1,3 @@
-
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -121,6 +120,11 @@ const MinisterioTemplate = ({
 
     fetchAvisos();
   }, [ministryId, title]);
+
+  const getProfileImageUrl = (url: string | null | undefined) => {
+    if (!url) return `${API_BASE_URL}/uploads/profiles/default.jpg`;
+    return url.startsWith("http") ? url : `${API_BASE_URL}${url}`;
+  };
 
   /**
    * Navega para o perfil público do usuário
@@ -274,7 +278,7 @@ const MinisterioTemplate = ({
                               onClick={() => handleUserClick(leader.id)}
                             >
                               <img
-                                src={`${API_BASE_URL}${leader.profileImageUrl || '/uploads/profiles/default.jpg'}`}
+                                src={getProfileImageUrl(leader.profileImageUrl)}
                                 alt={leader.name}
                                 className="w-55 h-20 rounded-full object-cover mb-2"
                               />
@@ -297,7 +301,7 @@ const MinisterioTemplate = ({
                                 onClick={() => handleUserClick(vice.id)}
                               >
                                 <img
-                                  src={`${API_BASE_URL}${vice.profileImageUrl || '/uploads/profiles/default.jpg'}`}
+                                  src={getProfileImageUrl(vice.profileImageUrl)}
                                   alt={vice.name}
                                   className="w-55 h-20 rounded-full object-cover mb-2"
                                 />
