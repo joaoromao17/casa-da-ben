@@ -21,21 +21,18 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
   const formattedDate = format(date, "dd/MM/yyyy", { locale: ptBR });
   const [showLoginNotice, setShowLoginNotice] = useState(false);
 
-const handleReadStudy = () => {
-  // Verificar se o usuário está logado
-  const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-  if (!token) {
-    setShowLoginNotice(true);
-    return;
-  }
+  const handleReadStudy = () => {
+    // Verificar se o usuário está logado
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    if (!token) {
+      setShowLoginNotice(true);
+      return;
+    }
 
-  if (pdfUrl) {
-    // Forçar visualização inline no navegador
-    const visualUrl = pdfUrl.replace("/raw/upload/", "/raw/upload/fl_inline/");
-    window.open(visualUrl, "_blank");
-  }
-};
-
+    if (pdfUrl) {
+      window.open(pdfUrl, "_blank");
+    }
+  };
 
   return (
     <>
@@ -62,7 +59,7 @@ const handleReadStudy = () => {
               onClick={handleReadStudy}
             >
               <FileText size={18} />
-              Ler Estudo
+              Baixar Estudo
             </Button>
           )}
         </CardFooter>
