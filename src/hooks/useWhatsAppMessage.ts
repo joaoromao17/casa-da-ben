@@ -21,7 +21,7 @@ export const useWhatsAppMessage = () => {
 
   const formatMessage = (aviso: Aviso) => {
     const tipoHeader = aviso.tipo === 'MINISTERIAL' 
-      ? '*AVISO DO MINISTÉRIO*' 
+      ? `*AVISO DO MINISTÉRIO${aviso.nomeMinisterio ? ` ${aviso.nomeMinisterio.toUpperCase()}` : ''}*`
       : '*AVISO GERAL DA IGREJA*';
 
     let mensagem = `${tipoHeader}\n\n*${aviso.titulo}*\n\n${aviso.mensagem}`;
