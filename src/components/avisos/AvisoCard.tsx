@@ -1,11 +1,8 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Calendar, FileText, Image, Trash2 } from 'lucide-react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
-import { API_BASE_URL } from "@/services/api";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Share2, Trash2, FileText } from "lucide-react";
+import { useWhatsAppMessage } from "@/hooks/useWhatsAppMessage";
 
 interface Aviso {
   id: number;
@@ -22,97 +19,62 @@ interface AvisoCardProps {
   aviso: Aviso;
   showDelete?: boolean;
   onDelete?: (id: number) => void;
+  ministryId?: string;
 }
 
-export const AvisoCard: React.FC<AvisoCardProps> = ({ aviso, showDelete = false, onDelete }) => {
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      return format(date, 'dd/MM/yyyy', { locale: ptBR });
-    } catch {
-      return dateString;
-    }
+export const AvisoCard = ({ aviso, showDelete = false, onDelete, ministryId }: AvisoCardProps) => {
+  const { showModal } = useWhatsAppMessage();
+
+  const handleShare = () => {
+    showModal({
+      ...aviso,
+      ministryId: ministryId
+    });
   };
 
-  const handleFileClick = () => {
-    if (aviso.arquivoUrl) {
-      const fullUrl = aviso.arquivoUrl.startsWith('http')
-        ? aviso.arquivoUrl
-        : `${API_BASE_URL}${aviso.arquivoUrl}`;
-      window.open(fullUrl, '_blank');
-    }
-  };
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const year = date.getFullYear();
 
-  const isImage = (url: string) => {
-    return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
-  };
-
-  const isPDF = (url: string) => {
-    return /\.pdf$/i.test(url);
+    return `${day}/${month}/${year}`;
   };
 
   return (
     <Card className="w-full">
-      <CardHeader className="pb-3">
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <CardTitle className="text-lg mb-1">{aviso.titulo}</CardTitle>
-            <div className="flex items-center text-sm text-gray-500 gap-4">
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                {formatDate(aviso.dataCriacao)}
-              </div>
-              <span>por {aviso.nomeAutor}</span>
-              {aviso.nomeMinisterio && (
-                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
-                  {aviso.nomeMinisterio}
-                </span>
-              )}
-            </div>
-          </div>
-          {showDelete && onDelete && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onDelete(aviso.id)}
-              className="text-red-600 hover:text-red-800"
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle>{aviso.titulo}</CardTitle>
+          {aviso.tipo === 'MINISTERIAL' && (
+            <Badge variant="secondary">{aviso.nomeMinisterio}</Badge>
           )}
         </div>
+        <p className="text-sm text-gray-500">
+          Publicado em {formatDate(aviso.dataCriacao)} por {aviso.nomeAutor}
+        </p>
       </CardHeader>
       <CardContent>
-        <p className="text-gray-700 mb-4 whitespace-pre-line">{aviso.mensagem}</p>
-
+        <p className="text-gray-700">{aviso.mensagem}</p>
         {aviso.arquivoUrl && (
-          <div className="mt-4">
-            {isImage(aviso.arquivoUrl) ? (
-              <div className="flex justify-center cursor-pointer" onClick={handleFileClick}>
-                <img
-                  src={aviso.arquivoUrl.startsWith('http') ? aviso.arquivoUrl : `${API_BASE_URL}${aviso.arquivoUrl}`}
-                  alt="Anexo"
-                  className="max-w-full h-auto rounded-lg shadow-md hover:shadow-lg transition-shadow"
-                  style={{ maxHeight: '300px' }}
-                />
-              </div>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={handleFileClick}
-                className="flex items-center gap-2"
-              >
-                {isPDF(aviso.arquivoUrl) ? (
-                  <FileText className="w-4 h-4" />
-                ) : (
-                  <Image className="w-4 h-4" />
-                )}
-                {isPDF(aviso.arquivoUrl) ? 'Abrir PDF' : 'Ver Arquivo'}
-              </Button>
-            )}
-          </div>
+          <a href={aviso.arquivoUrl} target="_blank" rel="noopener noreferrer" className="flex items-center text-blue-500 hover:underline">
+            <FileText className="mr-2 h-4 w-4" />
+            Ver Arquivo
+          </a>
         )}
       </CardContent>
+      <div className="flex justify-end space-x-2 p-3">
+        <Button variant="outline" size="sm" onClick={handleShare}>
+          <Share2 className="mr-2 h-4 w-4" />
+          Compartilhar
+        </Button>
+        {showDelete && (
+          <Button variant="destructive" size="sm" onClick={() => onDelete?.(aviso.id)}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            Excluir
+          </Button>
+        )}
+      </div>
     </Card>
   );
 };

@@ -92,6 +92,10 @@ const MinisterioTemplate = ({
     viceLeaders.some(viceLeader => viceLeader.email === currentUser.email)
   );
 
+  // Check if current user is a visitor (has ROLE_VISITANTE)
+  const isCurrentUserVisitor = currentUser && currentUser.roles && 
+    currentUser.roles.includes('ROLE_VISITANTE');
+
   useEffect(() => {
     if (ministryId) {
       api
@@ -327,16 +331,19 @@ const MinisterioTemplate = ({
                         </div>
                       )}
 
-                      <div className="mt-6">
-                        <Button 
-                          className="w-full bg-church-700 hover:bg-church-800"
-                          onClick={handleWhatsAppContact}
-                          disabled={leaders.length === 0 || !leaders[0].phone}
-                        >
-                          <Users className="w-4 h-4 mr-2" />
-                          Faça Parte
-                        </Button>
-                      </div>
+                      {/* Botão "Faça Parte" - apenas para visitantes */}
+                      {!isLoading && isCurrentUserVisitor && (
+                        <div className="mt-6">
+                          <Button 
+                            className="w-full bg-church-700 hover:bg-church-800"
+                            onClick={handleWhatsAppContact}
+                            disabled={leaders.length === 0 || !leaders[0].phone}
+                          >
+                            <Users className="w-4 h-4 mr-2" />
+                            Faça Parte
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -377,6 +384,7 @@ const MinisterioTemplate = ({
                       aviso={aviso}
                       showDelete={isCurrentUserLeader}
                       onDelete={handleDeleteAviso}
+                      ministryId={ministryId}
                     />
                   ))
                 )}

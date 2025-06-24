@@ -7,6 +7,8 @@ interface Aviso {
   mensagem: string;
   arquivoUrl?: string;
   tipo: 'GERAL' | 'MINISTERIAL';
+  nomeMinisterio?: string;
+  ministryId?: string;
   onFinish?: () => void;
 }
 
@@ -31,8 +33,13 @@ export const useWhatsAppMessage = () => {
       mensagem += `\n\n📎 Arquivo: ${fullUrl}`;
     }
 
-    const avisoUrl = aviso.id ? `https://casa-da-ben.vercel.app/avisos/${aviso.id}` : 'https://casa-da-ben.vercel.app';
-    mensagem += `\n\nPara mais detalhes, acesse ${avisoUrl}`;
+    // Para avisos ministeriais, direciona para a página do ministério
+    let detailsUrl = 'https://casa-da-ben.vercel.app';
+    if (aviso.tipo === 'MINISTERIAL' && aviso.ministryId) {
+      detailsUrl = `https://casa-da-ben.vercel.app/ministerios/${aviso.ministryId}`;
+    }
+    
+    mensagem += `\n\nPara mais detalhes, acesse ${detailsUrl}`;
 
     return mensagem;
   };
