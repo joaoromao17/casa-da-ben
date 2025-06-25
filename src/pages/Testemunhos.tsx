@@ -259,7 +259,7 @@ const Testemunhos = () => {
               <Button className="bg-church-700 hover:bg-church-800 whitespace-nowrap" onClick={openNewTestimonyModal}>
                 <Plus size={18} className="mr-1 sm:mr-2" />
                 <span className="hidden sm:inline">Compartilhar</span>
-                <span className="sm:hidden">+</span>
+                <span className="sm:hidden">Compartilhar</span>
               </Button>
             </div>
           </div>
@@ -340,7 +340,7 @@ const Testemunhos = () => {
             <Button className="bg-church-700 hover:bg-church-800 whitespace-nowrap" onClick={openNewTestimonyModal}>
               <Plus size={18} className="mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Compartilhar</span>
-              <span className="sm:hidden">+</span>
+              <span className="sm:hidden">Compartilhar</span>
             </Button>
           </div>
         </div>

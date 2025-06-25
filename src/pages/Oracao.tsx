@@ -348,7 +348,12 @@ const Oracao = () => {
                   className={`h-10 sm:h-11 text-xs sm:text-sm whitespace-nowrap ${showMyPrayers ? "bg-church-700 hover:bg-church-800" : ""}`}
                   onClick={() => setShowMyPrayers(!showMyPrayers)}
                 >
-                  {showMyPrayers ? "Todas as Orações" : "Meus Pedidos"}
+                  <span className="sm:hidden">
+                    {showMyPrayers ? "Todas" : "Meus Pedidos"}
+                  </span>
+                  <span className="hidden sm:inline">
+                    {showMyPrayers ? "Todas as Orações" : "Meus Pedidos"}
+                  </span>
                 </Button>
               )}
 
@@ -425,7 +430,12 @@ const Oracao = () => {
                 className={`h-10 sm:h-11 text-xs sm:text-sm whitespace-nowrap ${showMyPrayers ? "bg-church-700 hover:bg-church-800" : ""}`}
                 onClick={() => setShowMyPrayers(!showMyPrayers)}
               >
-                {showMyPrayers ? "Todas as Orações" : "Meus Pedidos"}
+                <span className="sm:hidden">
+                  {showMyPrayers ? "Todas" : "Meus Pedidos"}
+                </span>
+                <span className="hidden sm:inline">
+                  {showMyPrayers ? "Todas as Orações" : "Meus Pedidos"}
+                </span>
               </Button>
             )}
 
