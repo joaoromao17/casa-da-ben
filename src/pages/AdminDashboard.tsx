@@ -56,8 +56,8 @@ const AdminDashboard = () => {
   
   return (
     <Layout>
-      <div className="container py-8 px-4 mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Painel de Administração</h1>
+      <div className="container py-6 px-4 mx-auto">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6">Painel de Administração</h1>
         
         <Tabs 
           defaultValue="users" 
@@ -65,18 +65,20 @@ const AdminDashboard = () => {
           onValueChange={setActiveTab}
           className="w-full"
         >
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 w-full mb-8">
-            <TabsTrigger value="users">Usuários</TabsTrigger>
-            <TabsTrigger value="ministries">Ministérios</TabsTrigger>
-            <TabsTrigger value="studies">Estudos</TabsTrigger>
-            <TabsTrigger value="events">Eventos</TabsTrigger>
-            <TabsTrigger value="contributions">Contribuições</TabsTrigger>
-            <TabsTrigger value="prayer-testimony">Oração/Testemunho</TabsTrigger>
-            <TabsTrigger value="verses">Versículo do Dia</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto mb-6">
+            <TabsList className="grid grid-cols-4 md:grid-cols-7 w-full min-w-[600px]">
+              <TabsTrigger value="users" className="text-xs sm:text-sm">Usuários</TabsTrigger>
+              <TabsTrigger value="ministries" className="text-xs sm:text-sm">Ministérios</TabsTrigger>
+              <TabsTrigger value="studies" className="text-xs sm:text-sm">Estudos</TabsTrigger>
+              <TabsTrigger value="events" className="text-xs sm:text-sm">Eventos</TabsTrigger>
+              <TabsTrigger value="contributions" className="text-xs sm:text-sm">Contribuições</TabsTrigger>
+              <TabsTrigger value="prayer-testimony" className="text-xs sm:text-sm">Oração/Test.</TabsTrigger>
+              <TabsTrigger value="verses" className="text-xs sm:text-sm">Versículos</TabsTrigger>
+            </TabsList>
+          </div>
           
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 md:pt-6">
               <TabsContent value="users">
                 <UsersTab />
               </TabsContent>

@@ -227,57 +227,59 @@ const PrayerTestimonyTab = () => {
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">{title}</h3>
       <div className="rounded-md border overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nome da Pessoa</TableHead>
-              <TableHead>Categoria</TableHead>
-              <TableHead>Data</TableHead>
-              <TableHead>Mensagem</TableHead>
-              <TableHead className="text-right">Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.length === 0 ? (
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={5} className="text-center h-24">
-                  Nenhum pedido de oração encontrado
-                </TableCell>
+                <TableHead className="min-w-[120px]">Nome da Pessoa</TableHead>
+                <TableHead className="min-w-[100px]">Categoria</TableHead>
+                <TableHead className="min-w-[100px]">Data</TableHead>
+                <TableHead className="min-w-[200px]">Mensagem</TableHead>
+                <TableHead className="text-right min-w-[120px]">Ações</TableHead>
               </TableRow>
-            ) : (
-              items.map((prayer: any) => (
-                <TableRow key={prayer.id}>
-                  <TableCell>{prayer.name}</TableCell>
-                  <TableCell>{prayer.category}</TableCell>
-                  <TableCell>{formatDate(prayer.createdAt)}</TableCell>
-                  <TableCell className="max-w-xs">
-                    <div className="truncate" title={prayer.message}>
-                      {truncateMessage(prayer.message)}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" onClick={() => handleView(prayer)}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(prayer)}>
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(prayer)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {items.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center h-24">
+                    Nenhum pedido de oração encontrado
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                items.map((prayer: any) => (
+                  <TableRow key={prayer.id}>
+                    <TableCell className="font-medium">{prayer.name}</TableCell>
+                    <TableCell>{prayer.category}</TableCell>
+                    <TableCell className="whitespace-nowrap">{formatDate(prayer.createdAt)}</TableCell>
+                    <TableCell className="max-w-xs">
+                      <div className="truncate" title={prayer.message}>
+                        {truncateMessage(prayer.message)}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => handleView(prayer)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleEdit(prayer)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(prayer)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
@@ -286,68 +288,70 @@ const PrayerTestimonyTab = () => {
     <div className="space-y-4">
       <h3 className="text-lg font-semibold">Todos os Testemunhos</h3>
       <div className="rounded-md border overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nome da Pessoa</TableHead>
-              <TableHead>Categoria</TableHead>
-              <TableHead>Data</TableHead>
-              <TableHead>Mensagem</TableHead>
-              <TableHead>Veio de Oração?</TableHead>
-              <TableHead className="text-right">Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {testimonies.length === 0 ? (
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={6} className="text-center h-24">
-                  Nenhum testemunho encontrado
-                </TableCell>
+                <TableHead className="min-w-[120px]">Nome da Pessoa</TableHead>
+                <TableHead className="min-w-[100px]">Categoria</TableHead>
+                <TableHead className="min-w-[100px]">Data</TableHead>
+                <TableHead className="min-w-[200px]">Mensagem</TableHead>
+                <TableHead className="min-w-[120px]">Veio de Oração?</TableHead>
+                <TableHead className="text-right min-w-[120px]">Ações</TableHead>
               </TableRow>
-            ) : (
-              testimonies.map((testimony: any) => (
-                <TableRow key={testimony.id}>
-                  <TableCell>{testimony.name}</TableCell>
-                  <TableCell>{testimony.category}</TableCell>
-                  <TableCell>{formatDate(testimony.createdAt)}</TableCell>
-                  <TableCell className="max-w-xs">
-                    <div className="truncate" title={testimony.message}>
-                      {truncateMessage(testimony.message)}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {testimony.oracaoOriginal ? "Sim" : "Não"}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button variant="ghost" size="icon" onClick={() => handleView(testimony)}>
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" onClick={() => handleEdit(testimony)}>
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(testimony)}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {testimonies.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center h-24">
+                    Nenhum testemunho encontrado
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                testimonies.map((testimony: any) => (
+                  <TableRow key={testimony.id}>
+                    <TableCell className="font-medium">{testimony.name}</TableCell>
+                    <TableCell>{testimony.category}</TableCell>
+                    <TableCell className="whitespace-nowrap">{formatDate(testimony.createdAt)}</TableCell>
+                    <TableCell className="max-w-xs">
+                      <div className="truncate" title={testimony.message}>
+                        {truncateMessage(testimony.message)}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {testimony.oracaoOriginal ? "Sim" : "Não"}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-1">
+                        <Button variant="ghost" size="icon" onClick={() => handleView(testimony)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => handleEdit(testimony)}>
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(testimony)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-6">Oração/Testemunho</h2>
+    <div className="space-y-6">
+      <h2 className="text-xl md:text-2xl font-bold">Oração/Testemunho</h2>
 
       <Tabs
         defaultValue="prayers"
@@ -355,12 +359,12 @@ const PrayerTestimonyTab = () => {
         onValueChange={setActiveTab}
         className="w-full"
       >
-        <TabsList className="grid grid-cols-2 w-full mb-8">
-          <TabsTrigger value="prayers">Pedidos de Oração</TabsTrigger>
-          <TabsTrigger value="testimonies">Testemunhos</TabsTrigger>
+        <TabsList className="grid grid-cols-2 w-full mb-6">
+          <TabsTrigger value="prayers" className="text-sm">Pedidos de Oração</TabsTrigger>
+          <TabsTrigger value="testimonies" className="text-sm">Testemunhos</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="prayers" className="space-y-8">
+        <TabsContent value="prayers" className="space-y-6">
           {prayersLoading ? (
             <div className="text-center py-4">Carregando...</div>
           ) : (
@@ -382,19 +386,19 @@ const PrayerTestimonyTab = () => {
 
       {/* View Dialog */}
       <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-w-[95vw] max-h-[95vh] overflow-y-auto mx-4">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-lg">
               {activeTab === "prayers" ? "Detalhes do Pedido de Oração" : "Detalhes do Testemunho"}
             </DialogTitle>
           </DialogHeader>
 
           {selectedItem && (
             <div className="space-y-4 mt-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <h3 className="text-sm font-medium">Nome</h3>
-                  <p>{selectedItem.name}</p>
+                  <p className="break-words">{selectedItem.name}</p>
                 </div>
                 <div>
                   <h3 className="text-sm font-medium">Categoria</h3>
@@ -403,7 +407,7 @@ const PrayerTestimonyTab = () => {
               </div>
               <div>
                 <h3 className="text-sm font-medium">{activeTab === "prayers" ? "Pedido" : "Testemunho"}</h3>
-                <p className="whitespace-pre-wrap">{selectedItem.message}</p>
+                <p className="whitespace-pre-wrap break-words text-sm">{selectedItem.message}</p>
               </div>
               <div>
                 <h3 className="text-sm font-medium">Data</h3>
@@ -420,7 +424,7 @@ const PrayerTestimonyTab = () => {
                   <h3 className="text-sm font-medium">Oração Original</h3>
                   <div className="p-3 bg-gray-50 rounded">
                     <p className="text-sm"><strong>Categoria:</strong> {selectedItem.oracaoOriginal.category}</p>
-                    <p className="text-sm"><strong>Mensagem:</strong> {selectedItem.oracaoOriginal.message}</p>
+                    <p className="text-sm break-words"><strong>Mensagem:</strong> {selectedItem.oracaoOriginal.message}</p>
                   </div>
                 </div>
               )}
@@ -431,9 +435,9 @@ const PrayerTestimonyTab = () => {
 
       {/* Edit Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] max-w-[95vw] max-h-[95vh] overflow-y-auto mx-4">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-lg">
               Editar {activeTab === "prayers" ? "Pedido de Oração" : "Testemunho"}
             </DialogTitle>
           </DialogHeader>
@@ -461,10 +465,10 @@ const PrayerTestimonyTab = () => {
                 id="message"
                 value={editMessage}
                 onChange={(e) => setEditMessage(e.target.value)}
-                rows={6}
+                rows={4}
                 placeholder="Digite sua mensagem..."
                 maxLength={500}
-                className="h-40"
+                className="h-24 sm:h-32 text-sm"
               />
             </div>
 
@@ -474,16 +478,17 @@ const PrayerTestimonyTab = () => {
                 checked={editAnonymous}
                 onCheckedChange={(checked) => setEditAnonymous(checked as boolean)}
               />
-              <Label htmlFor="anonymous">Compartilhar anonimamente</Label>
+              <Label htmlFor="anonymous" className="text-sm">Compartilhar anonimamente</Label>
             </div>
 
-            <div className="flex justify-end gap-2 mt-6">
-              <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+            <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+              <Button variant="outline" onClick={() => setEditDialogOpen(false)} className="w-full sm:w-auto">
                 Cancelar
               </Button>
               <Button
                 onClick={handleSaveEdit}
                 disabled={updatePrayerMutation.isPending || updateTestimonyMutation.isPending}
+                className="w-full sm:w-auto"
               >
                 {(updatePrayerMutation.isPending || updateTestimonyMutation.isPending) ? "Salvando..." : "Salvar"}
               </Button>

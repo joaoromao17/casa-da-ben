@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -30,7 +29,7 @@ interface TestimonyFormModalProps {
   oracaoCategory?: string;
   oracaoIsAnonymous?: boolean;
   oracaoId?: number;
-  isFromPrayer?: boolean; // Nova prop para detectar se vem de uma oração
+  isFromPrayer?: boolean;
 }
 
 const TestimonyFormModal = ({
@@ -47,26 +46,26 @@ const TestimonyFormModal = ({
   const [category, setCategory] = useState("geral");
   const [isAnonymous, setIsAnonymous] = useState(false);
 
-useEffect(() => {
-  if (isOpen) {
-    if (isFromPrayer && oracaoMessage) {
-      // Vindo de uma oração
-      setMessage(oracaoMessage);
-      setCategory(oracaoCategory);
-      setIsAnonymous(oracaoIsAnonymous);
-    } else if (!isFromPrayer && oracaoMessage) {
-      // Edição de testemunho existente
-      setMessage(oracaoMessage);
-      setCategory(oracaoCategory);
-      setIsAnonymous(oracaoIsAnonymous);
-    } else {
-      // Novo testemunho
-      setMessage("");
-      setCategory("geral");
-      setIsAnonymous(false);
+  useEffect(() => {
+    if (isOpen) {
+      if (isFromPrayer && oracaoMessage) {
+        // Vindo de uma oração
+        setMessage(oracaoMessage);
+        setCategory(oracaoCategory);
+        setIsAnonymous(oracaoIsAnonymous);
+      } else if (!isFromPrayer && oracaoMessage) {
+        // Edição de testemunho existente
+        setMessage(oracaoMessage);
+        setCategory(oracaoCategory);
+        setIsAnonymous(oracaoIsAnonymous);
+      } else {
+        // Novo testemunho
+        setMessage("");
+        setCategory("geral");
+        setIsAnonymous(false);
+      }
     }
-  }
-}, [isOpen, isFromPrayer, oracaoMessage, oracaoCategory, oracaoIsAnonymous]);
+  }, [isOpen, isFromPrayer, oracaoMessage, oracaoCategory, oracaoIsAnonymous]);
 
   const handleSubmit = () => {
     if (!message.trim()) {
@@ -98,9 +97,9 @@ useEffect(() => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-w-[95vw] max-h-[95vh] overflow-y-auto mx-4">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
             {isFromPrayer ? "Compartilhe seu testemunho" : "Novo Testemunho"}
           </DialogTitle>
         </DialogHeader>
@@ -110,7 +109,7 @@ useEffect(() => {
               <p className="text-sm font-medium text-church-700 mb-1">
                 Sua oração:
               </p>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 break-words">
                 {oracaoMessage}
               </p>
             </div>
@@ -145,7 +144,7 @@ useEffect(() => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder={isFromPrayer ? "Edite como quiser compartilhar seu testemunho..." : "Compartilhe como Deus tem agido em sua vida..."}
-              className="h-32"
+              className="h-24 sm:h-32 text-sm"
               maxLength={500}
             />
           </div>
@@ -172,12 +171,12 @@ useEffect(() => {
             </div>
           )}
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+        <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+          <Button variant="outline" onClick={handleClose} className="w-full sm:w-auto">
             Cancelar
           </Button>
           <Button
-            className="bg-church-700 hover:bg-church-800"
+            className="bg-church-700 hover:bg-church-800 w-full sm:w-auto"
             onClick={handleSubmit}
             disabled={!message.trim()}
           >

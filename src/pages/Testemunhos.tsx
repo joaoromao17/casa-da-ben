@@ -200,17 +200,17 @@ const Testemunhos = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="container-church py-12">
-          <div className="flex flex-col items-center text-center mb-10">
-            <h1 className="text-4xl font-bold text-church-900 mb-4">Testemunhos</h1>
-            <p className="text-xl text-gray-600 max-w-3xl">
+        <div className="container-church py-6 px-4">
+          <div className="flex flex-col items-center text-center mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-church-900 mb-4">Testemunhos</h1>
+            <p className="text-lg md:text-xl text-gray-600 max-w-3xl">
               Compartilhe como Deus tem agido em sua vida e inspire outros com seu testemunho.
             </p>
           </div>
 
           {/* Filtros e Pesquisa */}
-          <div className="flex flex-col md:flex-row gap-4 mb-8 justify-between">
-            <div className="relative flex-1">
+          <div className="flex flex-col gap-3 mb-6">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <Input
                 placeholder="Pesquisar testemunhos..."
@@ -220,8 +220,8 @@ const Testemunhos = () => {
               />
             </div>
 
-            <div className="flex gap-2">
-              <div className="w-full md:w-48">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex-1">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                   <SelectTrigger>
                     <div className="flex items-center gap-2">
@@ -244,20 +244,27 @@ const Testemunhos = () => {
               {isAuthenticated && (
                 <Button
                   variant={showMyTestimonies ? "default" : "outline"}
-                  className={showMyTestimonies ? "bg-church-700 hover:bg-church-800" : ""}
+                  className={`whitespace-nowrap ${showMyTestimonies ? "bg-church-700 hover:bg-church-800" : ""}`}
                   onClick={() => setShowMyTestimonies(!showMyTestimonies)}
                 >
-                  {showMyTestimonies ? "Todos os Testemunhos" : "Meus Testemunhos"}
+                  <span className="hidden sm:inline">
+                    {showMyTestimonies ? "Todos os Testemunhos" : "Meus Testemunhos"}
+                  </span>
+                  <span className="sm:hidden">
+                    {showMyTestimonies ? "Todos" : "Meus"}
+                  </span>
                 </Button>
               )}
 
-              <Button className="bg-church-700 hover:bg-church-800" onClick={openNewTestimonyModal}>
-                <Plus size={18} className="mr-2" /> Compartilhar
+              <Button className="bg-church-700 hover:bg-church-800 whitespace-nowrap" onClick={openNewTestimonyModal}>
+                <Plus size={18} className="mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Compartilhar</span>
+                <span className="sm:hidden">+</span>
               </Button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {Array.from({ length: 20 }).map((_, i) => (
               <div key={i} className="space-y-3">
                 <Skeleton className="h-48 w-full" />
@@ -274,17 +281,17 @@ const Testemunhos = () => {
 
   return (
     <Layout>
-      <div className="container-church py-12">
-        <div className="flex flex-col items-center text-center mb-10">
-          <h1 className="text-4xl font-bold text-church-900 mb-4">Testemunhos</h1>
-          <p className="text-xl text-gray-600 max-w-3xl">
+      <div className="container-church py-6 px-4">
+        <div className="flex flex-col items-center text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-church-900 mb-4">Testemunhos</h1>
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl">
             Compartilhe como Deus tem agido em sua vida e inspire outros com seu testemunho.
           </p>
         </div>
 
         {/* Filtros e Pesquisa */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 justify-between">
-          <div className="relative flex-1">
+        <div className="flex flex-col gap-3 mb-6">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <Input
               placeholder="Pesquisar testemunhos..."
@@ -294,8 +301,8 @@ const Testemunhos = () => {
             />
           </div>
 
-          <div className="flex gap-2">
-            <div className="w-full md:w-48">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex-1">
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger>
                   <div className="flex items-center gap-2">
@@ -318,15 +325,22 @@ const Testemunhos = () => {
             {isAuthenticated && (
               <Button
                 variant={showMyTestimonies ? "default" : "outline"}
-                className={showMyTestimonies ? "bg-church-700 hover:bg-church-800" : ""}
+                className={`whitespace-nowrap ${showMyTestimonies ? "bg-church-700 hover:bg-church-800" : ""}`}
                 onClick={() => setShowMyTestimonies(!showMyTestimonies)}
               >
-                {showMyTestimonies ? "Todos os Testemunhos" : "Meus Testemunhos"}
+                <span className="hidden sm:inline">
+                  {showMyTestimonies ? "Todos os Testemunhos" : "Meus Testemunhos"}
+                </span>
+                <span className="sm:hidden">
+                  {showMyTestimonies ? "Todos" : "Meus"}
+                </span>
               </Button>
             )}
 
-            <Button className="bg-church-700 hover:bg-church-800" onClick={openNewTestimonyModal}>
-              <Plus size={18} className="mr-2" /> Compartilhar
+            <Button className="bg-church-700 hover:bg-church-800 whitespace-nowrap" onClick={openNewTestimonyModal}>
+              <Plus size={18} className="mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Compartilhar</span>
+              <span className="sm:hidden">+</span>
             </Button>
           </div>
         </div>
@@ -334,7 +348,7 @@ const Testemunhos = () => {
         {/* Testemunhos */}
         {testimonies.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
               {testimonies.map((testimony) => (
                 <TestimonyCard
                   key={testimony.id}
@@ -364,17 +378,17 @@ const Testemunhos = () => {
           </>
         ) : (
           <div className="text-center py-12">
-            <p className="text-xl text-gray-600">
+            <p className="text-lg md:text-xl text-gray-600">
               Nenhum testemunho encontrado.
             </p>
           </div>
         )}
 
         {/* Seção inspiradora */}
-        <div className="mt-16 bg-church-50 p-8 rounded-xl text-center">
-          <Heart size={48} className="mx-auto text-church-700 mb-4" />
-          <h2 className="text-2xl font-bold text-church-900 mb-3">Compartilhe o que Deus tem feito</h2>
-          <p className="text-gray-700 mb-6 max-w-3xl mx-auto">
+        <div className="mt-12 md:mt-16 bg-church-50 p-6 md:p-8 rounded-xl text-center">
+          <Heart size={40} className="mx-auto text-church-700 mb-4 md:mb-4" />
+          <h2 className="text-xl md:text-2xl font-bold text-church-900 mb-3">Compartilhe o que Deus tem feito</h2>
+          <p className="text-gray-700 mb-6 max-w-3xl mx-auto text-sm md:text-base">
             "Grandes coisas fez o Senhor por nós, e por isso estamos alegres."
             <br />
             <span className="font-medium">Salmos 126:3</span>
@@ -399,7 +413,7 @@ const Testemunhos = () => {
         oracaoMessage={editingTestimony?.message}
         oracaoCategory={editingTestimony?.category}
         oracaoIsAnonymous={editingTestimony?.isAnonymous}
-        isFromPrayer={!!editingTestimony?.oracaoOriginal} // detecta se veio de oração
+        isFromPrayer={!!editingTestimony?.oracaoOriginal}
       />
 
       {/* Aviso de login necessário */}
