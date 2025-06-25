@@ -168,12 +168,12 @@ const UsersTab = () => {
   });
 
   // Reset profile image mutation
-  const resetProfileImageMutation = useMutation({
-    mutationFn: async (userId: string) => {
-      return await api.put(`/users/${userId}`, {
-        profileImageUrl: '/uploads/profiles/default-profile.jpg'
-      });
-    },
+const resetProfileImageMutation = useMutation({
+  mutationFn: async (userId: string) => {
+    return await api.put(`/users/${userId}`, {
+      profileImageUrl: 'https://res.cloudinary.com/dew6zhisa/image/upload/v1750872463/default-profile_crggbc.jpg'
+    });
+  },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       toast({
