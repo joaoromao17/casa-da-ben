@@ -13,7 +13,7 @@ const galeria = ["/lovable-uploads/galeria1.jpg", "/lovable-uploads/galeria2.jpg
 // Imagens para o carrossel da história
 const historicoImagens = [
   "/lovable-uploads/carrossel1.jpg",
-  "/lovable-uploads/carrossel.jpg", 
+  "/lovable-uploads/carrossel2.jpg", 
   "/lovable-uploads/carrossel3.jpg",
   "/lovable-uploads/carrossel4.jpg",
   "/lovable-uploads/carrossel5.jpg"
