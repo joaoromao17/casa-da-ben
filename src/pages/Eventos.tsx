@@ -82,7 +82,7 @@ const Eventos = () => {
       <div className="container-church py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="flex justify-between items-start mb-4">
+          <div className="flex flex-col lg:flex-row justify-between items-start mb-4">
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-bold text-church-900 mb-4">Eventos</h1>
               <p className="text-gray-600 max-w-2xl mx-auto">
@@ -91,7 +91,7 @@ const Eventos = () => {
               </p>
             </div>
             {isAdmin && (
-              <div className="flex-shrink-0 ml-4">
+              <div className="flex-shrink-0 mt-4 lg:mt-0 lg:ml-4">
                 <EventCreateForm>
                   <Button className="bg-church-600 hover:bg-church-700">
                     <Plus className="mr-2 h-4 w-4" />
@@ -104,9 +104,9 @@ const Eventos = () => {
         </div>
 
         {/* Search and Filter */}
-        <div className="mb-8 bg-church-100 p-6 rounded-lg">
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="relative flex-grow">
+        <div className="mb-8 bg-church-100 p-4 md:p-6 rounded-lg">
+          <div className="flex flex-col gap-4 mb-6">
+            <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
               <Input
                 placeholder="Pesquisar eventos..."
@@ -115,43 +115,47 @@ const Eventos = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="flex-shrink-0">
+            <div className="w-full overflow-x-auto">
               <Tabs defaultValue="Todos" onValueChange={setSelectedCategory}>
-                <TabsList className="bg-white">
+                <TabsList className="bg-white w-full min-w-max">
                   {categories.map((category) => (
-                    <TabsTrigger key={category} value={category}>{category}</TabsTrigger>
+                    <TabsTrigger key={category} value={category} className="text-xs sm:text-sm whitespace-nowrap px-3 py-2">
+                      {category}
+                    </TabsTrigger>
                   ))}
                 </TabsList>
               </Tabs>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            <p className="text-sm text-gray-600 mr-2 mt-1">Filtros rápidos:</p>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-white"
-              onClick={() => setSearchTerm("culto")}
-            >
-              Cultos
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-white"
-              onClick={() => setSearchTerm("jovens")}
-            >
-              Jovens
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-white"
-              onClick={() => setSearchTerm("casais")}
-            >
-              Casais
-            </Button>
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-gray-600">Filtros rápidos:</p>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white text-xs"
+                onClick={() => setSearchTerm("culto")}
+              >
+                Cultos
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white text-xs"
+                onClick={() => setSearchTerm("jovens")}
+              >
+                Jovens
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white text-xs"
+                onClick={() => setSearchTerm("casais")}
+              >
+                Casais
+              </Button>
+            </div>
           </div>
         </div>
 

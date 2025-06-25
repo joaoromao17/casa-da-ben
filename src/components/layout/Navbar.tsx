@@ -151,11 +151,7 @@ const Navbar = () => {
                   <Link to="/membros" className="nav-link py-2">Membros</Link>
                 )}
                 <Link to="/eventos" className="nav-link py-2">Eventos</Link>
-                <details className="group">
-                  <summary className="nav-link py-2 flex cursor-pointer items-center justify-between">
-                    Ministérios <ChevronDown className="h-4 w-4" />
-                  </summary>
-                </details>
+                <Link to="/ministerios" className="nav-link py-2">Ministérios</Link>
                 <Link to="/estudos" className="nav-link py-2">Estudos</Link>
                 <Link to="/oracao" className="nav-link py-2">Orações</Link>
                 <Link to="/testemunhos" className="nav-link py-2">Testemunhos</Link>
