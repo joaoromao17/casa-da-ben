@@ -70,7 +70,7 @@ const BirthdaysSection = ({ className }: BirthdaysSectionProps) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
             <div key={i} className="space-y-3">
               <Skeleton className="aspect-square w-full" />
@@ -98,7 +98,7 @@ const BirthdaysSection = ({ className }: BirthdaysSectionProps) => {
           <p className="text-gray-600 text-lg">Ninguém faz aniversário este mês</p>
         </div>
       ) : (
-        <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
           {birthdays.map((person) => {
             const birthdayInfo = formatBirthDate(person.birthDate);
             return (

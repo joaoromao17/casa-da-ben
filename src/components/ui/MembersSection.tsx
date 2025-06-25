@@ -95,7 +95,7 @@ const MembersSection = ({ className }: MembersSectionProps) => {
           </div>
         </div>
         
-        <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
           {Array.from({ length: 20 }).map((_, i) => (
             <div key={i} className="space-y-3">
               <Skeleton className="aspect-square w-full" />
@@ -149,8 +149,8 @@ const MembersSection = ({ className }: MembersSectionProps) => {
         </div>
       ) : (
         <>
-          {/* Grid de membros - 3 colunas no mobile, 4 no desktop */}
-          <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-8">
+          {/* Grid de membros - 2 colunas no mobile, 4 no desktop */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6 mb-8">
             {members.map((member) => (
               <UserCard
                 key={member.id}
