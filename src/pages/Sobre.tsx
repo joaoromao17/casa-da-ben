@@ -12,11 +12,11 @@ const galeria = ["/lovable-uploads/galeria1.jpg", "/lovable-uploads/galeria2.jpg
 
 // Imagens para o carrossel da história
 const historicoImagens = [
-  "/lovable-uploads/historia.jpg",
-  "/lovable-uploads/galeria1.jpg", 
-  "/lovable-uploads/galeria2.jpg",
-  "/lovable-uploads/galeria3.jpg",
-  "/lovable-uploads/galeria4.jpg"
+  "/lovable-uploads/carrossel1.jpg",
+  "/lovable-uploads/carrossel.jpg", 
+  "/lovable-uploads/carrossel3.jpg",
+  "/lovable-uploads/carrossel4.jpg",
+  "/lovable-uploads/carrossel5.jpg"
 ];
 
 const Sobre = () => {
