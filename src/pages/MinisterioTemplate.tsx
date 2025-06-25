@@ -406,7 +406,7 @@ const MinisterioTemplate = ({
                   <p className="text-gray-600 text-lg">Nenhum membro encontrado</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
                   {sortedMembers.map((member) => {
                     const leadershipType = getUserLeadershipType(member.id);
                     return (

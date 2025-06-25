@@ -53,9 +53,9 @@ const UserCard = ({ usuario, birthdayInfo }: UserCardProps) => {
               className="w-full h-full object-cover"
             />
           </div>
-          <CardContent className="p-4 text-center">
-            <h3 className="text-lg font-bold text-church-800">{usuario.name}</h3>
-            <p className="text-sm text-gray-600">{birthdayInfo.text}</p>
+          <CardContent className="p-2 sm:p-4 text-center">
+            <h3 className="text-sm sm:text-lg font-bold text-church-800 line-clamp-2">{usuario.name}</h3>
+            <p className="text-xs sm:text-sm text-gray-600">{birthdayInfo.text}</p>
           </CardContent>
         </>
       ) : (
@@ -68,9 +68,9 @@ const UserCard = ({ usuario, birthdayInfo }: UserCardProps) => {
               className="w-full h-full object-cover"
             />
           </div>
-          <CardContent className="p-4">
-            <h3 className="text-lg font-bold text-church-800 mb-2">{usuario.name}</h3>
-            <div className="flex flex-wrap gap-1 mb-3">
+          <CardContent className="p-2 sm:p-4">
+            <h3 className="text-sm sm:text-lg font-bold text-church-800 mb-1 sm:mb-2 line-clamp-2">{usuario.name}</h3>
+            <div className="flex flex-wrap gap-1 mb-2 sm:mb-3">
               {usuario.roles.map((role, index) => (
                 <Badge
                   key={index}
@@ -82,7 +82,7 @@ const UserCard = ({ usuario, birthdayInfo }: UserCardProps) => {
               ))}
             </div>
             {usuario.biography && (
-              <p className="text-gray-600 text-sm line-clamp-3">{usuario.biography}</p>
+              <p className="text-gray-600 text-xs sm:text-sm line-clamp-2 sm:line-clamp-3">{usuario.biography}</p>
             )}
           </CardContent>
         </>
