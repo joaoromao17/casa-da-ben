@@ -124,8 +124,8 @@ const Ministerios = () => {
             <Tabs defaultValue={defaultTab} className="w-full">
               {currentUser && (
                 <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-                  <TabsTrigger value="meus">Meus Ministérios</TabsTrigger>
-                  <TabsTrigger value="todos">Todos os Ministérios</TabsTrigger>
+                  <TabsTrigger value="meus" className="text-xs sm:text-sm">Meus Ministérios</TabsTrigger>
+                  <TabsTrigger value="todos" className="text-xs sm:text-sm">Todos os Ministérios</TabsTrigger>
                 </TabsList>
               )}
 

@@ -146,9 +146,9 @@ const Estudos = () => {
             </p>
           </div>
 
-          <div className="mb-8 bg-church-100 p-6 rounded-lg">
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="relative flex-grow">
+          <div className="mb-8 bg-church-100 p-4 md:p-6 rounded-lg">
+            <div className="flex flex-col gap-4 mb-6">
+              <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
                 <Input
                   placeholder="Pesquisar estudos..."
@@ -157,30 +157,32 @@ const Estudos = () => {
                   onChange={handleSearchChange}
                 />
               </div>
-              <div className="flex-shrink-0">
+              <div className="w-full overflow-x-auto">
                 <Tabs value={selectedCategory} onValueChange={handleCategoryChange}>
-                  <TabsList className="bg-white overflow-x-auto">
+                  <TabsList className="bg-white w-full min-w-max">
                     {categories.map((category) => (
-                      <TabsTrigger key={category} value={category}>{category}</TabsTrigger>
+                      <TabsTrigger key={category} value={category} className="text-xs sm:text-sm whitespace-nowrap px-2 py-1 sm:px-3 sm:py-2">{category}</TabsTrigger>
                     ))}
                   </TabsList>
                 </Tabs>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <p className="text-sm text-gray-600 mr-2 mt-1">Tópicos populares:</p>
-              {["Oração", "Salvação", "Santidade", "Adoração", "Discipulado"].map((topic) => (
-                <Button
-                  key={topic}
-                  variant="outline"
-                  size="sm"
-                  className="bg-white"
-                  onClick={() => setSearchTerm(topic)}
-                >
-                  {topic}
-                </Button>
-              ))}
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-gray-600">Tópicos populares:</p>
+              <div className="flex flex-wrap gap-2">
+                {["Oração", "Salvação", "Santidade", "Adoração", "Discipulado"].map((topic) => (
+                  <Button
+                    key={topic}
+                    variant="outline"
+                    size="sm"
+                    className="bg-white text-xs"
+                    onClick={() => setSearchTerm(topic)}
+                  >
+                    {topic}
+                  </Button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -228,9 +230,9 @@ const Estudos = () => {
         </div>
 
         {/* Search and Filter */}
-        <div className="mb-8 bg-church-100 p-6 rounded-lg">
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="relative flex-grow">
+        <div className="mb-8 bg-church-100 p-4 md:p-6 rounded-lg">
+          <div className="flex flex-col gap-4 mb-6">
+            <div className="relative">
               <Search className="absolute left-3 top-3 h-4 w-4 text-gray-500" />
               <Input
                 placeholder="Pesquisar estudos..."
@@ -239,30 +241,32 @@ const Estudos = () => {
                 onChange={handleSearchChange}
               />
             </div>
-            <div className="flex-shrink-0">
+            <div className="w-full overflow-x-auto">
               <Tabs value={selectedCategory} onValueChange={handleCategoryChange}>
-                <TabsList className="bg-white overflow-x-auto">
+                <TabsList className="bg-white w-full min-w-max">
                   {categories.map((category) => (
-                    <TabsTrigger key={category} value={category}>{category}</TabsTrigger>
+                    <TabsTrigger key={category} value={category} className="text-xs sm:text-sm whitespace-nowrap px-2 py-1 sm:px-3 sm:py-2">{category}</TabsTrigger>
                   ))}
                 </TabsList>
               </Tabs>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            <p className="text-sm text-gray-600 mr-2 mt-1">Tópicos populares:</p>
-            {["Oração", "Salvação", "Santidade", "Adoração", "Discipulado"].map((topic) => (
-              <Button
-                key={topic}
-                variant="outline"
-                size="sm"
-                className="bg-white"
-                onClick={() => setSearchTerm(topic)}
-              >
-                {topic}
-              </Button>
-            ))}
+          <div className="flex flex-col gap-2">
+            <p className="text-sm text-gray-600">Tópicos populares:</p>
+            <div className="flex flex-wrap gap-2">
+              {["Oração", "Salvação", "Santidade", "Adoração", "Discipulado"].map((topic) => (
+                <Button
+                  key={topic}
+                  variant="outline"
+                  size="sm"
+                  className="bg-white text-xs"
+                  onClick={() => setSearchTerm(topic)}
+                >
+                  {topic}
+                </Button>
+              ))}
+            </div>
           </div>
         </div>
 
