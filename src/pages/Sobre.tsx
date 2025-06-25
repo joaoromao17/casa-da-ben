@@ -65,13 +65,12 @@ const Sobre = () => {
                       O grupo passou por diferentes locais: lojas nas quadras 608 e 408, e até mesmo um pequeno templo no lote da irmã Fátima. Sob a liderança da evangelista Luzete e do obreiro Joaquim, a igreja cresceu rapidamente através de cultos de cura e libertação.
                     </p>
                     <p>
-                      Nesse contexto, um jovem de 16 anos começou a frequentar a igreja. Apesar da resistência inicial, aceitou o chamado do Espírito Santo para liderar os jovens. Foi nesse período que os trabalhos com os jovens se intensificaram, com evangelismos, serenatas e eventos ao ar livre. O ministério foi se fortalecendo e novos obreiros foram consagrados, como os irmãos Ari, João e a evangelista Zumira.
+                      O ministério foi se fortalecendo com a chegada de novos membros e com isso surgiu a necessidade de consagrar novos obreiros como os irmãos Ari, João e a evangelista Zumira.                   </p>
+                    <p>
+                      Após um período no prédio da 408, a igreja se estabeleceu definitivamente na QS 610 Norte, com a construção do templo atual sob a liderança da pastora Luzete.
                     </p>
                     <p>
-                      Após um período no prédio da 408, a igreja se estabeleceu definitivamente na QS 610 Norte, com a construção do templo atual. A pastora Luzete inaugurou o local e, posteriormente, foi transferida para Luziânia.
-                    </p>
-                    <p>
-                      O pastor Nogueira assumiu e realizou melhorias na estrutura. Em seguida, o pastor Maciel assumiu a liderança, ampliou a igreja e, em 2017, consagrou ao pastorado o jovem que foi líder dos jovens, chamado Pr. Walter. Em 2025, o ministério do Pr. Maciel completou 19 anos à frente da igreja.
+                      Posteriormente o pastor Nogueira assumiu e realizou melhorias na estrutura. Em seguida, o pastor Marcial assumiu a liderança e ampliou a igreja. Em 2025, o ministério do Pr. Marcial completou 19 anos à frente da igreja.
                     </p>
                   </div>
                 </div>
