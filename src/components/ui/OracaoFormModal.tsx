@@ -88,9 +88,9 @@ const OracaoFormModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-w-[95vw] max-h-[95vh] overflow-y-auto mx-4">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl">
             {editingOracao ? "Editar Pedido de Oração" : "Novo Pedido de Oração"}
           </DialogTitle>
         </DialogHeader>
@@ -122,7 +122,7 @@ const OracaoFormModal = ({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Compartilhe seu pedido de oração..."
-              className="h-32"
+              className="h-24 sm:h-32 text-sm"
               maxLength={500}
             />
           </div>
@@ -138,12 +138,12 @@ const OracaoFormModal = ({
             </label>
           </div>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+        <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+          <Button variant="outline" onClick={handleClose} className="w-full sm:w-auto">
             Cancelar
           </Button>
           <Button
-            className="bg-church-700 hover:bg-church-800"
+            className="bg-church-700 hover:bg-church-800 w-full sm:w-auto"
             onClick={handleSubmit}
             disabled={!message.trim()}
           >

@@ -301,30 +301,30 @@ const Oracao = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="container-church py-12">
-          <div className="flex flex-col items-center text-center mb-10">
-            <h1 className="text-4xl font-bold text-church-900 mb-4">Pedidos de Oração</h1>
-            <p className="text-xl text-gray-600 max-w-3xl">
+        <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-12 max-w-7xl">
+          <div className="flex flex-col items-center text-center mb-6 sm:mb-10 px-2">
+            <h1 className="text-2xl sm:text-4xl font-bold text-church-900 mb-2 sm:mb-4">Pedidos de Oração</h1>
+            <p className="text-base sm:text-xl text-gray-600 max-w-3xl">
               Compartilhe sua necessidade e deixe que a Igreja interceda por você.
             </p>
           </div>
 
           {/* Filtros e Pesquisa */}
-          <div className="flex flex-col md:flex-row gap-4 mb-8 justify-between">
-            <div className="relative flex-1">
+          <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 px-2">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <Input
                 placeholder="Pesquisar orações..."
-                className="pl-10"
+                className="pl-10 h-10 sm:h-11"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
 
-            <div className="flex gap-2">
-              <div className="w-full md:w-48">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+              <div className="flex-1 sm:max-w-48">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-10 sm:h-11">
                     <div className="flex items-center gap-2">
                       <Filter size={18} />
                       <SelectValue placeholder="Filtrar por" />
@@ -345,20 +345,23 @@ const Oracao = () => {
               {isAuthenticated && (
                 <Button
                   variant={showMyPrayers ? "default" : "outline"}
-                  className={showMyPrayers ? "bg-church-700 hover:bg-church-800" : ""}
+                  className={`h-10 sm:h-11 text-xs sm:text-sm whitespace-nowrap ${showMyPrayers ? "bg-church-700 hover:bg-church-800" : ""}`}
                   onClick={() => setShowMyPrayers(!showMyPrayers)}
                 >
                   {showMyPrayers ? "Todas as Orações" : "Meus Pedidos"}
                 </Button>
               )}
 
-              <Button className="bg-church-700 hover:bg-church-800" onClick={openOracaoModal}>
-                <Plus size={18} className="mr-2" /> Compartilhar
+              <Button 
+                className="bg-church-700 hover:bg-church-800 h-10 sm:h-11 text-xs sm:text-sm whitespace-nowrap" 
+                onClick={openOracaoModal}
+              >
+                <Plus size={16} className="mr-1 sm:mr-2" /> Compartilhar
               </Button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 px-2">
             {Array.from({ length: 20 }).map((_, i) => (
               <div key={i} className="space-y-3">
                 <Skeleton className="h-48 w-full" />
@@ -375,30 +378,30 @@ const Oracao = () => {
 
   return (
     <Layout>
-      <div className="container-church py-12">
-        <div className="flex flex-col items-center text-center mb-10">
-          <h1 className="text-4xl font-bold text-church-900 mb-4">Pedidos de Oração</h1>
-          <p className="text-xl text-gray-600 max-w-3xl">
+      <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-12 max-w-7xl">
+        <div className="flex flex-col items-center text-center mb-6 sm:mb-10 px-2">
+          <h1 className="text-2xl sm:text-4xl font-bold text-church-900 mb-2 sm:mb-4">Pedidos de Oração</h1>
+          <p className="text-base sm:text-xl text-gray-600 max-w-3xl">
             Compartilhe sua necessidade e deixe que a Igreja interceda por você.
           </p>
         </div>
 
         {/* Filtros e Pesquisa */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 justify-between">
-          <div className="relative flex-1">
+        <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8 px-2">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <Input
               placeholder="Pesquisar orações..."
-              className="pl-10"
+              className="pl-10 h-10 sm:h-11"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div className="flex gap-2">
-            <div className="w-full md:w-48">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <div className="flex-1 sm:max-w-48">
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10 sm:h-11">
                   <div className="flex items-center gap-2">
                     <Filter size={18} />
                     <SelectValue placeholder="Filtrar por" />
@@ -419,22 +422,25 @@ const Oracao = () => {
             {isAuthenticated && (
               <Button
                 variant={showMyPrayers ? "default" : "outline"}
-                className={showMyPrayers ? "bg-church-700 hover:bg-church-800" : ""}
+                className={`h-10 sm:h-11 text-xs sm:text-sm whitespace-nowrap ${showMyPrayers ? "bg-church-700 hover:bg-church-800" : ""}`}
                 onClick={() => setShowMyPrayers(!showMyPrayers)}
               >
                 {showMyPrayers ? "Todas as Orações" : "Meus Pedidos"}
               </Button>
             )}
 
-            <Button className="bg-church-700 hover:bg-church-800" onClick={openOracaoModal}>
-              <Plus size={18} className="mr-2" /> Compartilhar
+            <Button 
+              className="bg-church-700 hover:bg-church-800 h-10 sm:h-11 text-xs sm:text-sm whitespace-nowrap" 
+              onClick={openOracaoModal}
+            >
+              <Plus size={16} className="mr-1 sm:mr-2" /> Compartilhar
             </Button>
           </div>
         </div>
 
         {/* Feedback de pesquisa */}
         {searchTerm.length > 1 && (
-          <div className="mb-4 text-sm text-gray-600">
+          <div className="mb-4 text-sm text-gray-600 px-2">
             Exibindo resultados para: "<span className="font-medium">{searchTerm}</span>"
           </div>
         )}
@@ -442,7 +448,7 @@ const Oracao = () => {
         {/* Lista de Orações */}
         {prayers.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8 px-2">
               {prayers.map((prayer) => (
                 <OracaoCard
                   key={prayer.id}
@@ -464,16 +470,18 @@ const Oracao = () => {
 
             {/* Paginação */}
             {totalPages > 1 && (
-              <PaginationControls
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
+              <div className="px-2">
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
             )}
           </>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-xl text-gray-600">
+          <div className="text-center py-12 px-2">
+            <p className="text-lg sm:text-xl text-gray-600">
               {searchTerm.length > 1 
                 ? "Nenhuma oração encontrada com esse termo." 
                 : "Nenhum pedido de oração encontrado."
@@ -483,17 +491,17 @@ const Oracao = () => {
         )}
 
         {/* Seção inspiradora */}
-        <div className="mt-16 bg-church-50 p-8 rounded-xl text-center">
-          <Heart size={48} className="mx-auto text-church-700 mb-4" />
-          <h2 className="text-2xl font-bold text-church-900 mb-3">Compartilhe o seu pedido</h2>
-          <p className="text-gray-700 mb-6 max-w-3xl mx-auto">
+        <div className="mt-12 sm:mt-16 bg-church-50 p-6 sm:p-8 rounded-xl text-center mx-2">
+          <Heart size={40} className="mx-auto text-church-700 mb-3 sm:mb-4" />
+          <h2 className="text-xl sm:text-2xl font-bold text-church-900 mb-2 sm:mb-3">Compartilhe o seu pedido</h2>
+          <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6 max-w-3xl mx-auto">
             E tudo o que vocês pedirem em meu nome, isso farei, a fim de que o Pai seja glorificado no Filho.
             Se me pedirem alguma coisa em meu nome, eu o farei.
             <br />
             <span className="font-medium">João 14:13-14</span>
           </p>
           <Button
-            className="bg-church-700 hover:bg-church-800"
+            className="bg-church-700 hover:bg-church-800 h-10 sm:h-11 text-xs sm:text-sm"
             onClick={openOracaoModal}
           >
             Compartilhe sua oração
@@ -528,19 +536,19 @@ const Oracao = () => {
 
         {/* Alert de oração respondida */}
         <AlertDialog open={showAnsweredAlert} onOpenChange={setShowAnsweredAlert}>
-          <AlertDialogContent>
+          <AlertDialogContent className="mx-2 max-w-md">
             <AlertDialogHeader>
               <AlertDialogTitle>✨ Que bênção!</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogDescription className="text-sm">
                 Se Deus respondeu sua oração, isso pode fortalecer a fé de outras pessoas.
                 Você pode apenas concluir ou compartilhar um testemunho contando o que Ele fez!
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={handleAnsweredWithoutTestimony}>
+            <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+              <AlertDialogCancel onClick={handleAnsweredWithoutTestimony} className="w-full sm:w-auto">
                 ✅ Concluir
               </AlertDialogCancel>
-              <AlertDialogAction onClick={handleAnsweredWithTestimony} className="bg-church-700 hover:bg-church-800">
+              <AlertDialogAction onClick={handleAnsweredWithTestimony} className="bg-church-700 hover:bg-church-800 w-full sm:w-auto">
                 📝 Contar Testemunho
               </AlertDialogAction>
             </AlertDialogFooter>
