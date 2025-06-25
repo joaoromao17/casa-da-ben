@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
@@ -12,6 +11,7 @@ import InstagramWidget from "@/components/ui/InstagramWidget";
 import { AvisoCard } from "@/components/avisos/AvisoCard";
 import api from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Ministry {
   name: string;
@@ -45,6 +45,8 @@ interface Aviso {
 }
 
 const Home = () => {
+  const isMobile = useIsMobile();
+  
   const [verseOfDay, setVerseOfDay] = useState<{ verse: string; reference: string }>({
     verse: "",
     reference: "",
@@ -307,8 +309,8 @@ const Home = () => {
 
         {eventos.length > 0 ? (
           <>
-            <div className="grid md:grid-cols-3 gap-8">
-              {eventos.map((evento) => (
+            <div className={`grid gap-8 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-3'}`}>
+              {eventos.slice(0, isMobile ? 1 : 3).map((evento) => (
                 <EventCard
                   key={evento.id}
                   id={evento.id.toString()}
@@ -356,34 +358,46 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-church-700/50 p-8 rounded-lg text-center">
-            <h3 className="text-2xl font-bold mb-3">Domingo</h3>
-            <p className="text-lg mb-2">Culto da Família</p>
-            <p className="text-church-gold font-bold">18h30</p>
+        <div className={`grid gap-${isMobile ? '4' : '8'} ${isMobile ? 'grid-cols-2' : 'md:grid-cols-3'}`}>
+          <div className={`bg-church-700/50 ${isMobile ? 'p-4' : 'p-8'} rounded-lg text-center`}>
+            <h3 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold mb-3`}>Domingo</h3>
+            <p className={`${isMobile ? 'text-sm' : 'text-lg'} mb-2`}>Culto da Família</p>
+            <p className={`text-church-gold font-bold ${isMobile ? 'text-sm' : ''}`}>18h30</p>
           </div>
 
-          <div className="bg-church-700/50 p-8 rounded-lg text-center">
-            <h3 className="text-2xl font-bold mb-3">Terça-feira</h3>
-            <p className="text-lg mb-2">Oração</p>
-            <p className="text-church-gold font-bold">20h</p>
+          <div className={`bg-church-700/50 ${isMobile ? 'p-4' : 'p-8'} rounded-lg text-center`}>
+            <h3 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold mb-3`}>Terça-feira</h3>
+            <p className={`${isMobile ? 'text-sm' : 'text-lg'} mb-2`}>Oração</p>
+            <p className={`text-church-gold font-bold ${isMobile ? 'text-sm' : ''}`}>20h</p>
           </div>
 
-          <div className="bg-church-700/50 p-8 rounded-lg text-center">
-            <h3 className="text-2xl font-bold mb-3">Quarta-feira</h3>
-            <p className="text-lg mb-2">Escola Bíblica</p>
-            <p className="text-church-gold font-bold">20h</p>
+          <div className={`bg-church-700/50 ${isMobile ? 'p-4' : 'p-8'} rounded-lg text-center ${isMobile ? 'col-span-2' : ''}`}>
+            <h3 className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold mb-3`}>Quarta-feira</h3>
+            <p className={`${isMobile ? 'text-sm' : 'text-lg'} mb-2`}>Escola Bíblica</p>
+            <p className={`text-church-gold font-bold ${isMobile ? 'text-sm' : ''}`}>20h</p>
           </div>
 
-          <div className="bg-church-700/50 p-8 rounded-lg text-center">
-            <h3 className="text-2xl font-bold mb-3">Sexta-feira</h3>
-            <p className="text-lg mb-2">Culto de Libertação</p>
-            <p className="text-church-gold font-bold">20h</p>
-          </div>
+          {!isMobile && (
+            <div className="bg-church-700/50 p-8 rounded-lg text-center">
+              <h3 className="text-2xl font-bold mb-3">Sexta-feira</h3>
+              <p className="text-lg mb-2">Culto de Libertação</p>
+              <p className="text-church-gold font-bold">20h</p>
+            </div>
+          )}
         </div>
 
+        {isMobile && (
+          <div className="mt-4">
+            <div className="bg-church-700/50 p-4 rounded-lg text-center">
+              <h3 className="text-lg font-bold mb-3">Sexta-feira</h3>
+              <p className="text-sm mb-2">Culto de Libertação</p>
+              <p className="text-church-gold font-bold text-sm">20h</p>
+            </div>
+          </div>
+        )}
+
         <div className="text-center mt-10">
-          <p className="text-xl mb-6">Estamos localizados na Qs 610 Samabaia Norte - DF</p>
+          <p className={`${isMobile ? 'text-lg' : 'text-xl'} mb-6`}>Estamos localizados na Qs 610 Samabaia Norte - DF</p>
           <Link to="/contato">
             <Button className="bg-white text-church-800 hover:bg-church-100 transition-transform hover:scale-105 duration-300">
               Como Chegar <ArrowRight className="ml-2 h-4 w-4" />
@@ -403,8 +417,8 @@ const Home = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {ministries.map((ministry, index) => (
+        <div className={`grid gap-8 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-3'}`}>
+          {ministries.slice(0, isMobile ? 1 : 3).map((ministry, index) => (
             <MinistryCard
               key={ministry.id}
               title={ministry.name}
