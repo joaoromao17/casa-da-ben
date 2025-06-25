@@ -3,11 +3,21 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { MapPin, Phone, Mail, Clock, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 // Dados simulados da galeria
 const galeria = ["/lovable-uploads/galeria1.jpg", "/lovable-uploads/galeria2.jpg", "/lovable-uploads/galeria3.jpg", "/lovable-uploads/galeria4.jpg", "/lovable-uploads/galeria5.jpg", "/lovable-uploads/galeria6.jpg"];
+
+// Imagens para o carrossel da história
+const historicoImagens = [
+  "/lovable-uploads/historia.jpg",
+  "/lovable-uploads/galeria1.jpg", 
+  "/lovable-uploads/galeria2.jpg",
+  "/lovable-uploads/galeria3.jpg",
+  "/lovable-uploads/galeria4.jpg"
+];
 
 const Sobre = () => {
   return (
@@ -64,7 +74,30 @@ const Sobre = () => {
                   </div>
                 </div>
                 <div className="space-y-8">
-                  <img alt="História da Igreja" className="rounded-lg shadow-lg w-full" src="/lovable-uploads/historia.jpg" />
+                  {/* Carrossel de imagens históricas */}
+                  <div className="relative">
+                    <Carousel className="w-full max-w-xl mx-auto">
+                      <CarouselContent>
+                        {historicoImagens.map((imagem, index) => (
+                          <CarouselItem key={index}>
+                            <div className="p-1">
+                              <Card>
+                                <CardContent className="flex aspect-video items-center justify-center p-0">
+                                  <img 
+                                    src={imagem} 
+                                    alt={`História da Igreja ${index + 1}`} 
+                                    className="w-full h-full object-cover rounded-lg"
+                                  />
+                                </CardContent>
+                              </Card>
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                  </div>
                   
                   <div className="bg-church-50 p-6 rounded-lg border border-church-100">
                     <h3 className="text-xl font-semibold text-church-800 mb-3">Nossa Missão</h3>
