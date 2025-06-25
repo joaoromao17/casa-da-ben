@@ -13,7 +13,7 @@ const galeria = ["/lovable-uploads/galeria1.jpg", "/lovable-uploads/galeria2.jpg
 // Imagens para o carrossel da história
 const historicoImagens = [
   "/lovable-uploads/carrossel1.jpg",
-  "/lovable-uploads/carrossel2.jpg", 
+  "/lovable-uploads/carrossel2.jpg",
   "/lovable-uploads/carrossel3.jpg",
   "/lovable-uploads/carrossel4.jpg",
   "/lovable-uploads/carrossel5.jpg"
@@ -49,7 +49,7 @@ const Sobre = () => {
               <TabsTrigger value="localizacao">Localização</TabsTrigger>
               <TabsTrigger value="galeria">Galeria</TabsTrigger>
             </TabsList>
-            
+
             {/* Aba de História */}
             <TabsContent value="historia">
               <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -57,19 +57,19 @@ const Sobre = () => {
                   <h2 className="text-3xl font-bold text-church-900 mb-6">Nossa História</h2>
                   <div className="space-y-4 text-gray-700">
                     <p>
-                      A Igreja Casa da Benção teve início em 1995, quando um pequeno grupo de fiéis começou a se reunir nas casas para estudos bíblicos e momentos de oração.
+                      A história da Igreja Casa da Bênção 610 começou no ano de 1992 com a irmã Luzete, vinda de Paracatu (MG), que iniciou cultos na casa da irmã Maria (Tia Quinha) em Samambaia Norte. Com o crescimento das reuniões, surgiu a necessidade de alugar um espaço maior para acomodar os fiéis.
                     </p>
                     <p>
-                      Com o crescimento desse grupo inicial, em 1997 foi alugado o primeiro espaço para os cultos regulares. Sob a liderança do Pastor João Silva, a igreja começou a desenvolver seus ministérios e alcançar mais vidas para Cristo.
+                      O grupo passou por diferentes locais: lojas nas quadras 608 e 408, e até mesmo um pequeno templo no lote da irmã Fátima. Sob a liderança da evangelista Luzete e do obreiro Joaquim, a igreja cresceu rapidamente através de cultos de cura e libertação.
                     </p>
                     <p>
-                      Em 2005, através de muita oração e contribuições dos membros, foi adquirido o terreno onde está localizado o templo atual, inaugurado em 2008.
+                      Nesse contexto, um jovem de 16 anos começou a frequentar a igreja. Apesar da resistência inicial, aceitou o chamado do Espírito Santo para liderar os jovens. Foi nesse período que os trabalhos com os jovens se intensificaram, com evangelismos, serenatas e eventos ao ar livre. O ministério foi se fortalecendo e novos obreiros foram consagrados, como os irmãos Ari, João e a evangelista Zumira.
                     </p>
                     <p>
-                      Ao longo desses anos, temos testemunhado o poder de Deus transformando vidas, restaurando famílias e capacitando pessoas para servirem no Reino.
+                      Após um período no prédio da 408, a igreja se estabeleceu definitivamente na QS 610 Norte, com a construção do templo atual. A pastora Luzete inaugurou o local e, posteriormente, foi transferida para Luziânia.
                     </p>
                     <p>
-                      Hoje, a Igreja Casa da Benção conta com diversos ministérios atuantes, uma escola bíblica estruturada e projetos sociais que impactam nossa comunidade.
+                      O pastor Nogueira assumiu e realizou melhorias na estrutura. Em seguida, o pastor Maciel assumiu a liderança, ampliou a igreja e, em 2017, consagrou ao pastorado o jovem que foi líder dos jovens, chamado Pr. Walter. Em 2025, o ministério do Pr. Maciel completou 19 anos à frente da igreja.
                     </p>
                   </div>
                 </div>
@@ -83,9 +83,9 @@ const Sobre = () => {
                             <div className="p-1">
                               <Card>
                                 <CardContent className="flex aspect-video items-center justify-center p-0">
-                                  <img 
-                                    src={imagem} 
-                                    alt={`História da Igreja ${index + 1}`} 
+                                  <img
+                                    src={imagem}
+                                    alt={`História da Igreja ${index + 1}`}
                                     className="w-full h-full object-cover rounded-lg"
                                   />
                                 </CardContent>
@@ -98,18 +98,18 @@ const Sobre = () => {
                       <CarouselNext />
                     </Carousel>
                   </div>
-                  
+
                   <div className="bg-church-50 p-6 rounded-lg border border-church-100">
                     <h3 className="text-xl font-semibold text-church-800 mb-3">Nossa Missão</h3>
                     <p className="text-gray-700 mb-4">
                       Glorificar a Deus através da adoração, evangelização, discipulado, comunhão e serviço, formando discípulos comprometidos com Cristo.
                     </p>
-                    
+
                     <h3 className="text-xl font-semibold text-church-800 mb-3">Nossa Visão</h3>
                     <p className="text-gray-700 mb-4">
                       Ser uma igreja que impacta vidas e transforma a comunidade através do evangelho de Cristo, formando líderes e multiplicando discípulos.
                     </p>
-                    
+
                     <h3 className="text-xl font-semibold text-church-800 mb-3">Nossos Valores</h3>
                     <ul className="list-disc pl-5 text-gray-700">
                       <li>Fidelidade à Palavra de Deus</li>
@@ -123,7 +123,7 @@ const Sobre = () => {
                 </div>
               </div>
             </TabsContent>
-            
+
             {/* Aba de Localização */}
             <TabsContent value="localizacao">
               <div className="grid md:grid-cols-2 gap-12">
@@ -138,7 +138,7 @@ const Sobre = () => {
                         <p className="text-gray-700">Brasília - DF, 72320-500</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start space-x-3">
                       <Mail className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
                       <div>
@@ -146,7 +146,7 @@ const Sobre = () => {
                         <p className="text-gray-700">icbcasadabencao610@gmail.com</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-start space-x-3">
                       <Clock className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
                       <div>
@@ -155,7 +155,7 @@ const Sobre = () => {
                         <p className="text-gray-700">Sábado: 9h às 12h</p>
                       </div>
                     </div>
-                    
+
                     <div className="mt-8">
                       <h3 className="font-semibold text-lg text-church-800 mb-3">Horários de Culto</h3>
                       <ul className="space-y-3 text-gray-700">
@@ -179,22 +179,22 @@ const Sobre = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="space-y-8">
                   <div className="rounded-lg overflow-hidden shadow-lg h-80">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr" width="600" height="320" loading="lazy"></iframe>
                   </div>
-                  
+
                   <div className="bg-church-50 p-6 rounded-lg border border-church-100">
                     <h3 className="text-xl font-semibold text-church-800 mb-3">Como Chegar</h3>
                     <p className="text-gray-700 mb-4">Nossa igreja está localizada na avenida do HRSAM</p>
-                    
+
                     <h4 className="font-medium text-church-700 mb-2">Transporte Público:</h4>
                     <ul className="list-disc pl-5 text-gray-700 mb-4">
                       <li>Ônibus: Linhas 0.373, 0.366 e 0.391</li>
                       <li>Ponto de ônibus a 30m da igreja</li>
                     </ul>
-                    
+
                     <h4 className="font-medium text-church-700 mb-2">De Carro:</h4>
                     <ul className="list-disc pl-5 text-gray-700 mb-4">
                       <li>Estacionamento próprio com 30 vagas</li>
@@ -208,7 +208,7 @@ const Sobre = () => {
                 </div>
               </div>
             </TabsContent>
-            
+
             {/* Aba de Galeria */}
             <TabsContent value="galeria">
               <div className="text-center mb-12">
@@ -217,7 +217,7 @@ const Sobre = () => {
                   Momentos especiais da nossa igreja ao longo dos anos
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {galeria.map((imagem, index) => (
                   <div key={index} className="overflow-hidden rounded-lg shadow-md group">
@@ -225,7 +225,7 @@ const Sobre = () => {
                   </div>
                 ))}
               </div>
-              
+
               <div className="text-center mt-12">
                 <a href="https://drive.google.com/drive/folders/1-7c8j9A9urrFsOtD_8tBx3e5AOD-9ybY?usp=sharing" target="_blank">
                   <Button className="btn-primary">
