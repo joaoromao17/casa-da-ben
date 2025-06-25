@@ -1,3 +1,4 @@
+
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -231,10 +232,10 @@ const MinisterioTemplate = ({
       <section className="py-12 bg-white">
         <div className="container-church">
           <Tabs defaultValue="sobre" className="w-full">
-            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-6">
-              <TabsTrigger value="sobre">Sobre o Ministério</TabsTrigger>
-              <TabsTrigger value="avisos">Avisos</TabsTrigger>
-              <TabsTrigger value="membros">Membros do Ministério</TabsTrigger>
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-6">
+              <TabsTrigger value="sobre" className="text-xs sm:text-sm">Sobre</TabsTrigger>
+              <TabsTrigger value="avisos" className="text-xs sm:text-sm">Avisos</TabsTrigger>
+              <TabsTrigger value="membros" className="text-xs sm:text-sm">Membros</TabsTrigger>
             </TabsList>
 
             <TabsContent value="sobre">
@@ -353,17 +354,17 @@ const MinisterioTemplate = ({
             {/* Aba Avisos */}
             <TabsContent value="avisos">
               <div className="text-center mb-12">
-                <div className="flex justify-between items-center mb-6">
-                  <div className="text-left">
-                    <h2 className="text-3xl font-bold text-church-900 mb-4">📌 Mural de Avisos</h2>
-                    <p className="text-xl text-gray-600">
+                <div className="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
+                  <div className="text-center sm:text-left">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-church-900 mb-2">📌 Mural de Avisos</h2>
+                    <p className="text-lg sm:text-xl text-gray-600">
                       Avisos e informações importantes do ministério
                     </p>
                   </div>
                   {!isLoading && isCurrentUserLeader && (
                     <Button
                       onClick={() => setIsAvisoModalOpen(true)}
-                      className="bg-green-600 hover:bg-green-700 text-white"
+                      className="bg-green-600 hover:bg-green-700 text-white text-sm px-4 py-2"
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Novo Aviso
@@ -393,9 +394,9 @@ const MinisterioTemplate = ({
 
             {/* Aba Membros */}
             <TabsContent value="membros">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-church-900 mb-4">Membros</h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl sm:text-3xl font-bold text-church-900 mb-4">Membros</h2>
+                <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
                   Aqui estão os membros deste ministério
                 </p>
               </div>
@@ -405,7 +406,7 @@ const MinisterioTemplate = ({
                   <p className="text-gray-600 text-lg">Nenhum membro encontrado</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                   {sortedMembers.map((member) => {
                     const leadershipType = getUserLeadershipType(member.id);
                     return (
