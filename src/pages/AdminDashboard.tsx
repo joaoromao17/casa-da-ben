@@ -66,14 +66,14 @@ const AdminDashboard = () => {
           className="w-full"
         >
           <div className="overflow-x-auto mb-6">
-            <TabsList className="grid grid-cols-4 md:grid-cols-7 w-full min-w-[600px]">
-              <TabsTrigger value="users" className="text-xs sm:text-sm">Usuários</TabsTrigger>
-              <TabsTrigger value="ministries" className="text-xs sm:text-sm">Ministérios</TabsTrigger>
-              <TabsTrigger value="studies" className="text-xs sm:text-sm">Estudos</TabsTrigger>
-              <TabsTrigger value="events" className="text-xs sm:text-sm">Eventos</TabsTrigger>
-              <TabsTrigger value="contributions" className="text-xs sm:text-sm">Contribuições</TabsTrigger>
-              <TabsTrigger value="prayer-testimony" className="text-xs sm:text-sm">Oração/Test.</TabsTrigger>
-              <TabsTrigger value="verses" className="text-xs sm:text-sm">Versículos</TabsTrigger>
+            <TabsList className="flex w-full min-w-[700px] grid-cols-none">
+              <TabsTrigger value="users" className="text-xs sm:text-sm whitespace-nowrap">Usuários</TabsTrigger>
+              <TabsTrigger value="ministries" className="text-xs sm:text-sm whitespace-nowrap">Ministérios</TabsTrigger>
+              <TabsTrigger value="studies" className="text-xs sm:text-sm whitespace-nowrap">Estudos</TabsTrigger>
+              <TabsTrigger value="events" className="text-xs sm:text-sm whitespace-nowrap">Eventos</TabsTrigger>
+              <TabsTrigger value="contributions" className="text-xs sm:text-sm whitespace-nowrap">Contribuições</TabsTrigger>
+              <TabsTrigger value="prayer-testimony" className="text-xs sm:text-sm whitespace-nowrap">Oração/Test.</TabsTrigger>
+              <TabsTrigger value="verses" className="text-xs sm:text-sm whitespace-nowrap">Versículos</TabsTrigger>
             </TabsList>
           </div>
           
