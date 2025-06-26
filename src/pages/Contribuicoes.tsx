@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
@@ -120,8 +119,14 @@ const Contribuicoes = () => {
 
           <Tabs defaultValue="geral" className="mb-8" onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="geral">Contribuição Geral</TabsTrigger>
-              <TabsTrigger value="campanhas">Caixinhas de Contribuição</TabsTrigger>
+              <TabsTrigger value="geral">
+                <span className="hidden sm:inline">Contribuição Geral</span>
+                <span className="sm:hidden">Geral</span>
+              </TabsTrigger>
+              <TabsTrigger value="campanhas">
+                <span className="hidden sm:inline">Caixinhas de Contribuição</span>
+                <span className="sm:hidden">Caixinha</span>
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="geral">

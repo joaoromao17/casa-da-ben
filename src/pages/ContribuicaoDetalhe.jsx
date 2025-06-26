@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Layout from "@/components/layout/Layout";
@@ -357,29 +356,30 @@ const ContribuicaoDetalhe = () => {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-3 gap-8">
 
             {/* Área de doação */}
-            <div>
+            <div className="lg:order-1 order-2">
               <Card>
-                <CardHeader>
-                  <CardTitle>Contribuir</CardTitle>
-                  <CardDescription>Faça sua doação para esta campanha</CardDescription>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg">Contribuir</CardTitle>
+                  <CardDescription className="text-sm">Faça sua doação para esta campanha</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
                   {/* Chave PIX */}
-                  <div className="mb-6">
-                    <p className="text-sm mb-3">Use a chave PIX abaixo para fazer sua transferência:</p>
+                  <div>
+                    <p className="text-sm mb-2">Use a chave PIX abaixo para fazer sua transferência:</p>
 
                     <div className="bg-gray-50 p-3 rounded-md">
                       <p className="text-sm font-medium mb-1">Chave PIX:</p>
                       <div className="flex">
-                        <p className="text-sm font-mono bg-white p-2 rounded-l border flex-1 truncate">
+                        <p className="text-xs sm:text-sm font-mono bg-white p-2 rounded-l border flex-1 truncate">
                           {contribuicao?.pixKey || '12345678901'}
                         </p>
                         <Button
                           variant="outline"
-                          className="rounded-l-none"
+                          size="sm"
+                          className="rounded-l-none px-2"
                           onClick={handleCopyPixKey}
                         >
                           <Copy className="h-4 w-4" />
@@ -389,16 +389,16 @@ const ContribuicaoDetalhe = () => {
                   </div>
 
                   {/* Formulário de contribuição */}
-                  <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+                  <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="valor">Valor da contribuição</Label>
+                      <Label htmlFor="valor" className="text-sm">Valor da contribuição</Label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2">R$</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm">R$</span>
                         <Input
                           id="valor"
                           name="valor"
                           placeholder="0,00"
-                          className="pl-10"
+                          className="pl-10 h-10"
                           value={formData.valor}
                           onChange={handleInputChange}
                           required
@@ -408,35 +408,36 @@ const ContribuicaoDetalhe = () => {
 
                     <Button
                       type="submit"
-                      className="w-full bg-church-700 hover:bg-church-800"
+                      className="w-full bg-church-700 hover:bg-church-800 h-10"
                     >
-                      Confirmar contribuição
+                      <span className="hidden sm:inline">Confirmar contribuição</span>
+                      <span className="sm:hidden">Confirmar</span>
                     </Button>
                   </form>
 
                   {/* ⚠️ Alerta de confirmação fora do form */}
                   <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-                    <AlertDialogContent>
+                    <AlertDialogContent className="mx-4 max-w-md">
                       <AlertDialogHeader>
                         <div className="flex items-center gap-2">
-                          <AlertTriangle className="text-red-600 w-5 h-5" />
-                          <AlertDialogTitle className="text-red-700">
+                          <AlertTriangle className="text-red-600 w-5 h-5 flex-shrink-0" />
+                          <AlertDialogTitle className="text-red-700 text-base">
                             Atenção!
                           </AlertDialogTitle>
                         </div>
 
-                        <AlertDialogDescription className="text-red-600 mt-2">
+                        <AlertDialogDescription className="text-red-600 mt-2 text-sm">
                           Já transferiu para a conta? <br />
                           <strong>Para não atrapalhar a nossa contagem de progresso</strong>,
                           clique em <span className="font-semibold">"Confirmar"</span> apenas quando a transferência for <u>concluída</u>.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
 
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                        <AlertDialogCancel className="w-full sm:w-auto">Cancelar</AlertDialogCancel>
                         <AlertDialogAction
                           onClick={confirmarContribuicao}
-                          className="bg-church-700 hover:bg-church-800"
+                          className="bg-church-700 hover:bg-church-800 w-full sm:w-auto"
                         >
                           Confirmar
                         </AlertDialogAction>
@@ -449,18 +450,18 @@ const ContribuicaoDetalhe = () => {
             </div>
 
             {/* Descrição e detalhes */}
-            <div className="md:col-span-2">
+            <div className="lg:col-span-2 lg:order-2 order-1">
               <Card>
-                <CardHeader>
-                  <CardTitle>Sobre esta campanha</CardTitle>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg">Sobre esta campanha</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="prose max-w-none">
+                  <div className="prose max-w-none text-sm sm:text-base">
                     {contribuicao?.fullDescription && contribuicao.fullDescription.split('\n').map((paragraph, index) => (
-                      <p key={index} className="mb-4">{paragraph}</p>
+                      <p key={index} className="mb-3 sm:mb-4">{paragraph}</p>
                     ))}
                     {!contribuicao?.fullDescription && contribuicao?.description && (
-                      <p className="mb-4">{contribuicao.description}</p>
+                      <p className="mb-3 sm:mb-4">{contribuicao.description}</p>
                     )}
                   </div>
                 </CardContent>
