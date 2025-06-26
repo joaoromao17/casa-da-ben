@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -142,9 +141,14 @@ const Contato = () => {
                 <div className="bg-church-100 p-3 rounded-full text-church-700">
                   <Mail size={24} />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <h3 className="font-semibold text-lg text-church-900">Email</h3>
-                  <a href="mailto:icbcasadabencao610@gmail.com" className="ttext-church-700 hover:underline mt-1 inline-block">icbcasadabencao610@gmail.com</a>
+                  <a 
+                    href="mailto:icbcasadabencao610@gmail.com" 
+                    className="text-church-700 hover:underline mt-1 inline-block break-all sm:break-normal"
+                  >
+                    icbcasadabencao610@gmail.com
+                  </a>
                 </div>
               </div>
 
