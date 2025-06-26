@@ -159,14 +159,7 @@ const Contribuicoes = () => {
                         <p className="text-gray-600 text-sm">Ajude a espalhar a palavra de Deus para mais pessoas.</p>
                       </div>
                     </div>
-                    
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-church-700 mt-1 flex-shrink-0" />
-                      <div>
-                        <h3 className="font-medium">Projetos missionários</h3>
-                        <p className="text-gray-600 text-sm">Apoie nossos missionários em diferentes regiões.</p>
-                      </div>
-                    </div>
+
                   </div>
                   
                   <div className="bg-church-50 p-4 rounded-md border border-church-100">
@@ -175,8 +168,7 @@ const Contribuicoes = () => {
                       Precisa de ajuda?
                     </h3>
                     <p className="text-sm text-gray-600 mt-2">
-                      Se tiver dúvidas sobre como contribuir, entre em contato pelo telefone 
-                      (61) 99649-9589 ou envie um email para icbcasadabencao610@gmail.com
+                      Se tiver dúvidas sobre como contribuir, entre em contato pelo email icbcasadabencao610@gmail.com
                     </p>
                   </div>
                 </div>
@@ -200,7 +192,7 @@ const Contribuicoes = () => {
                         <div className="flex-1">
                           <p className="text-sm font-medium text-gray-700 mb-1">Chave PIX da Igreja:</p>
                           <p className="text-lg font-mono text-church-800 break-all">
-                            icbcasadabencao610@gmail.com
+                            Icb610samambaia@gmail.com
                           </p>
                         </div>
                         <Button
@@ -246,7 +238,7 @@ const Contribuicoes = () => {
                           </div>
                           <div>
                             <p className="font-medium">Cole a chave PIX</p>
-                            <p className="text-sm text-gray-600">Use a chave copiada: icbcasadabencao610@gmail.com</p>
+                            <p className="text-sm text-gray-600">Use a chave copiada: Icb610samambaia@gmail.com</p>
                           </div>
                         </div>
                         
@@ -256,7 +248,7 @@ const Contribuicoes = () => {
                           </div>
                           <div>
                             <p className="font-medium">Confirme os dados</p>
-                            <p className="text-sm text-gray-600">Verifique se aparece "Igreja Casa da Benção" como destinatário</p>
+                            <p className="text-sm text-gray-600">Verifique se aparece "Laiane Athayde" como destinatário</p>
                           </div>
                         </div>
                         
