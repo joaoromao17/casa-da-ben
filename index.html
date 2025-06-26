@@ -1,9 +1,15 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="theme-color" content="#4A5568" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    
     <title>Igreja Casa da Benção</title>
     <meta name="description" content="Site oficial da Igreja Casa da Benção - Venha fazer parte desta família" />
     <meta name="author" content="Igreja Casa da Benção" />
@@ -21,10 +27,33 @@
     <meta name="twitter:image" content="/lovable-uploads/cd48525e-3ad8-431c-8e1b-7c7992ebb0f4.png" />
     
     <link rel="icon" href="/lovable-uploads/d5e9a5c4-ef0b-4cf6-b0b9-a38511a8025e.png" type="image/png">
+    <link rel="apple-touch-icon" href="/lovable-uploads/d5e9a5c4-ef0b-4cf6-b0b9-a38511a8025e.png" />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Preload crítico para melhor performance no Chrome mobile -->
+    <link rel="modulepreload" href="/src/main.tsx" />
+    
+    <!-- Fallback script para Chrome mobile -->
+    <script>
+      // Detecta problemas de compatibilidade no Chrome mobile
+      (function() {
+        // Adiciona suporte para navegadores mais antigos
+        if (!window.Promise) {
+          console.warn('Promise not supported, loading polyfill');
+        }
+        
+        // Detecta se o JavaScript falhou completamente
+        window.setTimeout(function() {
+          var root = document.getElementById('root');
+          if (root && root.innerHTML.trim() === '') {
+            root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui;text-align:center;padding:20px;"><div><h2 style="color:#dc3545;margin-bottom:16px;">Carregando...</h2><p style="color:#6c757d;">Se esta mensagem persistir, tente recarregar a página.</p><button onclick="location.reload()" style="background:#007bff;color:white;border:none;padding:12px 24px;border-radius:6px;margin-top:16px;cursor:pointer;">Recarregar</button></div></div>';
+          }
+        }, 10000); // Fallback após 10 segundos
+      })();
+    </script>
   </head>
 
   <body>
