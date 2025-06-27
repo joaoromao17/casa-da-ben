@@ -21,8 +21,26 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
   const formattedDate = format(date, "dd/MM/yyyy", { locale: ptBR });
   const [showLoginNotice, setShowLoginNotice] = useState(false);
 
-  const handleReadStudy = () => {
-    // Verificar se o usuário está logado
+  const handleDownload = async () => {
+    // Verificar se o usuário está logado para download
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    if (!token) {
+      setShowLoginNotice(true);
+      return;
+    }
+
+    if (pdfUrl) {
+      const response = await fetch(pdfUrl);
+      const blob = await response.blob();
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = `${title}.pdf`;
+      link.click();
+    }
+  };
+
+  const handleView = () => {
+    // Verificar se o usuário está logado para visualizar
     const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (!token) {
       setShowLoginNotice(true);
@@ -51,23 +69,32 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
         <CardContent className="flex-grow">
           <p className="text-gray-600 line-clamp-3">{description}</p>
         </CardContent>
-        <CardFooter className="flex justify-center pt-2 border-t border-gray-100">
+        <CardFooter className="flex justify-center gap-2 pt-2 border-t border-gray-100">
           {pdfUrl && (
-            <Button 
-              variant="outline" 
-              className="flex items-center gap-2"
-              onClick={handleReadStudy}
-            >
-              <FileText size={18} />
-              Baixar Estudo
-            </Button>
+            <>
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2"
+                onClick={handleView}
+              >
+                <FileText size={18} />
+                Ver Estudo
+              </Button>
+              <Button
+                variant="secondary"
+                className="flex items-center gap-2"
+                onClick={handleDownload}
+              >
+                ⬇️ Baixar
+              </Button>
+            </>
           )}
         </CardFooter>
       </Card>
       
       {showLoginNotice && (
         <LoginRequiredNotice
-          message="Você precisa estar logado para ler os estudos bíblicos."
+          message="Você precisa estar logado para acessar os estudos bíblicos."
           onClose={() => setShowLoginNotice(false)}
         />
       )}
