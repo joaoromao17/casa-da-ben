@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { TextareaWithCounter } from "@/components/ui/TextareaWithCounter";
+import { Input } from "@/components/ui/input";
 import api from "@/services/api";
 
 type UploadEstudoFormProps = {
@@ -18,7 +19,7 @@ type UploadEstudoFormProps = {
 
 const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProps) => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [pdfUrl, setPdfUrl] = useState<string | undefined>(initialData?.pdfUrl);
+  const [pdfUrl, setPdfUrl] = useState<string>(initialData?.pdfUrl || "");
   const [title, setTitle] = useState(initialData?.title || "");
   const [author, setAuthor] = useState(initialData?.author || "");
   const [description, setDescription] = useState(initialData?.description || "");
@@ -27,7 +28,7 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
 
   // Atualiza pdfUrl se initialData mudar (ex: quando abrir edição)
   useEffect(() => {
-    setPdfUrl(initialData?.pdfUrl);
+    setPdfUrl(initialData?.pdfUrl || "");
   }, [initialData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,15 +36,18 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
 
     const isEditing = !!initialData;
 
-    // Se não está editando, pdfFile é obrigatório
-    if (!isEditing && !pdfFile) {
-      alert("Escolha um arquivo PDF!");
+    // Validação: precisa ter arquivo ou link
+    if (!isEditing && !pdfFile && !pdfUrl.trim()) {
+      alert("Você precisa enviar um arquivo PDF ou informar um link.");
       return;
     }
 
     const formData = new FormData();
-    // Só adiciona PDF no form se tiver um arquivo novo
-    if (pdfFile) {
+    
+    // Priorizar link externo se fornecido
+    if (pdfUrl.trim()) {
+      formData.append("pdfUrl", pdfUrl.trim());
+    } else if (pdfFile) {
       formData.append("pdf", pdfFile);
     }
 
@@ -51,8 +55,6 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
     formData.append("author", author);
     formData.append("description", description);
     formData.append("category", category);
-    // Se quiser permitir alterar a data, pode criar estado para ela.
-    // Por enquanto, mantém a data atual ou usa a data atual do sistema:
     formData.append("date", initialData?.date || new Date().toISOString().split("T")[0]);
 
     const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
@@ -83,7 +85,7 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
         setDescription("");
         setCategory("");
         setPdfFile(null);
-        setPdfUrl(undefined);
+        setPdfUrl("");
       }
     } catch (error) {
       console.error("Erro ao enviar estudo:", error);
@@ -98,11 +100,10 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
           {/* Campos do formulário */}
           <div className="space-y-2">
             <label className="block text-sm font-medium">Título</label>
-            <input
+            <Input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -120,11 +121,10 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
 
           <div className="space-y-2">
             <label className="block text-sm font-medium">Autor</label>
-            <input
+            <Input
               type="text"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
           </div>
@@ -148,30 +148,35 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium">Upload de PDF</label>
+            <p className="text-sm text-gray-500 mb-2">
+              Você pode <strong>enviar um arquivo PDF</strong> ou <strong>colar o link do estudo</strong> (ex: Google Drive).
+            </p>
 
-            {/* Se tiver pdfUrl, mostra o link */}
-            {pdfUrl && (
-              <p className="mb-2">
-                PDF atual:{" "}
-                <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                  Ver PDF
-                </a>
-              </p>
-            )}
+            <label className="block text-sm font-medium">Link do Estudo (PDF) - opcional</label>
+            <Input
+              type="url"
+              placeholder="https://drive.google.com/..."
+              value={pdfUrl}
+              onChange={(e) => setPdfUrl(e.target.value)}
+            />
+          </div>
 
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Upload de PDF - opcional</label>
             <input
               type="file"
               accept=".pdf"
               onChange={(e) => {
                 setPdfFile(e.target.files?.[0] || null);
-                // Se trocar arquivo, esconde o link atual
-                if (e.target.files?.[0]) setPdfUrl(undefined);
               }}
               className="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              // Apenas obrigatório no upload novo, no edit não
-              required={!initialData}
+              disabled={!!pdfUrl.trim()}
             />
+            {pdfUrl.trim() && (
+              <p className="text-sm text-gray-500">
+                Upload desabilitado porque um link foi fornecido.
+              </p>
+            )}
           </div>
 
           {/* Botão de salvar */}
