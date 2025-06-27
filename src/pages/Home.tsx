@@ -261,7 +261,7 @@ const Home = () => {
               do amor de Deus e da mensagem transformadora da cruz.
             </p>
             <p className="text-lg text-gray-700 mb-8">
-              Queremos que você faça parte da nossa família. Aqui você encontrará um ambiente
+              Queremos que você faça parte da nossa família. Aqui, você encontrará um ambiente
               acolhedor para crescer na fé e desenvolver seus dons e talentos para o Reino de Deus.
             </p>
             <Link to="/sobre">

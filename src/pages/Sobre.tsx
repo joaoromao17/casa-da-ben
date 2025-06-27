@@ -65,12 +65,12 @@ const Sobre = () => {
                       O grupo passou por diferentes locais: lojas nas quadras 608 e 408, e até mesmo um pequeno templo no lote da irmã Fátima. Sob a liderança da evangelista Luzete e do obreiro Joaquim, a igreja cresceu rapidamente através de cultos de cura e libertação.
                     </p>
                     <p>
-                      O ministério foi se fortalecendo com a chegada de novos membros e com isso surgiu a necessidade de consagrar novos obreiros como os irmãos Ari, João e a evangelista Zumira.                   </p>
+                      O ministério foi se fortalecendo com a chegada de novos membros e, com isso surgiu a necessidade de consagrar novos obreiros, como os irmãos Ari, João e a evangelista Zumira.                   </p>
                     <p>
                       Após um período no prédio da 408, a igreja se estabeleceu definitivamente na QS 610 - Samambaia Norte, com a construção do templo atual sob a liderança da pastora Luzete e seu esposo, Pastor Joaquim.
                     </p>
                     <p>
-                      Posteriormente o pastor Wellington Nogueira assumiu a liderança realizando melhorias na estrutura. Em 2006 o pastor Marcial passou a liderar a igreja e encontra-se no cargo até os dias de hoje.
+                      Posteriormente, o pastor Wellington Nogueira assumiu a liderança realizando melhorias na estrutura. Em 2006, o pastor Marcial passou a liderar a igreja e encontra-se no cargo até os dias de hoje.
                     </p>
                   </div>
                 </div>
