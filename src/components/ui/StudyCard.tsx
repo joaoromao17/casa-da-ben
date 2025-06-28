@@ -21,24 +21,6 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
   const formattedDate = format(date, "dd/MM/yyyy", { locale: ptBR });
   const [showLoginNotice, setShowLoginNotice] = useState(false);
 
-  const handleDownload = async () => {
-    // Verificar se o usuário está logado para download
-    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-    if (!token) {
-      setShowLoginNotice(true);
-      return;
-    }
-
-    if (pdfUrl) {
-      const response = await fetch(pdfUrl);
-      const blob = await response.blob();
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = `${title}.pdf`;
-      link.click();
-    }
-  };
-
   const handleView = () => {
     // Verificar se o usuário está logado para visualizar
     const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
@@ -53,14 +35,25 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
   };
 
   const shareOnWhatsApp = () => {
-    const text = `Estudo Bíblico: "${title}" por ${author} - ${description} - Compartilhado da Igreja Casa da Benção`;
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    let message = `📖 *Estudo Bíblico: "${title}"*\n\n`;
+    message += `👨‍🏫 *Por:* ${author}\n`;
+    message += `📅 *Data:* ${formattedDate}\n\n`;
+    message += `📝 *Resumo:* ${description}\n\n`;
+    
+    if (pdfUrl) {
+      message += `🔗 *Link do estudo:* ${pdfUrl}\n\n`;
+    }
+    
+    message += `🏛️ *Mais estudos em:* https://casa-da-ben.vercel.app/estudos\n\n`;
+    message += `*Compartilhado da Igreja Casa da Benção* 🙏`;
+    
+    const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(url, "_blank");
   };
 
   return (
     <>
-      <Card className="card-church overflow-hidden h-full flex flex-col">
+      <Card className="card-church overflow-hidden flex flex-col">
         <CardHeader>
           <div className="flex justify-between items-start">
             <div>
@@ -73,27 +66,18 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
           </div>
         </CardHeader>
         <CardContent className="flex-grow">
-          <p className="text-gray-600 line-clamp-3">{description}</p>
+          <p className="text-gray-600">{description}</p>
         </CardContent>
         <CardFooter className="flex justify-center gap-2 pt-2 border-t border-gray-100">
           {pdfUrl && (
-            <>
-              <Button 
-                variant="outline" 
-                className="flex items-center gap-2"
-                onClick={handleView}
-              >
-                <FileText size={18} />
-                Ver Estudo
-              </Button>
-              <Button
-                variant="secondary"
-                className="flex items-center gap-2"
-                onClick={handleDownload}
-              >
-                ⬇️ Baixar
-              </Button>
-            </>
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={handleView}
+            >
+              <FileText size={18} />
+              Ver Estudo
+            </Button>
           )}
           <Button 
             variant="ghost" 
