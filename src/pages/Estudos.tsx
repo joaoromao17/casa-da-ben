@@ -81,7 +81,7 @@ const Estudos = () => {
           allData = allData.filter(study => study.category === category);
         }
         
-        // Ordenar por data mais recente primeiro
+        // Ordenar por data mais recente primeiro (mudança principal aqui)
         allData = allData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         
         const startIndex = (page - 1) * pageSize;
@@ -95,7 +95,7 @@ const Estudos = () => {
         // API já retorna dados paginados
         const data: PageResponse = response.data;
         
-        // Ordenar por data mais recente primeiro
+        // Ordenar por data mais recente primeiro (mudança principal aqui)
         const sortedStudies = data.content.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         
         setStudies(sortedStudies);

@@ -1,7 +1,7 @@
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
+import { FileText, Share2 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useState } from "react";
@@ -52,6 +52,12 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
     }
   };
 
+  const shareOnWhatsApp = () => {
+    const text = `Estudo Bíblico: "${title}" por ${author} - ${description} - Compartilhado da Igreja Casa da Benção`;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, "_blank");
+  };
+
   return (
     <>
       <Card className="card-church overflow-hidden h-full flex flex-col">
@@ -80,8 +86,23 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
                 <FileText size={18} />
                 Ver Estudo
               </Button>
+              <Button
+                variant="secondary"
+                className="flex items-center gap-2"
+                onClick={handleDownload}
+              >
+                ⬇️ Baixar
+              </Button>
             </>
           )}
+          <Button 
+            variant="ghost" 
+            className="text-church-600 hover:text-church-800 hover:bg-church-50 flex items-center gap-2"
+            onClick={shareOnWhatsApp}
+          >
+            <Share2 size={18} />
+            Compartilhar
+          </Button>
         </CardFooter>
       </Card>
       

@@ -25,6 +25,7 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
   const [description, setDescription] = useState(initialData?.description || "");
   const [category, setCategory] = useState(initialData?.category || "");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Atualiza pdfUrl se initialData mudar (ex: quando abrir edição)
   useEffect(() => {
@@ -33,12 +34,14 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const isEditing = !!initialData;
 
     // Validação: precisa ter arquivo ou link
     if (!isEditing && !pdfFile && !pdfUrl.trim()) {
       alert("Você precisa enviar um arquivo PDF ou informar um link.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -60,6 +63,7 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
     const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (!token) {
       alert("Você precisa estar logado para enviar estudos.");
+      setIsSubmitting(false);
       return;
     }
 
@@ -90,6 +94,8 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
     } catch (error) {
       console.error("Erro ao enviar estudo:", error);
       alert("Erro ao enviar o estudo.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -183,9 +189,14 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
           <div className="flex justify-end">
             <button
               type="submit"
-              className="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition"
+              disabled={isSubmitting}
+              className={`px-6 py-2 rounded-lg transition ${
+                isSubmitting 
+                  ? 'bg-gray-400 text-white cursor-not-allowed' 
+                  : 'bg-black text-white hover:bg-gray-800'
+              }`}
             >
-              Salvar
+              {isSubmitting ? "Salvando..." : "Salvar"}
             </button>
           </div>
         </>
