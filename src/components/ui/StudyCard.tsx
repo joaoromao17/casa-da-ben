@@ -80,13 +80,6 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
                 <FileText size={18} />
                 Ver Estudo
               </Button>
-              <Button
-                variant="secondary"
-                className="flex items-center gap-2"
-                onClick={handleDownload}
-              >
-                ⬇️ Baixar
-              </Button>
             </>
           )}
         </CardFooter>
