@@ -35,16 +35,16 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
   };
 
   const shareOnWhatsApp = () => {
-    let message = `📖 *Estudo Bíblico: "${title}"*\n\n`;
-    message += `👨‍🏫 *Por:* ${author}\n`;
+    let message = `📚 *Estudo Bíblico: "${title}"*\n\n`;
+    message += `👤 *Por:* ${author}\n`;
     message += `📅 *Data:* ${formattedDate}\n\n`;
-    message += `📝 *Resumo:* ${description}\n\n`;
+    message += `📄 *Resumo:* ${description}\n\n`;
     
     if (pdfUrl) {
       message += `🔗 *Link do estudo:* ${pdfUrl}\n\n`;
     }
     
-    message += `🏛️ *Mais estudos em:* https://casa-da-ben.vercel.app/estudos\n\n`;
+    message += `🌐 *Mais estudos em:* https://casa-da-ben.vercel.app/estudos\n\n`;
     message += `*Compartilhado da Igreja Casa da Benção* 🙏`;
     
     const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
