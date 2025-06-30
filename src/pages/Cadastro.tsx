@@ -98,7 +98,7 @@ const Cadastro = () => {
   // Função para abrir Instagram
   const openInstagram = () => {
     const name = form.getValues("name");
-    window.open("https://www.instagram.com/direct/t/100696911330193/", "_blank");
+    window.open("https://www.instagram.com/icb_610/", "_blank");
   };
 
   // Avançar para o próximo passo
@@ -501,9 +501,9 @@ const Cadastro = () => {
                           <h3 className="text-lg font-medium text-church-800">Fale Conosco no Instagram</h3>
                         </div>
                         <p className="text-gray-600 mb-4">
-                          Obrigado pelo seu interesse! Após o cadastro, você será direcionado para o Instagram da igreja 
-                          onde poderá conversar diretamente conosco e receber mais informações sobre nossas atividades. 
-                          Não esqueça de nos seguir por lá!
+                          Obrigado pelo seu interesse! Após o cadastro, você será direcionado para o Instagram da igreja. 
+                          Clique no botão "Enviar Mensagem" ou "Mensagem" para entrar em contato conosco e receber mais 
+                          informações sobre nossas atividades. Não esqueça de nos seguir por lá!
                         </p>
                       </div>
                     )}
