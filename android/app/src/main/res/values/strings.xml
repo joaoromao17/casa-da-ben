@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ICB 610</string>
+    <string name="title_activity_main">Igreja Casa da Benção 610</string>
+    <string name="package_name">com.icb610.app</string>
+    <string name="custom_url_scheme">com.icb610.app</string>
+</resources>
