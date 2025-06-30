@@ -95,11 +95,10 @@ const Cadastro = () => {
     fetchMinisterios();
   }, []);
 
-  // Função para abrir WhatsApp
-  const openWhatsApp = () => {
+  // Função para abrir Instagram
+  const openInstagram = () => {
     const name = form.getValues("name");
-    const message = `Olá! Meu nome é ${name}. Acabei de me cadastrar no site da Igreja Casa da Benção e gostaria de receber mais informações.`;
-    window.open(`https://wa.me/5561986149855?text=${encodeURIComponent(message)}`, "_blank");
+    window.open("https://www.instagram.com/direct/t/100696911330193/", "_blank");
   };
 
   // Avançar para o próximo passo
@@ -153,13 +152,13 @@ const Cadastro = () => {
         title: "Cadastro realizado com sucesso!",
         description: isMembro
           ? "Sua conta foi criada. Você agora tem acesso às áreas restritas."
-          : "Agradecemos seu cadastro! Entraremos em contato em breve.",
+          : "Agradecemos seu cadastro! Você será direcionado para nosso Instagram.",
       });
 
       navigate("/login");
 
       if (!isMembro) {
-        openWhatsApp();
+        openInstagram();
       }
     } catch (error) {
       const errMsg = error?.response?.data;
@@ -499,11 +498,12 @@ const Cadastro = () => {
                       <div className="bg-church-50 p-6 rounded-lg border border-church-100 mb-4">
                         <div className="flex items-center mb-4">
                           <MessageSquareText className="h-6 w-6 text-church-600 mr-2" />
-                          <h3 className="text-lg font-medium text-church-800">Conversar com Alguém da Igreja</h3>
+                          <h3 className="text-lg font-medium text-church-800">Fale Conosco no Instagram</h3>
                         </div>
                         <p className="text-gray-600 mb-4">
-                          Obrigado pelo seu interesse! Após o cadastro, você será redirecionado para o nosso grupo de WhatsApp
-                          onde poderá conversar com um dos nossos ministros e receber mais informações sobre nossas atividades.
+                          Obrigado pelo seu interesse! Após o cadastro, você será direcionado para o Instagram da igreja 
+                          onde poderá conversar diretamente conosco e receber mais informações sobre nossas atividades. 
+                          Não esqueça de nos seguir por lá!
                         </p>
                       </div>
                     )}
