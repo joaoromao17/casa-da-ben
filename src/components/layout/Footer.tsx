@@ -5,11 +5,10 @@ import {
   Facebook,
   Youtube,
   MapPin,
-  Phone,
   Mail,
-  Clock,
   Bug,
-  Heart
+  Heart,
+  Smartphone
 } from "lucide-react";
 
 const Footer = () => {
@@ -88,6 +87,12 @@ const Footer = () => {
                   Testemunhos
                 </Link>
               </li>
+              <li>
+                <Link to="/instalar" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                  <Smartphone className="h-4 w-4 mr-1" />
+                  Instalar App
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -95,7 +100,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Cultos</h3>
             <ul className="space-y-2">
-                           <li>
+              <li>
                 <span className="text-gray-300">Domingo: 18:30h</span>
               </li>
               <li>
@@ -119,10 +124,10 @@ const Footer = () => {
                 <span className="text-gray-300">Qs 610 Samambaia Norte</span>
               </li>
               
-                <li className="flex items-center">
-                  <Instagram className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
-                 <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer">@icb_610</a>
-                </li>
+              <li className="flex items-center">
+                <Instagram className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
+                <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer">@icb_610</a>
+              </li>
               
               <li className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
