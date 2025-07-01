@@ -65,89 +65,166 @@ const Instalar = () => {
             </p>
           </div>
 
-          {/* Botão de instalação PWA nativo - aparece apenas quando disponível */}
-          {showInstallButton && (
-            <div className="text-center mb-8">
-              <Button 
-                onClick={handleInstallClick}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg"
-              >
-                <Download className="mr-2 h-5 w-5" />
-                Instalar App Agora
-              </Button>
-              <p className="text-sm text-gray-600 mt-2">
-                Clique no botão acima para instalar diretamente
-              </p>
+          {/* Android - Download APK */}
+          {isAndroid && (
+            <div className="mb-8">
+              <Card className="border-2 border-green-500">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Smartphone className="h-6 w-6" />
+                    Baixar App para Android
+                  </CardTitle>
+                  <CardDescription>
+                    Toque abaixo para baixar o app oficial da ICB 610.
+                    <br />
+                    ⚠️ Talvez seja necessário permitir instalação de fontes desconhecidas.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <a href="/app-debug.apk" download>
+                    <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3">
+                      <Download className="mr-2 h-5 w-5" />
+                      📦 Baixar .APK
+                    </Button>
+                  </a>
+                </CardContent>
+              </Card>
             </div>
           )}
 
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            {/* Android Instructions */}
-            <Card className="border-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Smartphone className="h-6 w-6" />
-                  Android
-                </CardTitle>
-                <CardDescription>
-                  Para dispositivos Android (Chrome, Edge, etc.)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-start gap-3">
-                    <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
-                    <p>Abra este site no navegador Chrome ou Edge</p>
+          {/* iOS - Instruções manuais */}
+          {isIOS && (
+            <div className="mb-8">
+              <Card className="border-2 border-blue-500">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Smartphone className="h-6 w-6" />
+                    Como instalar no iPhone
+                  </CardTitle>
+                  <CardDescription>
+                    Siga os passos abaixo para adicionar o app à sua tela inicial:
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-start gap-3">
+                      <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                      <p>Acesse este site pelo Safari</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                      <p>Toque no botão de compartilhar <Share className="inline h-4 w-4" /> (⬆️)</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                      <p>Escolha "Adicionar à Tela de Início" <Plus className="inline h-4 w-4" /></p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
+                      <p>O app ficará com ícone e abrirá em tela cheia</p>
+                    </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
-                    <p>Toque no menu (⋮) do navegador</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
-                    <p>Selecione "Instalar app" ou "Adicionar à tela inicial"</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
-                    <p>Confirme a instalação</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
-            {/* iOS Instructions */}
-            <Card className="border-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Smartphone className="h-6 w-6" />
-                  iPhone/iPad
-                </CardTitle>
-                <CardDescription>
-                  Para dispositivos iOS (Safari)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-start gap-3">
-                    <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
-                    <p>Abra este site no Safari</p>
+          {/* Desktop/Navegadores com suporte PWA */}
+          {!isAndroid && !isIOS && showInstallButton && (
+            <div className="mb-8">
+              <Card className="border-2 border-purple-500">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Smartphone className="h-6 w-6" />
+                    Instalar App
+                  </CardTitle>
+                  <CardDescription>
+                    Você pode instalar o app no seu computador clicando no botão abaixo.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button 
+                    onClick={handleInstallClick}
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3"
+                  >
+                    <Download className="mr-2 h-5 w-5" />
+                    📲 Instalar App
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Instruções gerais quando não há suporte específico */}
+          {!isAndroid && !isIOS && !showInstallButton && (
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              {/* Android Instructions */}
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Smartphone className="h-6 w-6" />
+                    Android
+                  </CardTitle>
+                  <CardDescription>
+                    Para dispositivos Android (Chrome, Edge, etc.)
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-start gap-3">
+                      <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                      <p>Abra este site no navegador Chrome ou Edge</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                      <p>Toque no menu (⋮) do navegador</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                      <p>Selecione "Instalar app" ou "Adicionar à tela inicial"</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
+                      <p>Confirme a instalação</p>
+                    </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
-                    <p>Toque no botão de compartilhar <Share className="inline h-4 w-4" /></p>
+                </CardContent>
+              </Card>
+
+              {/* iOS Instructions */}
+              <Card className="border-2">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Smartphone className="h-6 w-6" />
+                    iPhone/iPad
+                  </CardTitle>
+                  <CardDescription>
+                    Para dispositivos iOS (Safari)
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-start gap-3">
+                      <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
+                      <p>Abra este site no Safari</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">2</span>
+                      <p>Toque no botão de compartilhar <Share className="inline h-4 w-4" /></p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
+                      <p>Selecione "Adicionar à Tela de Início" <Plus className="inline h-4 w-4" /></p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
+                      <p>Toque em "Adicionar" para confirmar</p>
+                    </div>
                   </div>
-                  <div className="flex items-start gap-3">
-                    <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">3</span>
-                    <p>Selecione "Adicionar à Tela de Início" <Plus className="inline h-4 w-4" /></p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="bg-church-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">4</span>
-                    <p>Toque em "Adicionar" para confirmar</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
 
           {/* Benefits */}
           <Card>
