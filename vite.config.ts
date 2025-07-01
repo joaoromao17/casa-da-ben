@@ -55,6 +55,8 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
+          // Configuração para lidar com arquivos maiores
+          maximumFileSizeToCacheInBytes: 3000000, // 3MB
           // Cache estratégico para melhor performance offline
           runtimeCaching: [
             {

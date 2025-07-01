@@ -12,6 +12,7 @@ import {
   Instagram,
   Settings,
   Plus,
+  Smartphone,
 } from "lucide-react";
 import { AvisoModal } from "@/components/avisos/AvisoModal";
 
@@ -208,17 +209,26 @@ const Navbar = () => {
                 </Button>
               </Link>
             </div>
-            <a
-              href="https://www.instagram.com/icb_610/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button
-                className="bg-transparent text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
+            <div className="flex items-center gap-2">
+              <a
+                href="https://www.instagram.com/icb_610/"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <Instagram size={20} /> @icb_610
-              </Button>
-            </a>
+                <Button
+                  className="bg-transparent text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
+                >
+                  <Instagram size={20} /> @icb_610
+                </Button>
+              </a>
+              <Link to="/instalar">
+                <Button
+                  className="bg-transparent text-white hover:bg-gray-600 hover:text-black flex items-center gap-2"
+                >
+                  <Smartphone size={20} /> Instalar App
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </nav>
