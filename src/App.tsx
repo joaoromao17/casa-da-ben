@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -36,6 +37,7 @@ import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
 import TermosUso from "./pages/TermosUso";
 import RelatarBug from "./pages/RelatarBug";
 import ApoiarDesenvolvedor from "./pages/ApoiarDesenvolvedor";
+import Instalar from "./pages/Instalar";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +76,7 @@ const App = () => (
             <Route path="/termos-de-uso" element={<TermosUso />} />
             <Route path="/relatar-bug" element={<RelatarBug />} />
             <Route path="/apoiar-desenvolvedor" element={<ApoiarDesenvolvedor />} />
+            <Route path="/instalar" element={<Instalar />} />
             <Route path="*" element={<NotFound />} />
             <Route path="/eventos/:id" element={<EventoDetail />} />
           </Routes>
