@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "509178475157",
+    "project_id": "icb-610",
+    "storage_bucket": "icb-610.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509178475157:android:125a1c25f82b37d04a219c",
+        "android_client_info": {
+          "package_name": "com.icb610.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6w9zHXgOrl4ZdmYJg21KKnEIWVu6nIp4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

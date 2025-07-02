@@ -5,9 +5,14 @@ const config: CapacitorConfig = {
   appName: 'Igreja Casa da Benção 610',
   webDir: 'dist',
   server: {
-    url: 'https://casa-da-ben.vercel.app', // substitua pelo seu domínio real
+    url: 'https://casa-da-ben.vercel.app',
     cleartext: true
-  }
+  },
+  plugins: {
+    FirebaseMessaging: {
+      presentationOptions: ['badge', 'sound', 'alert'],
+    },
+  },
 };
 
 export default config;
