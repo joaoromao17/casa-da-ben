@@ -4,10 +4,6 @@ const config: CapacitorConfig = {
   appId: 'com.icb610.app',
   appName: 'Igreja Casa da Benção 610',
   webDir: 'dist',
-  server: {
-    url: 'https://casa-da-ben.vercel.app',
-    cleartext: true
-  },
   plugins: {
     FirebaseMessaging: {
       presentationOptions: ['badge', 'sound', 'alert'],
