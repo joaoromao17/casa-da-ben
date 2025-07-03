@@ -1,15 +1,7 @@
-import axios from 'axios';
+  import axios from 'axios';
 
-let API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-// Detecta se está rodando no Capacitor nativo
-const isNativeApp =
-  window.Capacitor &&
-  (window.Capacitor.isNativePlatform?.() || window.Capacitor.getPlatform?.() === 'android');
-
-if (isNativeApp) {
-  API_BASE_URL = "https://casadabencao-api.onrender.com";
-}
+// Usa variável de ambiente VITE_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
