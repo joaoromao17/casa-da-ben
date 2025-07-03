@@ -114,6 +114,10 @@ export default defineConfig(({ mode }) => {
         },
       },
       rollupOptions: {
+        // Externaliza módulos do Capacitor para evitar problemas no build web
+        external: (id) => {
+          return id.includes('@capacitor-firebase/messaging') && !id.includes('node_modules');
+        },
         output: {
           manualChunks: {
             vendor: ['react', 'react-dom'],
@@ -134,6 +138,8 @@ export default defineConfig(({ mode }) => {
         '@tanstack/react-query',
         'lucide-react'
       ],
+      // Exclui dependências do Capacitor da otimização
+      exclude: ['@capacitor-firebase/messaging']
     },
     esbuild: {
       // Configuração para compatibilidade com Chrome mobile

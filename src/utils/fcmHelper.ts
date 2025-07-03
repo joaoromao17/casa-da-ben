@@ -1,15 +1,17 @@
 
 import api from "@/services/api";
-import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 
 export const sendFCMTokenToBackend = async (): Promise<void> => {
   // Verifica se estamos em ambiente Capacitor
-  if (typeof window === 'undefined' || !window.Capacitor || !window.Capacitor.isNativePlatform()) {
+  if (typeof window === 'undefined' || !window.Capacitor?.isNativePlatform()) {
     console.log("FirebaseMessaging não disponível - ambiente web");
     return;
   }
 
   try {
+    // Import dinâmico do FirebaseMessaging apenas em ambiente nativo
+    const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
+    
     // Solicita permissão para notificações
     await FirebaseMessaging.requestPermissions();
     
