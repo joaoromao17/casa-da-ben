@@ -4,7 +4,7 @@ import { FirebaseMessaging } from '@capacitor-firebase/messaging';
 
 export const sendFCMTokenToBackend = async (): Promise<void> => {
   // Verifica se estamos em ambiente Capacitor
-  if (!window.Capacitor?.isNativePlatform()) {
+  if (typeof window === 'undefined' || !window.Capacitor || !window.Capacitor.isNativePlatform()) {
     console.log("FirebaseMessaging não disponível - ambiente web");
     return;
   }
