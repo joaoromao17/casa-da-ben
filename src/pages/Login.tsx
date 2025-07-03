@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,7 +27,6 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
 
   // Formulário de login por email/senha
@@ -38,38 +38,6 @@ const Login = () => {
       lembrar: false
     }
   });
-
-   // 🔔 Obter token FCM quando a tela carrega
-useEffect(() => {
-  if ((window as any).FirebasePlugin) {
-    const plugin = (window as any).FirebasePlugin;
-
-    // 🔔 Requisita permissão de notificação se necessário (Android 13+)
-    plugin.hasPermission((hasPermission: boolean) => {
-      if (!hasPermission) {
-        plugin.grantPermission(
-          () => console.log("Permissão de notificação concedida"),
-          (err: any) => console.error("Erro ao solicitar permissão:", err)
-        );
-      } else {
-        console.log("Permissão de notificação já concedida");
-      }
-    });
-
-    // 🔐 Obtém o token FCM
-    plugin.getToken(
-      (token: string) => {
-        console.log("TOKEN FCM:", token);
-      },
-      (error: any) => {
-        console.error("Erro ao obter token FCM:", error);
-      }
-    );
-  } else {
-    console.warn("FirebasePlugin não disponível");
-  }
-}, []);
-
 
   // Função para lidar com o envio do formulário de login
   const onLoginSubmit = async (data: LoginValues) => {
@@ -111,7 +79,6 @@ useEffect(() => {
       setIsSubmitting(false);
     }
   };
-
 
   return (
     <Layout>
