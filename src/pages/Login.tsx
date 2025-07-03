@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -14,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Mail, Lock, Loader2 } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import api from "@/services/api";
+import { sendFCMTokenToBackend } from "@/utils/fcmHelper";
 
 // Schema para validação do login
 const loginSchema = z.object({
@@ -89,6 +89,9 @@ useEffect(() => {
       } else {
         sessionStorage.setItem("authToken", token);
       }
+
+      // Envia o token FCM para o backend após login bem-sucedido
+      await sendFCMTokenToBackend();
 
       toast({
         title: "Login realizado com sucesso!",
