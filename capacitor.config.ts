@@ -5,27 +5,24 @@ const config: CapacitorConfig = {
   appId: 'com.icb610.app',
   appName: 'Igreja Casa da Benção 610',
   webDir: 'dist',
-  server: {
-    // Configuração para desenvolvimento local com MIME types corretos
-    url: 'https://3b331ef6-4013-442e-8d17-8bbe98cc4352.lovableproject.com?forceHideBadge=true',
-    cleartext: true,
-    // Configurações específicas para resolver problemas de MIME type
-    androidScheme: 'https',
-    iosScheme: 'capacitor'
-  },
   plugins: {
     FirebaseMessaging: {
       presentationOptions: ['badge', 'sound', 'alert'],
     },
-    // Configuração adicional para o servidor local
     CapacitorHttp: {
       enabled: true,
     },
   },
-  // Configurações específicas para Android
+  // Configurações específicas para Android para resolver MIME types
   android: {
     allowMixedContent: true,
     captureInput: true,
+    webContentsDebuggingEnabled: true,
+    // Configurações adicionais para WebView
+    appendUserAgent: 'CapacitorWebView',
+    overrideUserAgent: null,
+    backgroundColor: '#ffffffff',
+    // Força o WebView a usar configurações modernas
     webContentsDebuggingEnabled: true,
   },
   // Configurações específicas para iOS

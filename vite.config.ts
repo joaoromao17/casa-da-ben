@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react({
-        // Adiciona configuração para compatibilidade com Chrome mobile
+        // Configuração para compatibilidade com Chrome mobile
         jsxRuntime: 'automatic',
         babel: {
           plugins: [
@@ -94,14 +94,6 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "::",
       port: 8080,
-      // Configuração específica para MIME types corretos
-      middlewareMode: false,
-      cors: true,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
-        'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept'
-      }
     },
     resolve: {
       alias: {
@@ -112,16 +104,15 @@ export default defineConfig(({ mode }) => {
       'process.env': env,
     },
     build: {
-      // Configurações otimizadas para Chrome mobile
-      target: ['es2015', 'chrome58'], // Compatibilidade com Chrome mobile mais antigo
+      // Configurações otimizadas para Capacitor
+      target: ['es2015', 'chrome58'], 
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: true,
+          drop_console: false, // Manter logs para debug no Capacitor
           drop_debugger: true,
         },
       },
-      // Configuração específica para assets e MIME types
       assetsDir: 'assets',
       rollupOptions: {
         // Externaliza módulos do Capacitor para evitar problemas no build web
@@ -134,7 +125,7 @@ export default defineConfig(({ mode }) => {
             router: ['react-router-dom'],
             ui: ['@radix-ui/react-tabs', '@radix-ui/react-dialog'],
           },
-          // Garante extensões corretas para os arquivos
+          // Configuração específica para arquivos JavaScript no Capacitor
           entryFileNames: 'assets/[name]-[hash].js',
           chunkFileNames: 'assets/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
@@ -154,11 +145,9 @@ export default defineConfig(({ mode }) => {
           }
         },
       },
-      // Reduz o tamanho dos chunks para melhor performance no mobile
       chunkSizeWarningLimit: 1000,
     },
     optimizeDeps: {
-      // Força pre-bundling para dependências problemáticas
       include: [
         'react',
         'react-dom',
@@ -166,11 +155,9 @@ export default defineConfig(({ mode }) => {
         '@tanstack/react-query',
         'lucide-react'
       ],
-      // Exclui dependências do Capacitor da otimização
       exclude: ['@capacitor-firebase/messaging']
     },
     esbuild: {
-      // Configuração para compatibilidade com Chrome mobile
       target: 'es2015',
       logOverride: { 'this-is-undefined-in-esm': 'silent' }
     }

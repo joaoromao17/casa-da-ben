@@ -11,6 +11,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="ICB 610" />
     
+    <!-- Meta tag específica para WebView interpretar módulos corretamente -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    
     <title>Igreja Casa da Benção</title>
     <meta name="description" content="Site oficial da Igreja Casa da Benção - Venha fazer parte desta família" />
     <meta name="author" content="Igreja Casa da Benção" />
@@ -40,14 +44,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Preload crítico para melhor performance no Chrome mobile -->
+    <!-- Preload crítico para melhor performance -->
     <link rel="modulepreload" href="/src/main.tsx" />
     
-    <!-- Configuração específica para MIME types corretos -->
+    <!-- Service Worker para PWA -->
     <script>
-      // Configuração para garantir carregamento correto de módulos
       if ('serviceWorker' in navigator) {
-        // Registra service worker após o carregamento da página
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
             .then((registration) => {
@@ -60,22 +62,21 @@
       }
     </script>
     
-    <!-- Fallback script para Chrome mobile -->
+    <!-- Fallback específico para Capacitor WebView -->
     <script>
-      // Detecta problemas de compatibilidade no Chrome mobile
+      // Configuração específica para Capacitor
       (function() {
-        // Adiciona suporte para navegadores mais antigos
-        if (!window.Promise) {
-          console.warn('Promise not supported, loading polyfill');
-        }
+        // Log para debug no WebView
+        console.log('Capacitor WebView initialization');
         
         // Detecta se o JavaScript falhou completamente
         window.setTimeout(function() {
           var root = document.getElementById('root');
           if (root && root.innerHTML.trim() === '') {
-            root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui;text-align:center;padding:20px;"><div><h2 style="color:#dc3545;margin-bottom:16px;">Carregando...</h2><p style="color:#6c757d;">Se esta mensagem persistir, tente recarregar a página.</p><button onclick="location.reload()" style="background:#007bff;color:white;border:none;padding:12px 24px;border-radius:6px;margin-top:16px;cursor:pointer;">Recarregar</button></div></div>';
+            console.error('App failed to load - showing fallback');
+            root.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui;text-align:center;padding:20px;"><div><h2 style="color:#dc3545;margin-bottom:16px;">Carregando...</h2><p style="color:#6c757d;">Se esta mensagem persistir, verifique a conexão ou reinicie o app.</p></div></div>';
           }
-        }, 10000); // Fallback após 10 segundos
+        }, 10000);
       })();
     </script>
   </head>
@@ -84,7 +85,7 @@
     <div id="root"></div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <!-- Script principal com tipo específico para módulos ES -->
+    <!-- Script principal - explicitamente definido como módulo -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
