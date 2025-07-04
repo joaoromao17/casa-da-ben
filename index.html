@@ -43,6 +43,23 @@
     <!-- Preload crítico para melhor performance no Chrome mobile -->
     <link rel="modulepreload" href="/src/main.tsx" />
     
+    <!-- Configuração específica para MIME types corretos -->
+    <script>
+      // Configuração para garantir carregamento correto de módulos
+      if ('serviceWorker' in navigator) {
+        // Registra service worker após o carregamento da página
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+    
     <!-- Fallback script para Chrome mobile -->
     <script>
       // Detecta problemas de compatibilidade no Chrome mobile
@@ -67,6 +84,7 @@
     <div id="root"></div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <!-- Script principal com tipo específico para módulos ES -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

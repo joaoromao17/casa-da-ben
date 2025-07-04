@@ -93,7 +93,15 @@ export default defineConfig(({ mode }) => {
     ].filter(Boolean),
     server: {
       host: "::",
-      port: 8080, // Porta corrigida conforme especificado
+      port: 8080,
+      // Configuração específica para MIME types corretos
+      middlewareMode: false,
+      cors: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept'
+      }
     },
     resolve: {
       alias: {
@@ -113,6 +121,8 @@ export default defineConfig(({ mode }) => {
           drop_debugger: true,
         },
       },
+      // Configuração específica para assets e MIME types
+      assetsDir: 'assets',
       rollupOptions: {
         // Externaliza módulos do Capacitor para evitar problemas no build web
         external: (id) => {
@@ -124,6 +134,20 @@ export default defineConfig(({ mode }) => {
             router: ['react-router-dom'],
             ui: ['@radix-ui/react-tabs', '@radix-ui/react-dialog'],
           },
+          // Garante extensões corretas para os arquivos
+          entryFileNames: 'assets/[name]-[hash].js',
+          chunkFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: (assetInfo) => {
+            const info = assetInfo.name.split('.');
+            const ext = info[info.length - 1];
+            if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+              return `assets/images/[name]-[hash][extname]`;
+            }
+            if (/css/i.test(ext)) {
+              return `assets/css/[name]-[hash][extname]`;
+            }
+            return `assets/[name]-[hash][extname]`;
+          }
         },
       },
       // Reduz o tamanho dos chunks para melhor performance no mobile
