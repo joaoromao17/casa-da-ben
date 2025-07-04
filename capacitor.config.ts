@@ -13,17 +13,13 @@ const config: CapacitorConfig = {
       enabled: true,
     },
   },
-  // Configurações específicas para Android para resolver MIME types
   android: {
     allowMixedContent: true,
     captureInput: true,
     webContentsDebuggingEnabled: true,
-    // Configurações adicionais para WebView
     appendUserAgent: 'CapacitorWebView',
-    overrideUserAgent: null,
-    backgroundColor: '#ffffffff',
+    // ❌ Linha removida: overrideUserAgent: null
   },
-  // Configurações específicas para iOS
   ios: {
     contentInset: 'automatic',
     scrollEnabled: true,
