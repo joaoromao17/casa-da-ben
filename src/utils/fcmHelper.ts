@@ -2,6 +2,9 @@ import api from "@/services/api";
 import { Capacitor } from '@capacitor/core';
 
 export const sendFCMTokenToBackend = async (): Promise<void> => {
+  console.log("🚀 Chamou sendFCMTokenToBackend");
+console.log("🌐 Plataforma:", Capacitor.getPlatform());
+console.log("📱 É nativo?", Capacitor.isNativePlatform());
   // ✅ Verifica se está rodando nativamente
   if (!Capacitor.isNativePlatform()) {
     console.log("⚠️ FirebaseMessaging não disponível - ambiente web");
