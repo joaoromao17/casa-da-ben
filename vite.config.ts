@@ -128,7 +128,7 @@ export default defineConfig(({ mode }) => {
           // Configuração específica para arquivos JavaScript no Capacitor
           entryFileNames: 'assets/[name]-[hash].js',
           chunkFileNames: 'assets/[name]-[hash].js',
-          assetFileNames: (assetInfo) => {
+          assetFileNames: (assetInfo) => {            
             if (!assetInfo.name) {
               return `assets/[name]-[hash][extname]`;
             }

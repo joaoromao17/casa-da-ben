@@ -22,8 +22,6 @@ const config: CapacitorConfig = {
     appendUserAgent: 'CapacitorWebView',
     overrideUserAgent: null,
     backgroundColor: '#ffffffff',
-    // Força o WebView a usar configurações modernas
-    webContentsDebuggingEnabled: true,
   },
   // Configurações específicas para iOS
   ios: {
