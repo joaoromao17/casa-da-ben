@@ -1,37 +1,40 @@
-
 import api from "@/services/api";
 
 export const sendFCMTokenToBackend = async (): Promise<void> => {
-  // Verifica se estamos em ambiente Capacitor
-  if (typeof window === 'undefined' || !window.Capacitor?.isNativePlatform()) {
-    console.log("FirebaseMessaging não disponível - ambiente web");
+  // Verifica se está rodando nativamente (Capacitor)
+  if (typeof window === 'undefined' || !window.Capacitor?.isNativePlatform?.()) {
+    console.log("⚠️ FirebaseMessaging não disponível - ambiente web");
     return;
   }
 
   try {
-    // Import dinâmico do FirebaseMessaging apenas em ambiente nativo
     const { FirebaseMessaging } = await import('@capacitor-firebase/messaging');
-    
-    // Solicita permissão para notificações
-    await FirebaseMessaging.requestPermissions();
-    
-    // Obtém o token FCM
+    console.log("📲 FirebaseMessaging carregado");
+
+    const permission = await FirebaseMessaging.requestPermissions();
+    console.log("🔐 Permissão de notificação:", permission);
+
     const result = await FirebaseMessaging.getToken();
     const fcmToken = result.token;
-    
-    console.log("Token FCM obtido:", fcmToken);
-    
+
+    if (!fcmToken) {
+      console.warn("⚠️ Token FCM veio vazio");
+      return;
+    }
+
+    console.log("✅ Token FCM obtido:", fcmToken);
+
     try {
-      // Envia o token para o backend
       await api.put("/users/fcm-token", {
         fcmToken: fcmToken
       });
-      
-      console.log("Token FCM enviado com sucesso para o backend");
+
+      console.log("🎉 Token FCM enviado com sucesso para o backend");
     } catch (error) {
-      console.error("Erro ao enviar token FCM para o backend:", error);
+      console.error("❌ Erro ao enviar token FCM para o backend:", error);
     }
+
   } catch (error) {
-    console.error("Erro ao obter token FCM:", error);
+    console.error("🔥 Erro ao obter token FCM:", error);
   }
 };
