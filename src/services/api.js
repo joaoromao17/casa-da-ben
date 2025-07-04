@@ -8,7 +8,7 @@ const isNativeApp =
   (window.Capacitor.isNativePlatform?.() || window.Capacitor.getPlatform?.() === 'android');
 
 if (isNativeApp) {
-  API_BASE_URL = "https://casadabencao-api.onrender.com";
+  API_BASE_URL = "https://backend-casadabencao.onrender.com";
 }
 
 const api = axios.create({
