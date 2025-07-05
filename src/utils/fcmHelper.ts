@@ -34,11 +34,26 @@ export const sendFCMTokenToBackend = async (): Promise<void> => {
 
     console.log("✅ Token FCM obtido:", fcmToken);
 
-    const response = await api.put("/users/fcm-token", { fcmToken });
+    // ✅ BLOCO DE ENVIO AO BACKEND COM DEBUG DETALHADO
+    try {
+      const response = await api.put("/users/fcm-token", { fcmToken });
 
-    console.log("🎉 Token FCM enviado com sucesso para o backend");
-    console.log("📡 PUT /users/fcm-token status:", response.status);
-    console.log("📝 PUT /users/fcm-token response data:", response.data);
+      console.log("🎉 Token FCM enviado com sucesso para o backend");
+      console.log("📡 PUT /users/fcm-token status:", response.status);
+      console.log("📝 PUT /users/fcm-token response data:", response.data);
+    } catch (error: any) {
+      console.error("🚨 Erro ao enviar token FCM para o backend:");
+
+      if (error.response) {
+        console.error("📡 Status:", error.response.status);
+        console.error("📨 Data:", error.response.data);
+        console.error("📋 Headers:", error.response.headers);
+      } else if (error.request) {
+        console.error("📤 Request feito mas sem resposta:", error.request);
+      } else {
+        console.error("❌ Erro desconhecido:", error.message);
+      }
+    }
 
   } catch (error) {
     console.error("🔥 Erro ao configurar FCM:", error);
