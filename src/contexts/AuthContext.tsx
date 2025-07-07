@@ -1,3 +1,4 @@
+
 // AuthContext.tsx
 
 import React, { createContext, ReactNode } from 'react';
@@ -19,7 +20,9 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { currentUser, isLoading } = useCurrentUser();
   
-  const isAuthenticated = !!currentUser && !!sessionStorage.getItem("authToken");
+  // Verifica tanto localStorage quanto sessionStorage para o token
+  const hasToken = !!(localStorage.getItem("authToken") || sessionStorage.getItem("authToken"));
+  const isAuthenticated = !!currentUser && hasToken;
 
   return (
     <AuthContext.Provider value={{
