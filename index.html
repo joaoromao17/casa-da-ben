@@ -58,12 +58,18 @@
       }
     </script>
     
-    <!-- Fallback específico para Capacitor WebView -->
+    <!-- Configuração específica para Capacitor -->
     <script>
       // Configuração específica para Capacitor
       (function() {
         // Log para debug no WebView
         console.log('Capacitor WebView initialization');
+        
+        // Configuração global para módulos ES
+        if (window.location.protocol === 'capacitor:') {
+          // Estamos rodando no Capacitor
+          console.log('Running in Capacitor environment');
+        }
         
         // Detecta se o JavaScript falhou completamente
         window.setTimeout(function() {
@@ -81,7 +87,7 @@
     <div id="root"></div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <!-- Script principal - explicitamente definido como módulo -->
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- Script principal com configuração otimizada para Capacitor -->
+    <script type="module" src="/src/main.tsx" crossorigin></script>
   </body>
 </html>

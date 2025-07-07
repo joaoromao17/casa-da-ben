@@ -55,9 +55,7 @@ export default defineConfig(({ mode }) => {
           ]
         },
         workbox: {
-          // Configuração para lidar com arquivos maiores
-          maximumFileSizeToCacheInBytes: 3000000, // 3MB
-          // Cache estratégico para melhor performance offline
+          maximumFileSizeToCacheInBytes: 3000000,
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -66,7 +64,7 @@ export default defineConfig(({ mode }) => {
                 cacheName: 'google-fonts-cache',
                 expiration: {
                   maxEntries: 10,
-                  maxAgeSeconds: 60 * 60 * 24 * 365 // <== 365 days
+                  maxAgeSeconds: 60 * 60 * 24 * 365
                 },
                 cacheableResponse: {
                   statuses: [0, 200]
@@ -80,7 +78,7 @@ export default defineConfig(({ mode }) => {
                 cacheName: 'gstatic-fonts-cache',
                 expiration: {
                   maxEntries: 10,
-                  maxAgeSeconds: 60 * 60 * 24 * 365 // <== 365 days
+                  maxAgeSeconds: 60 * 60 * 24 * 365
                 },
                 cacheableResponse: {
                   statuses: [0, 200]
@@ -104,18 +102,16 @@ export default defineConfig(({ mode }) => {
       'process.env': env,
     },
     build: {
-      // Configurações otimizadas para Capacitor
-      target: ['es2015', 'chrome58'], 
+      target: ['es2020', 'chrome80'], // Atualizado para melhor compatibilidade
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: false, // Manter logs para debug no Capacitor
+          drop_console: false,
           drop_debugger: true,
         },
       },
       assetsDir: 'assets',
       rollupOptions: {
-        // Externaliza módulos do Capacitor para evitar problemas no build web
         external: (id) => {
           return id.includes('@capacitor-firebase/messaging') && !id.includes('node_modules');
         },
@@ -125,9 +121,13 @@ export default defineConfig(({ mode }) => {
             router: ['react-router-dom'],
             ui: ['@radix-ui/react-tabs', '@radix-ui/react-dialog'],
           },
-          // Configuração específica para arquivos JavaScript no Capacitor
-          entryFileNames: 'assets/[name]-[hash].js',
-          chunkFileNames: 'assets/[name]-[hash].js',
+          // Configuração específica para garantir MIME types corretos no Capacitor
+          entryFileNames: (chunkInfo) => {
+            return `assets/js/[name]-[hash].js`;
+          },
+          chunkFileNames: (chunkInfo) => {
+            return `assets/js/[name]-[hash].js`;
+          },
           assetFileNames: (assetInfo) => {            
             if (!assetInfo.name) {
               return `assets/[name]-[hash][extname]`;
@@ -141,11 +141,18 @@ export default defineConfig(({ mode }) => {
             if (/css/i.test(ext)) {
               return `assets/css/[name]-[hash][extname]`;
             }
+            if (/js|mjs/i.test(ext)) {
+              return `assets/js/[name]-[hash][extname]`;
+            }
             return `assets/[name]-[hash][extname]`;
           }
         },
       },
       chunkSizeWarningLimit: 1000,
+      // Configurações adicionais para Capacitor
+      outDir: 'dist',
+      emptyOutDir: true,
+      sourcemap: false, // Desabilita sourcemaps que podem causar problemas no Capacitor
     },
     optimizeDeps: {
       include: [
@@ -158,7 +165,7 @@ export default defineConfig(({ mode }) => {
       exclude: ['@capacitor-firebase/messaging']
     },
     esbuild: {
-      target: 'es2015',
+      target: 'es2020', // Consistente com build.target
       logOverride: { 'this-is-undefined-in-esm': 'silent' }
     }
   };
