@@ -2,13 +2,15 @@
 import { z } from "zod";
 
 export const ministryFormSchema = z.object({
-  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
-  description: z.string().min(10, "Descrição deve ter pelo menos 10 caracteres"),
+  name: z.string().min(1, "Nome é obrigatório"),
+  description: z.string().min(1, "Descrição é obrigatória"),
   meetingDay: z.string().optional(),
   image: z.any().optional(),
-  leaderIds: z.array(z.string()).default([]),
-  viceLeaderIds: z.array(z.string()).default([]),
+  leaderIds: z.array(z.string()).optional(),
+  viceLeaderIds: z.array(z.string()).optional(),
   activities: z.array(z.string()).optional(),
+  displayOrder: z.number().min(0).optional(),
+  showOnHome: z.boolean().optional(),
 });
 
 export type MinistryFormData = z.infer<typeof ministryFormSchema>;
