@@ -1,5 +1,5 @@
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,175 +7,156 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 10%;
-
+    --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
-
+    --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
-
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 10%;
-
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 10%;
-
-    --destructive: 0 84% 60%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 9% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 15%;
-
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-
-    /* Church color scheme - simple black/gray/white */
-    --church-50: #fafafa;
-    --church-100: #f5f5f5;
-    --church-200: #e5e5e5;
-    --church-300: #d4d4d4;
-    --church-400: #a3a3a3;
-    --church-500: #737373;
-    --church-600: #525252;
-    --church-700: #404040;
-    --church-800: #262626;
-    --church-900: #171717;
   }
 
   .dark {
-    --background: 0 0% 10%;
-    --foreground: 0 0% 100%;
-
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 10%;
-
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%;
-
-    --accent: 0 0% 15%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 63% 31%;
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 9% 9%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 0 0% 83%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
+}
 
+@layer base {
   * {
     @apply border-border;
   }
-  
   body {
     @apply bg-background text-foreground;
-    font-family: "Inter", sans-serif;
   }
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-church-900 hover:bg-church-800 text-white font-semibold py-2 px-4 rounded-md transition-colors;
+/* Cores customizadas da igreja */
+:root {
+  --church-50: #f8fafc;
+  --church-100: #f1f5f9;
+  --church-200: #e2e8f0;
+  --church-300: #cbd5e1;
+  --church-400: #94a3b8;
+  --church-500: #64748b;
+  --church-600: #475569;
+  --church-700: #334155;
+  --church-800: #1e293b;
+  --church-900: #0f172a;
+  --church-primary: #2563eb;
+  --church-secondary: #7c3aed;
+}
+
+/* Classes utilitárias personalizadas */
+.container-church {
+  @apply container mx-auto px-4 max-w-7xl;
+}
+
+.section-title {
+  @apply text-3xl md:text-4xl font-bold text-church-900 mb-4;
+}
+
+.section-subtitle {
+  @apply text-xl text-gray-600 mb-8;
+}
+
+.btn-primary {
+  @apply bg-church-700 hover:bg-church-800 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+}
+
+.btn-outline {
+  @apply border-2 border-church-700 text-church-700 hover:bg-church-700 hover:text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+}
+
+.card-church {
+  @apply bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300;
+}
+
+/* Correções específicas para mobile e teclado */
+@media (max-width: 768px) {
+  body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
   
-  .btn-secondary {
-    @apply bg-church-200 hover:bg-church-300 text-church-900 font-semibold py-2 px-4 rounded-md transition-colors;
+  input, textarea, select {
+    -webkit-user-select: auto;
+    -moz-user-select: auto;
+    -ms-user-select: auto;
+    user-select: auto;
+    font-size: 16px; /* Evita zoom no iOS */
   }
   
-  .btn-outline {
-    @apply border border-church-900 text-church-900 hover:bg-church-900 hover:text-white font-semibold py-2 px-4 rounded-md transition-colors;
+  .touch-manipulation {
+    touch-action: manipulation;
   }
   
-  .verse-box {
-    @apply bg-church-100 border-l-4 border-church-700 text-church-800 p-4 rounded-r-md italic my-4 mx-2;
-  }
-  
-  .card-church {
-    @apply bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow m-2;
-  }
-  
-  .container-church {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-  
-  .nav-link {
-    @apply text-gray-700 hover:text-black font-medium transition-colors;
-  }
-
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  /* Correções para WebView do Capacitor */
+  input[type="email"], 
+  input[type="password"], 
+  input[type="text"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    background-color: white;
   }
 }
 
-@layer utilities {
-  .text-church-gradient {
-    @apply bg-gradient-to-r from-church-700 to-church-900 bg-clip-text text-transparent;
-  }
+/* Configurações específicas para Capacitor WebView */
+.capacitor-webview {
+  background-color: white;
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--church-100);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--church-400);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--church-500);
-}
-
-/* Animation classes */
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Loading animation */
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: .5;
+/* Melhorias para teclado virtual */
+@supports (-webkit-touch-callout: none) {
+  input, textarea {
+    font-size: 16px !important;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 }

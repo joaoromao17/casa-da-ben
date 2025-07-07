@@ -109,7 +109,14 @@ const Login = () => {
                       <FormControl>
                         <div className="flex items-center relative">
                           <Mail className="absolute left-3 text-gray-500" size={18} />
-                          <Input placeholder="Digite seu e-mail" className="pl-10" {...field} />
+                          <Input 
+                            placeholder="Digite seu e-mail" 
+                            className="pl-10" 
+                            type="email"
+                            autoComplete="email"
+                            inputMode="email"
+                            {...field} 
+                          />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -130,12 +137,13 @@ const Login = () => {
                             type={showPassword ? "text" : "password"}
                             placeholder="Digite sua senha"
                             className="pl-10 pr-10"
+                            autoComplete="current-password"
                             {...field}
                           />
                           <button
                             type="button"
                             onClick={() => setShowPassword((prev) => !prev)}
-                            className="absolute right-3 text-gray-500 hover:text-gray-800"
+                            className="absolute right-3 text-gray-500 hover:text-gray-800 touch-manipulation"
                           >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                           </button>
@@ -168,7 +176,7 @@ const Login = () => {
 
                 <Button
                   type="submit"
-                  className="w-full btn-primary"
+                  className="w-full btn-primary touch-manipulation"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

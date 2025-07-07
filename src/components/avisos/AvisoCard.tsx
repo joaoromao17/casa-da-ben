@@ -67,23 +67,23 @@ export const AvisoCard: React.FC<AvisoCardProps> = ({ aviso, showDelete = false,
     <>
       <Card className="w-full">
         <CardHeader className="pb-3">
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <CardTitle className="text-lg mb-1">{aviso.titulo}</CardTitle>
-              <div className="flex items-center text-sm text-gray-500 gap-4">
-                <div className="flex items-center gap-1">
+          <div className="flex flex-col space-y-3 sm:flex-row sm:justify-between sm:items-start sm:space-y-0">
+            <div className="flex-1 min-w-0">
+              <CardTitle className="text-lg mb-1 break-words">{aviso.titulo}</CardTitle>
+              <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4 text-sm text-gray-500">
+                <div className="flex items-center gap-1 flex-shrink-0">
                   <Calendar className="w-4 h-4" />
                   {formatDate(aviso.dataCriacao)}
                 </div>
-                <span>por {aviso.nomeAutor}</span>
+                <span className="break-words">por {aviso.nomeAutor}</span>
                 {aviso.nomeMinisterio && (
-                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs inline-block w-fit">
                     {aviso.nomeMinisterio}
                   </span>
                 )}
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-shrink-0 self-start">
               <Button
                 variant="ghost"
                 size="sm"
@@ -106,7 +106,7 @@ export const AvisoCard: React.FC<AvisoCardProps> = ({ aviso, showDelete = false,
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-700 mb-4 whitespace-pre-line">{aviso.mensagem}</p>
+          <p className="text-gray-700 mb-4 whitespace-pre-line break-words">{aviso.mensagem}</p>
 
           {aviso.arquivoUrl && (
             <div className="mt-4">
