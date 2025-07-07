@@ -10,7 +10,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="ICB 610" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <title>Igreja Casa da Benção</title>
     <meta name="description" content="Site oficial da Igreja Casa da Benção - Venha fazer parte desta família" />
@@ -41,9 +40,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Preload crítico para melhor performance -->
-    <link rel="modulepreload" href="/src/main.tsx" />
-    
     <!-- Service Worker para PWA -->
     <script>
       if ('serviceWorker' in navigator) {
@@ -66,12 +62,6 @@
         // Log para debug no WebView
         console.log('Capacitor WebView initialization');
         
-        // Configuração global para módulos ES
-        if (window.location.protocol === 'capacitor:') {
-          // Estamos rodando no Capacitor
-          console.log('Running in Capacitor environment');
-        }
-        
         // Detecta se o JavaScript falhou completamente
         window.setTimeout(function() {
           var root = document.getElementById('root');
@@ -88,7 +78,7 @@
     <div id="root"></div>
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <!-- Script principal com configuração otimizada para Capacitor -->
-    <script type="module" src="/src/main.tsx" crossorigin></script>
+    <!-- Script principal com módulo ES -->
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

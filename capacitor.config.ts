@@ -13,9 +13,9 @@ const config: CapacitorConfig = {
       enabled: true,
     },
     Keyboard: {
-      resize: "ionic",
+      resize: "body",
       style: "default",
-      resizeOnFullScreen: false
+      resizeOnFullScreen: true
     },
   },
   android: {
@@ -23,6 +23,11 @@ const config: CapacitorConfig = {
     captureInput: true,
     webContentsDebuggingEnabled: true,
     appendUserAgent: 'CapacitorWebView',
+    // Configurações específicas para WebView
+    webViewExtra: {
+      allowFileAccess: true,
+      allowUniversalAccessFromFileURLs: true,
+    }
   },
   ios: {
     contentInset: 'automatic',

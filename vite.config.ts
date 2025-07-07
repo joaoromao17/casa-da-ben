@@ -12,11 +12,10 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react({
-        // Configuração para compatibilidade com Chrome mobile
+        // Configuração otimizada para Capacitor Android
         jsxRuntime: 'automatic',
         babel: {
           plugins: [
-            // Plugin para compatibilidade com Chrome mais antigo
             ['@babel/plugin-transform-runtime', {
               regenerator: true,
             }]
@@ -102,7 +101,7 @@ export default defineConfig(({ mode }) => {
       'process.env': env,
     },
     build: {
-      target: ['es2020', 'chrome80'], // Atualizado para melhor compatibilidade
+      target: 'esnext', // Mudança para suporte completo a ES modules
       minify: 'terser',
       terserOptions: {
         compress: {
@@ -116,19 +115,11 @@ export default defineConfig(({ mode }) => {
           return id.includes('@capacitor-firebase/messaging') && !id.includes('node_modules');
         },
         output: {
-          manualChunks: {
-            vendor: ['react', 'react-dom'],
-            router: ['react-router-dom'],
-            ui: ['@radix-ui/react-tabs', '@radix-ui/react-dialog'],
-          },
-          // Configuração específica para garantir MIME types corretos no Capacitor
-          entryFileNames: (chunkInfo) => {
-            return `assets/js/[name]-[hash].js`;
-          },
-          chunkFileNames: (chunkInfo) => {
-            return `assets/js/[name]-[hash].js`;
-          },
-          assetFileNames: (assetInfo) => {            
+          // Configuração específica para Capacitor WebView
+          format: 'es',
+          entryFileNames: 'assets/js/[name]-[hash].js',
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          assetFileNames: (assetInfo) => {
             if (!assetInfo.name) {
               return `assets/[name]-[hash][extname]`;
             }
@@ -141,18 +132,19 @@ export default defineConfig(({ mode }) => {
             if (/css/i.test(ext)) {
               return `assets/css/[name]-[hash][extname]`;
             }
-            if (/js|mjs/i.test(ext)) {
-              return `assets/js/[name]-[hash][extname]`;
-            }
             return `assets/[name]-[hash][extname]`;
+          },
+          manualChunks: {
+            vendor: ['react', 'react-dom'],
+            router: ['react-router-dom'],
+            ui: ['@radix-ui/react-tabs', '@radix-ui/react-dialog'],
           }
         },
       },
       chunkSizeWarningLimit: 1000,
-      // Configurações adicionais para Capacitor
       outDir: 'dist',
       emptyOutDir: true,
-      sourcemap: false, // Desabilita sourcemaps que podem causar problemas no Capacitor
+      sourcemap: false,
     },
     optimizeDeps: {
       include: [
@@ -165,7 +157,7 @@ export default defineConfig(({ mode }) => {
       exclude: ['@capacitor-firebase/messaging']
     },
     esbuild: {
-      target: 'es2020', // Consistente com build.target
+      target: 'esnext',
       logOverride: { 'this-is-undefined-in-esm': 'silent' }
     }
   };
