@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { Search, ArrowUp, ArrowDown } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 import AdminTable from "./AdminTable";
 import AdminFormModal from "./AdminFormModal";
@@ -34,8 +32,7 @@ const MinistriesTab = () => {
     error,
     createMinistryMutation,
     updateMinistryMutation,
-    deleteMinistryMutation,
-    refetch
+    deleteMinistryMutation
   } = useMinistryOperations();
 
   // Form setup
@@ -123,70 +120,6 @@ const MinistriesTab = () => {
     navigate(`/ministerios/${ministry.id}`);
   };
 
-  const handleMoveUp = async (ministry: any) => {
-    try {
-      const currentIndex = ministries.findIndex(m => m.id === ministry.id);
-      if (currentIndex <= 0) return; // Já está no topo
-      
-      const previousMinistry = ministries[currentIndex - 1];
-      
-      // Trocar as posições
-      await api.put(`/ministerios/${ministry.id}/ordem`, { 
-        newOrder: currentIndex - 1 
-      });
-      
-      await api.put(`/ministerios/${previousMinistry.id}/ordem`, { 
-        newOrder: currentIndex 
-      });
-      
-      toast({
-        title: "Sucesso",
-        description: "Ordem do ministério atualizada",
-      });
-      
-      refetch();
-    } catch (error) {
-      console.error('Erro ao mover ministério:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível alterar a ordem do ministério",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleMoveDown = async (ministry: any) => {
-    try {
-      const currentIndex = ministries.findIndex(m => m.id === ministry.id);
-      if (currentIndex >= ministries.length - 1) return; // Já está no final
-      
-      const nextMinistry = ministries[currentIndex + 1];
-      
-      // Trocar as posições
-      await api.put(`/ministerios/${ministry.id}/ordem`, { 
-        newOrder: currentIndex + 1 
-      });
-      
-      await api.put(`/ministerios/${nextMinistry.id}/ordem`, { 
-        newOrder: currentIndex 
-      });
-      
-      toast({
-        title: "Sucesso",
-        description: "Ordem do ministério atualizada",
-      });
-      
-      refetch();
-    } catch (error) {
-      console.error('Erro ao mover ministério:', error);
-      toast({
-        title: "Erro",
-        description: "Não foi possível alterar a ordem do ministério",
-        variant: "destructive",
-      });
-    }
-  };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedMinistry(null);
@@ -249,45 +182,6 @@ const MinistriesTab = () => {
     },
   ];
 
-  // Função personalizada para renderizar ações com as setas
-  const renderActions = (ministry: any) => {
-    const currentIndex = ministries.findIndex(m => m.id === ministry.id);
-    const isFirst = currentIndex === 0;
-    const isLast = currentIndex === ministries.length - 1;
-    
-    return (
-      <div className="flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => handleMoveUp(ministry)}
-          disabled={isFirst}
-          title="Mover para cima"
-        >
-          <ArrowUp className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => handleMoveDown(ministry)}
-          disabled={isLast}
-          title="Mover para baixo"
-        >
-          <ArrowDown className="h-4 w-4" />
-        </Button>
-        <Button variant="ghost" size="sm" onClick={() => handleViewMinistry(ministry)}>
-          👁️
-        </Button>
-        <Button variant="ghost" size="sm" onClick={() => handleEditMinistry(ministry)}>
-          ✏️
-        </Button>
-        <Button variant="ghost" size="sm" onClick={() => handleDeleteMinistry(ministry)}>
-          🗑️
-        </Button>
-      </div>
-    );
-  };
-
   if (error) {
     return <div className="text-center text-red-500">Erro ao carregar ministérios.</div>;
   }
@@ -317,7 +211,6 @@ const MinistriesTab = () => {
         onEdit={handleEditMinistry}
         onDelete={handleDeleteMinistry}
         onAdd={handleAddMinistry}
-        customActions={renderActions}
       />
 
       {/* Create/Edit Ministry Modal */}
@@ -351,7 +244,7 @@ const MinistriesTab = () => {
         title="Confirmar Exclusão"
         description={
           selectedMinistry?.memberCount > 0 
-            ? `Não é possível excluir o ministério "${selectedMinistry?.name}" pois ele possui ${selectedMinistry?.memberCount} membro(s). Para excluir, o ministério não deve ter nenhum membro.`
+            ? `Não é possível excluir o ministério "${selectedMinistry?.name}" pois ele possui ${selectedMinistry?.memberCount} membro(s). Para excluir, o ministério não pode ter nenhum membro.`
             : `Tem certeza que deseja excluir o ministério ${selectedMinistry?.name}? Esta ação não pode ser desfeita.`
         }
         isDeleting={deleteMinistryMutation.isPending}

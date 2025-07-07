@@ -1,24 +1,28 @@
 
+import React from "react";
+import { Eye, Pencil, Trash2, Plus } from "lucide-react";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, Edit, Trash2, Plus } from "lucide-react";
-
-interface Column {
-  key: string;
-  title: string;
-  render?: (value: any) => string | React.ReactNode;
-}
 
 interface AdminTableProps {
   data: any[];
-  columns: Column[];
+  columns: {
+    key: string;
+    title: string;
+    render?: (value: any, record: any) => React.ReactNode;
+  }[];
   isLoading: boolean;
-  onView?: (item: any) => void;
-  onEdit?: (item: any) => void;
-  onDelete?: (item: any) => void;
+  onView?: (record: any) => void;
+  onEdit?: (record: any) => void;
+  onDelete?: (record: any) => void;
   onAdd?: () => void;
-  customActions?: (item: any) => React.ReactNode;
 }
 
 const AdminTable = ({
@@ -28,96 +32,92 @@ const AdminTable = ({
   onView,
   onEdit,
   onDelete,
-  onAdd,
-  customActions
+  onAdd
 }: AdminTableProps) => {
   if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="pt-6">
-          <div className="text-center">Carregando...</div>
-        </CardContent>
-      </Card>
-    );
+    return <div className="flex justify-center py-8">Carregando...</div>;
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Lista de Itens</CardTitle>
-        {onAdd && (
+    <div>
+      {onAdd && (
+        <div className="mb-4">
           <Button onClick={onAdd}>
             <Plus className="mr-2 h-4 w-4" />
             Adicionar Novo
           </Button>
-        )}
-      </CardHeader>
-      <CardContent>
+        </div>
+      )}
+      
+      <div className="rounded-md border overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
               {columns.map((column) => (
                 <TableHead key={column.key}>{column.title}</TableHead>
               ))}
-              <TableHead>Ações</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((item) => (
-              <TableRow key={item.id}>
-                {columns.map((column) => (
-                  <TableCell key={column.key}>
-                    {column.render
-                      ? column.render(item[column.key])
-                      : item[column.key] || "-"}
-                  </TableCell>
-                ))}
-                <TableCell>
-                  {customActions ? (
-                    customActions(item)
-                  ) : (
-                    <div className="flex items-center gap-2">
+            {data.length === 0 ? (
+              <TableRow>
+                <TableCell 
+                  colSpan={columns.length + 1} 
+                  className="text-center h-24"
+                >
+                  Nenhum registro encontrado
+                </TableCell>
+              </TableRow>
+            ) : (
+              data.map((record, index) => (
+                <TableRow key={record.id || index}>
+                  {columns.map((column) => (
+                    <TableCell key={`${record.id || index}-${column.key}`}>
+                      {column.render 
+                        ? column.render(record[column.key], record)
+                        : record[column.key]}
+                    </TableCell>
+                  ))}
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
                       {onView && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onView(item)}
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => onView(record)}
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
                       )}
                       {onEdit && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEdit(item)}
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => onEdit(record)}
                         >
-                          <Edit className="h-4 w-4" />
+                          <Pencil className="h-4 w-4" />
                         </Button>
                       )}
                       {onDelete && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onDelete(item)}
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          onClick={() => onDelete(record)}
+                          className="text-destructive hover:text-destructive/80"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       )}
                     </div>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
-        {data.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            Nenhum item encontrado.
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
