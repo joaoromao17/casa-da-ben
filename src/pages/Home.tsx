@@ -20,8 +20,6 @@ interface Ministry {
   description: string;
   imageUrl: string;
   slug: string;
-  displayOrder?: number;
-  showOnHome?: boolean;
 }
 
 type Evento = {
@@ -139,19 +137,7 @@ const Home = () => {
     async function fetchMinistries() {
       try {
         const response = await api.get("/ministerios");
-        
-        // Filtrar ministérios que devem aparecer na home e ordenar
-        const filteredMinistries = response.data
-          .filter((ministry: Ministry) => ministry.showOnHome !== false)
-          .sort((a: Ministry, b: Ministry) => {
-            // Ordenar por displayOrder (menor primeiro), se não tiver displayOrder vai para o final
-            const orderA = a.displayOrder ?? 999;
-            const orderB = b.displayOrder ?? 999;
-            return orderA - orderB;
-          });
-
-        // Pegar os 3 primeiros ministérios ordenados
-        const limited = filteredMinistries.slice(0, 3);
+        const limited = response.data.slice(0, 3);
         setMinistries(limited);
       } catch (error) {
         console.error("Erro ao buscar ministérios:", error);
