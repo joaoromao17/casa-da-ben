@@ -9,8 +9,6 @@ export const ministryFormSchema = z.object({
   leaderIds: z.array(z.string()).optional(),
   viceLeaderIds: z.array(z.string()).optional(),
   activities: z.array(z.string()).optional(),
-  displayOrder: z.number().min(0).optional(),
-  showOnHome: z.boolean().optional(),
 });
 
 export type MinistryFormData = z.infer<typeof ministryFormSchema>;

@@ -3,7 +3,6 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { MinistryFormData } from "./ministryFormSchema";
 import { UseFormReturn } from "react-hook-form";
@@ -99,51 +98,6 @@ const MinistryForm = ({ form, users, isCreating, selectedMinistry }: MinistryFor
           </FormItem>
         )}
       />
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField
-          control={form.control}
-          name="displayOrder"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ordem de Exibição</FormLabel>
-              <FormControl>
-                <Input 
-                  type="number" 
-                  min="0" 
-                  placeholder="0" 
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="showOnHome"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4">
-              <FormControl>
-                <Checkbox
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <div className="space-y-1 leading-none">
-                <FormLabel>
-                  Mostrar na Home
-                </FormLabel>
-                <p className="text-sm text-muted-foreground">
-                  Exibir este ministério na página inicial
-                </p>
-              </div>
-            </FormItem>
-          )}
-        />
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <FormField
