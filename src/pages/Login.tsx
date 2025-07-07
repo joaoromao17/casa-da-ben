@@ -109,13 +109,12 @@ const Login = () => {
                       <FormControl>
                         <div className="flex items-center relative">
                           <Mail className="absolute left-3 text-gray-500" size={18} />
-                          <Input 
-                            placeholder="Digite seu e-mail" 
-                            className="pl-10" 
+                          <Input
+                            placeholder="Digite seu e-mail"
+                            className="pl-10"
                             type="email"
                             autoComplete="email"
-                            inputMode="email"
-                            {...field} 
+                            {...field}
                           />
                         </div>
                       </FormControl>
