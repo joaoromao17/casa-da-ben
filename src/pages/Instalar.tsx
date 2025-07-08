@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -81,10 +80,10 @@ const Instalar = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <a href="/app-debug.apk" download>
+                  <a href="/app-release.apk" download>
                     <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3">
                       <Download className="mr-2 h-5 w-5" />
-                      📦 Baixar .APK
+                      📦 Baixar APP
                     </Button>
                   </a>
                 </CardContent>
