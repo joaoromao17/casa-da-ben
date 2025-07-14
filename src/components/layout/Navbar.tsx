@@ -15,6 +15,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { AvisoModal } from "@/components/avisos/AvisoModal";
+import api from "@/services/api";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,7 +53,13 @@ const Navbar = () => {
     role === "ROLE_ADMIN" || role === "ROLE_PASTOR" || role === "ROLE_PASTORAUXILIAR"
   );
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await api.put("/users/fcm-token", { fcmToken: null });
+    } catch (error) {
+      console.error("Erro ao resetar FCM token:", error);
+    }
+
     localStorage.removeItem("authToken");
     sessionStorage.removeItem("authToken");
     window.location.reload();

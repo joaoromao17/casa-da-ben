@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
@@ -174,7 +173,13 @@ const MinhaConta = () => {
     fetchUserData();
   }, [navigate]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await api.put("/users/fcm-token", { fcmToken: null });
+    } catch (error) {
+      console.error("Erro ao resetar FCM token:", error);
+    }
+
     localStorage.removeItem("authToken");
     sessionStorage.removeItem("authToken");
 
