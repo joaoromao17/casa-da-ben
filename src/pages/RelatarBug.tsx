@@ -94,8 +94,8 @@ Enviado através do sistema de feedback - ICB 610 Beta
             <div className="flex justify-center mb-4">
               <div className="bg-orange-100 p-3 rounded-full">
                 <div className="flex gap-2">
-                  <Bug className="h-8 w-8 text-orange-600" />
-                  <Lightbulb className="h-8 w-8 text-orange-600" />
+                  <Bug className="h-8 w-8 text-red-600" />
+                  <Lightbulb className="h-8 w-8 text-green-600" />
                 </div>
               </div>
             </div>

@@ -8,7 +8,8 @@ import {
   Mail,
   Bug,
   Heart,
-  Smartphone
+  Smartphone,
+  Lightbulb
 } from "lucide-react";
 
 const Footer = () => {
@@ -158,12 +159,13 @@ const Footer = () => {
               Termos de Uso
             </Link>
             {" • "}
-            <Link to="/relatar-bug" className="hover:text-white transition-colors flex items-center justify-center gap-1 mt-2">
+            <Link to="/relatar-bug" className="hover:text-white transition-colors inline-flex items-center gap-1">
               <Bug size={16} />
-              Relatar Bug
+              <Lightbulb size={16} />
+              Sugestão/Bug
             </Link>
             {" • "}
-            <Link to="/apoiar-desenvolvedor" className="hover:text-white transition-colors flex items-center justify-center gap-1 mt-2">
+            <Link to="/apoiar-desenvolvedor" className="hover:text-white transition-colors inline-flex items-center gap-1">
               <Heart size={16} />
               Apoiar Desenvolvedor
             </Link>
