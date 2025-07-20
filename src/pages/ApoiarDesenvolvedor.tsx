@@ -40,19 +40,17 @@ const ApoiarDesenvolvedor = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center gap-4 mb-4">
-                  <Avatar className="h-16 w-16">
+                <div className="text-center mb-4">
+                  <Avatar className="h-24 w-24 mx-auto mb-3">
                     <AvatarImage src="/lovable-uploads/759f8e23-09e1-40d2-8796-6a6d0dde9c8a.png" alt="João Vítor" />
                     <AvatarFallback>JV</AvatarFallback>
                   </Avatar>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-2">João Vítor Romão Colares de França</h3>
-                    <p className="text-gray-600">
-                      Desenvolvedor em busca de oportunidades na área de tecnologia. 
-                      Este projeto foi criado como forma de contribuir com a comunidade 
-                      e demonstrar habilidades técnicas.
-                    </p>
-                  </div>
+                  <h3 className="font-semibold text-lg mb-2">João Vítor Romão Colares de França</h3>
+                  <p className="text-gray-600">
+                    Desenvolvedor em busca de oportunidades na área de tecnologia. 
+                    Este projeto foi criado como forma de contribuir com a comunidade 
+                    e demonstrar habilidades técnicas.
+                  </p>
                 </div>
                 
                 <div className="space-y-3">
