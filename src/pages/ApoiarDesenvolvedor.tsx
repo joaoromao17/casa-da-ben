@@ -58,8 +58,9 @@ const ApoiarDesenvolvedor = () => {
                 <div className="space-y-3">
                   <div className="bg-blue-50 p-3 rounded-lg">
                     <p className="text-sm text-blue-800">
-                      <strong>Tecnologias utilizadas:</strong> React, TypeScript, Tailwind CSS, 
-                      Shadcn/UI, Supabase, e muito mais!
+                      <strong>Tecnologias utilizadas:</strong> Backend em Java com Spring Boot 3, Frontend em React + Vite,
+                      Banco de dados PostgreSQL, Uploads via Cloudinary, Notificações push com Firebase, Deploy em Vercel + Render
+                      e App mobile com PWA + Capacitor
                     </p>
                   </div>
                   
