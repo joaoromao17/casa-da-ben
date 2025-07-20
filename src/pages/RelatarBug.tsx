@@ -9,51 +9,59 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Bug, Mail, AlertTriangle } from "lucide-react";
+import { Bug, Mail, AlertTriangle, Lightbulb } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
-const bugReportSchema = z.object({
+const feedbackSchema = z.object({
   nome: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   email: z.string().email("Email inválido"),
-  pagina: z.string().min(1, "Informe em qual página ocorreu o erro"),
-  descricao: z.string().min(10, "Descreva o problema com pelo menos 10 caracteres"),
+  tipo: z.enum(["bug", "sugestao"], { required_error: "Selecione o tipo do feedback" }),
+  pagina: z.string().min(1, "Informe em qual página"),
+  descricao: z.string().min(10, "Descreva com pelo menos 10 caracteres"),
 });
 
-type BugReportForm = z.infer<typeof bugReportSchema>;
+type FeedbackForm = z.infer<typeof feedbackSchema>;
 
 const RelatarBug = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<BugReportForm>({
-    resolver: zodResolver(bugReportSchema),
+  const form = useForm<FeedbackForm>({
+    resolver: zodResolver(feedbackSchema),
     defaultValues: {
       nome: "",
       email: "",
+      tipo: undefined,
       pagina: "",
       descricao: "",
     },
   });
 
-  const onSubmit = async (data: BugReportForm) => {
+  const onSubmit = async (data: FeedbackForm) => {
     setIsSubmitting(true);
     
     try {
+      const tipoTexto = data.tipo === "bug" ? "Bug Report" : "Sugestão de Melhoria";
+      const descricaoLabel = data.tipo === "bug" ? "Descrição do problema:" : "Descrição da sugestão:";
+      const paginaLabel = data.tipo === "bug" ? "Página onde ocorreu:" : "Página relacionada:";
+      
       // Criar o corpo do email
       const emailBody = `
+Tipo: ${tipoTexto}
 Nome: ${data.nome}
 Email: ${data.email}
-Página onde ocorreu: ${data.pagina}
+${paginaLabel} ${data.pagina}
 
-Descrição do problema:
+${descricaoLabel}
 ${data.descricao}
 
 ---
-Enviado através do sistema de relatório de bugs - ICB 610 Beta
+Enviado através do sistema de feedback - ICB 610 Beta
       `.trim();
 
       // Criar link mailto
-      const subject = encodeURIComponent("Bug Report - ICB 610 Beta");
+      const subject = encodeURIComponent(`${tipoTexto} - ICB 610 Beta`);
       const body = encodeURIComponent(emailBody);
       const mailtoLink = `mailto:icbcasadabencao610@gmail.com?subject=${subject}&body=${body}`;
 
@@ -61,7 +69,7 @@ Enviado através do sistema de relatório de bugs - ICB 610 Beta
       window.location.href = mailtoLink;
 
       toast({
-        title: "Relatório enviado!",
+        title: data.tipo === "bug" ? "Bug relatado!" : "Sugestão enviada!",
         description: "Seu cliente de email foi aberto. Obrigado pelo feedback!",
       });
 
@@ -85,28 +93,31 @@ Enviado através do sistema de relatório de bugs - ICB 610 Beta
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <div className="bg-orange-100 p-3 rounded-full">
-                <Bug className="h-8 w-8 text-orange-600" />
+                <div className="flex gap-2">
+                  <Bug className="h-8 w-8 text-orange-600" />
+                  <Lightbulb className="h-8 w-8 text-orange-600" />
+                </div>
               </div>
             </div>
             <h1 className="text-3xl font-bold text-church-900 mb-4">
-              Relatório de Bug
+              Feedback & Sugestões
             </h1>
             <p className="text-lg text-gray-600 mb-2">
-              Está enfrentando algum bug ou erro?
+              Encontrou um bug ou tem uma ideia para melhorar o site?
             </p>
             <p className="text-gray-600">
-              Envie uma mensagem para a gente explicando o que aconteceu para resolvermos o mais rápido possível!
+              Envie seu feedback para nos ajudar a melhorar a experiência de todos!
             </p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-orange-600" />
                 Versão Beta
               </CardTitle>
               <CardDescription>
-                Este sistema está em versão beta. Seu feedback é muito importante para melhorarmos a experiência de todos os usuários.
+                Este sistema está em versão beta. Reportes de bugs e sugestões de melhorias são muito importantes para melhorarmos a experiência de todos os usuários.
               </CardDescription>
             </CardHeader>
 
@@ -145,10 +156,32 @@ Enviado através do sistema de relatório de bugs - ICB 610 Beta
 
                   <FormField
                     control={form.control}
+                    name="tipo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tipo de Feedback *</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione o tipo de feedback" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="bug">🐛 Reportar Bug/Erro</SelectItem>
+                            <SelectItem value="sugestao">💡 Sugestão de Melhoria</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
                     name="pagina"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Página onde ocorreu o erro *</FormLabel>
+                        <FormLabel>Página relacionada *</FormLabel>
                         <FormControl>
                           <Input placeholder="Ex: Página de membros, login, eventos..." {...field} />
                         </FormControl>
@@ -162,10 +195,16 @@ Enviado através do sistema de relatório de bugs - ICB 610 Beta
                     name="descricao"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Descrição do problema *</FormLabel>
+                        <FormLabel>
+                          {form.watch("tipo") === "bug" ? "Descrição do problema *" : "Descrição da sugestão *"}
+                        </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Descreva detalhadamente o que aconteceu. Inclua os passos que você seguiu antes do erro ocorrer, qual mensagem apareceu, etc."
+                            placeholder={
+                              form.watch("tipo") === "bug" 
+                                ? "Descreva detalhadamente o que aconteceu. Inclua os passos que você seguiu antes do erro ocorrer, qual mensagem apareceu, etc."
+                                : "Descreva sua ideia de melhoria. Como isso poderia melhorar a experiência dos usuários? Seja específico!"
+                            }
                             className="min-h-[120px]"
                             {...field}
                           />
@@ -194,7 +233,8 @@ Enviado através do sistema de relatório de bugs - ICB 610 Beta
                     className="w-full bg-church-700 hover:bg-church-800"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Abrindo email..." : "Enviar Relatório"}
+                    {isSubmitting ? "Abrindo email..." : 
+                     form.watch("tipo") === "bug" ? "Enviar Relatório de Bug" : "Enviar Sugestão"}
                   </Button>
                 </form>
               </Form>
@@ -203,7 +243,7 @@ Enviado através do sistema de relatório de bugs - ICB 610 Beta
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500">
-              Agradecemos sua paciência e colaboração para melhorar nosso sistema!
+              Agradecemos seu feedback e colaboração para melhorar nosso sistema!
             </p>
           </div>
         </div>
