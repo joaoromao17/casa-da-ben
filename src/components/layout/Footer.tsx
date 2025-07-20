@@ -97,7 +97,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Ministries */}
+          {/* Horários de culto */}
           <div>
             <h3 className="text-xl font-bold mb-4">Cultos</h3>
             <ul className="space-y-2">
@@ -147,30 +147,35 @@ const Footer = () => {
 
         <hr className="border-gray-700 my-8" />
 
-        {/* Bottom Footer */}
-        <div className="text-center text-gray-400">
-          <p>&copy; {currentYear} ICB 610. Todos os direitos reservados.</p>
-          <p className="mt-2">
-            <Link to="/politica-de-privacidade" className="hover:text-white transition-colors">
-              Política de Privacidade
-            </Link>
-            {" • "}
-            <Link to="/termos-de-uso" className="hover:text-white transition-colors">
-              Termos de Uso
-            </Link>
-            {" • "}
-            <Link to="/relatar-bug" className="hover:text-white transition-colors inline-flex items-center gap-1">
-              <Bug size={16} />
-              <Lightbulb size={16} />
-              Sugestão/Bug
-            </Link>
-            {" • "}
-            <Link to="/apoiar-desenvolvedor" className="hover:text-white transition-colors inline-flex items-center gap-1">
-              <Heart size={16} />
-              Apoiar Desenvolvedor
-            </Link>
-          </p>
-        </div>
+      {/* Bottom Footer */}
+      <div className="text-center text-gray-400">
+        <p>&copy; {currentYear} ICB 610. Todos os direitos reservados.</p>
+        
+        {/* Primeira linha de links */}
+        <p className="mt-2">
+          <Link to="/politica-de-privacidade" className="hover:text-white transition-colors">
+            Política de Privacidade
+          </Link>
+          {" • "}
+          <Link to="/termos-de-uso" className="hover:text-white transition-colors">
+            Termos de Uso
+          </Link>
+        </p>
+      
+        {/* Segunda linha de links */}
+        <p className="mt-1">
+          <Link to="/relatar-bug" className="hover:text-white transition-colors inline-flex items-center gap-1">
+            <Bug size={16} />
+            <Lightbulb size={16} />
+            Sugestão/Bug
+          </Link>
+          {" • "}
+          <Link to="/apoiar-desenvolvedor" className="hover:text-white transition-colors inline-flex items-center gap-1">
+            <Heart size={16} />
+            Apoiar Desenvolvedor
+          </Link>
+        </p>
+      </div>
       </div>
     </footer>
   );
