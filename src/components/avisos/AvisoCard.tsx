@@ -106,7 +106,10 @@ export const AvisoCard: React.FC<AvisoCardProps> = ({ aviso, showDelete = false,
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-700 mb-4 whitespace-pre-line break-words">{aviso.mensagem}</p>
+          <div
+            className="text-gray-700 mb-4 prose prose-sm max-w-none"
+            dangerouslySetInnerHTML={{ __html: aviso.mensagem }}
+          />
 
           {aviso.arquivoUrl && (
             <div className="mt-4">
