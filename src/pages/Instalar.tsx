@@ -71,10 +71,10 @@ const Instalar = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Smartphone className="h-6 w-6" />
-                    Baixar App para Android
+                    Baixar/Atualizar App para Android
                   </CardTitle>
                   <CardDescription>
-                    Toque abaixo para acessar o Google Drive da igreja e baixar o app oficial.
+                    Toque no botão abaixo para acessar o Google Drive da igreja e baixar o app oficial.
                     <br />
                     <strong>Passo a passo:</strong>
                     <br />
@@ -95,7 +95,7 @@ const Instalar = () => {
                   >
                     <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3">
                       <Download className="mr-2 h-5 w-5" />
-                      📦 Baixar/Atualizar APP (Google Drive)
+                      📦 Baixar/Atualizar APP
                     </Button>
                   </a>
                 </CardContent>
