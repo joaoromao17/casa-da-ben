@@ -10,7 +10,7 @@ import api from '@/services/api';
 import { useToast } from '@/hooks/use-toast';
 import { useWhatsAppMessage } from '@/hooks/useWhatsAppMessage';
 import { WhatsAppMessageModal } from './WhatsAppMessageModal';
-import { TextareaWithCounter } from '../ui/TextareaWithCounter';
+import { RichTextEditor } from '../ui/rich-text-editor';
 
 interface Ministry {
   id: number;
@@ -159,17 +159,13 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
 
             <div>
               <Label htmlFor="mensagem">Mensagem *</Label>
-              <TextareaWithCounter
-                id="mensagem"
+              <RichTextEditor
                 value={formData.mensagem}
-                onChange={(e) =>
-                  setFormData({ ...formData, mensagem: e.target.value })
+                onChange={(value) =>
+                  setFormData({ ...formData, mensagem: value })
                 }
-                rows={4}
-                required
                 maxLength={500}
-                className="h-32"
-                placeholder="Digite sua mensagem..."
+                placeholder="Digite sua mensagem... Use a barra de ferramentas para formatar texto em negrito, itálico, adicionar links, etc."
               />
             </div>
 
