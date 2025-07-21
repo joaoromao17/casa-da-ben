@@ -74,16 +74,28 @@ const Instalar = () => {
                     Baixar App para Android
                   </CardTitle>
                   <CardDescription>
-                    Toque abaixo para baixar o app oficial da ICB 610.
+                    Toque abaixo para acessar o Google Drive da igreja e baixar o app oficial.
                     <br />
-                    ⚠️ Talvez seja necessário permitir instalação de fontes desconhecidas.
+                    <strong>Passo a passo:</strong>
+                    <br />
+                    1. Clique no botão abaixo para abrir o Google Drive da ICB 610
+                    <br />
+                    2. No arquivo do app, toque nos três pontos (⋮) 
+                    <br />
+                    3. Selecione "Baixar" para fazer o download do APK
+                    <br />
+                    4. Após baixar, instale o app (pode precisar permitir fontes desconhecidas)
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <a href="/app-release.apk" download>
+                  <a 
+                    href="https://drive.google.com/file/d/1zZf6T8Vxjq5Q4UMizEbG883lVJOF2Xhw/view?usp=sharing" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
                     <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3">
                       <Download className="mr-2 h-5 w-5" />
-                      📦 Baixar/Atualizar APP
+                      📦 Baixar/Atualizar APP (Google Drive)
                     </Button>
                   </a>
                 </CardContent>
