@@ -62,11 +62,10 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
         modules={modules}
         formats={formats}
         style={{
-          height: '120px',
-          marginBottom: '42px'
+          height: '120px'
         }}
       />
-      <div className="absolute bottom-0 right-0 text-sm text-muted-foreground">
+      <div className="mt-2 text-right text-sm text-muted-foreground">
         {getTextLength()}/{maxLength} caracteres
       </div>
       
