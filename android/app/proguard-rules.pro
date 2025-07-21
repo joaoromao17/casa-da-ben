@@ -1,21 +1,20 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Mantém as classes do Capacitor para não quebrar funcionalidades nativas
+-keep class com.getcapacitor.** { *; }
+-dontwarn com.getcapacitor.**
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Firebase Messaging (notificações push)
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# WebView com JavaScript (usado por Capacitor)
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Mantém classes do AndroidX usadas indiretamente
+-keep class androidx.** { *; }
+-dontwarn androidx.**
+
+# Mantém classes do Google Services (caso Firebase use Analytics, Crashlytics etc)
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
