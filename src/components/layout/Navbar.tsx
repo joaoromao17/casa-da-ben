@@ -95,7 +95,7 @@ const Navbar = () => {
                 <Link to="/estudos" className="nav-link">Estudos</Link>
                 <Link to="/oracao" className="nav-link">Orações</Link>
                 <Link to="/testemunhos" className="nav-link">Testemunhos</Link>
-                <Link to="/contribuicoes" className="nav-link">Contribuições</Link>
+                 {/* Em breve <Link to="/contribuicoes" className="nav-link">Contribuições</Link>*/}
                 <Link to="/contato" className="nav-link">Contato</Link>
                 {hasAdminAccess && (
                   <Link to="/admin" className="nav-link flex items-center gap-1">
@@ -163,7 +163,7 @@ const Navbar = () => {
                 <Link to="/estudos" className="nav-link py-2">Estudos</Link>
                 <Link to="/oracao" className="nav-link py-2">Orações</Link>
                 <Link to="/testemunhos" className="nav-link py-2">Testemunhos</Link>
-                <Link to="/contribuicoes" className="nav-link py-2">Contribuições</Link>
+                 {/* Em breve <Link to="/contribuicoes" className="nav-link py-2">Contribuições</Link>*/}
                 <Link to="/contato" className="nav-link py-2">Contato</Link>
                 {hasAdminAccess && (
                   <Link to="/admin" className="nav-link py-2 flex items-center gap-1">
