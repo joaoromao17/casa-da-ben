@@ -122,7 +122,6 @@ const Sobre = () => {
                       <li>Excelência no serviço ao Senhor</li>
                       <li>Relacionamentos de amor e comunhão</li>
                       <li>Mordomia dos recursos e talentos</li>
-                      <li>Evangelismo e missões</li>
                     </ul>
                   </div>
                 </div>
@@ -152,32 +151,23 @@ const Sobre = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-start space-x-3">
-                      <Clock className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-lg text-church-800">Horário de Atendimento</h3>
-                        <p className="text-gray-700">Segunda a Sexta: 9h às 17h</p>
-                        <p className="text-gray-700">Sábado: 9h às 12h</p>
-                      </div>
-                    </div>
-
                     <div className="mt-8">
                       <h3 className="font-semibold text-lg text-church-800 mb-3">Horários de Culto</h3>
                       <div className={`${isMobile ? 'space-y-2' : 'space-y-3'} text-gray-700`}>
                         <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
-                          <span className="font-medium">Domingo - Culto da Família:</span>
+                          <span className="font-medium">Domingo - Culto da Família</span>
                           <span>18:30</span>
                         </div>
                         <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
-                          <span className="font-medium">Terça-feira - Oração:</span>
+                          <span className="font-medium">Terça-feira - Reunião de Oração</span>
                           <span>20:00</span>
                         </div>
                         <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
-                          <span className="font-medium">Quarta-feira - Escola Bíblica:</span>
+                          <span className="font-medium">Quarta-feira - Escola Bíblica</span>
                           <span>20:00</span>
                         </div>
                         <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
-                          <span className="font-medium">Sexta-feira - Culto de Libertação:</span>
+                          <span className="font-medium">Sexta-feira - Culto de Libertação</span>
                           <span>20:00</span>
                         </div>
                       </div>
@@ -202,14 +192,9 @@ const Sobre = () => {
 
                     <h4 className={`font-medium text-church-700 ${isMobile ? 'text-sm mb-1' : 'mb-2'}`}>Transporte Público:</h4>
                     <ul className={`list-disc pl-5 text-gray-700 ${isMobile ? 'text-xs mb-3' : 'mb-4'}`}>
-                      <li>Ônibus: Linhas 0.373, 0.366 e 0.391</li>
-                      <li>Ponto de ônibus a 30m da igreja</li>
+                      <li>Ponto de ônibus próximo a igreja</li>
                     </ul>
 
-                    <h4 className={`font-medium text-church-700 ${isMobile ? 'text-sm mb-1' : 'mb-2'}`}>De Carro:</h4>
-                    <ul className={`list-disc pl-5 text-gray-700 ${isMobile ? 'text-xs mb-3' : 'mb-4'}`}>
-                      <li>Estacionamento próprio com 30 vagas</li>
-                    </ul>
                     <a href="https://www.google.com/maps/place/Igreja+Casa+Da+Bencao/@-15.8712465,-48.0704318,15z/data=!4m6!3m5!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!8m2!3d-15.8563574!4d-48.0797843!16s%2Fg%2F11cs01rnj5?entry=ttu&g_ep=EgoyMDI1MDQxNi4xIKXMDSoJLDEwMjExNDUzSAFQAw%3D%3D" target="_blank">
                       <Button className={`w-full ${isMobile ? 'text-sm py-2' : ''}`}>
                         Abrir no Google Maps
@@ -237,6 +222,7 @@ const Sobre = () => {
                 ))}
               </div>
 
+      {/* Aba de Galeria 
               <div className="text-center mt-12">
                 <a href="https://drive.google.com/drive/folders/1-7c8j9A9urrFsOtD_8tBx3e5AOD-9ybY?usp=sharing" target="_blank">
                   <Button className="btn-primary">
@@ -244,6 +230,7 @@ const Sobre = () => {
                   </Button>
                 </a>
               </div>
+              */}
             </TabsContent>
           </Tabs>
         </div>
