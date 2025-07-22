@@ -21,7 +21,7 @@ const historicoImagens = [
 
 const Sobre = () => {
   const isMobile = useIsMobile();
-  
+
   return (
     <Layout>
       {/* Hero Section */}
@@ -152,8 +152,10 @@ const Sobre = () => {
                     </div>
 
                     <div className="mt-8">
-                      <Clock className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
-                      <h3 className="font-semibold text-lg text-church-800 mb-3">Horários de Culto</h3>
+                      <div className="flex items-start space-x-3 mb-3">
+                        <Clock className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
+                        <h3 className="font-semibold text-lg text-church-800">Horários de Culto</h3>
+                      </div>
                       <div className={`${isMobile ? 'space-y-2' : 'space-y-3'} text-gray-700`}>
                         <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
                           <span className="font-medium">Domingo - Culto da Família</span>
@@ -178,10 +180,10 @@ const Sobre = () => {
 
                 <div className={`space-y-8 ${isMobile ? 'order-1' : ''}`}>
                   <div className={`rounded-lg overflow-hidden shadow-lg ${isMobile ? 'h-48' : 'h-80'}`}>
-                    <iframe 
-                      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr" 
-                      width="100%" 
-                      height="100%" 
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr"
+                      width="100%"
+                      height="100%"
                       loading="lazy"
                       className="w-full h-full"
                     />
@@ -223,7 +225,7 @@ const Sobre = () => {
                 ))}
               </div>
 
-      {/* Aba de Galeria 
+              {/* Aba de Galeria 
               <div className="text-center mt-12">
                 <a href="https://drive.google.com/drive/folders/1-7c8j9A9urrFsOtD_8tBx3e5AOD-9ybY?usp=sharing" target="_blank">
                   <Button className="btn-primary">
