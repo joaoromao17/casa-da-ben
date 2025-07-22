@@ -277,7 +277,7 @@ const EventsTab = () => {
   }
 
   const categories = [
-    "Culto", "Oração", "Ação Social", "Retiro"
+    "Cultos", "Conferências", "Festas", "Passeios"
   ];
 
   return (

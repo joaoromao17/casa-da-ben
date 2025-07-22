@@ -140,7 +140,7 @@ const EventCreateForm = ({ children }: EventCreateFormProps) => {
   };
 
   const categories = [
-    "Culto", "Oração", "Ação Social", "Retiro"
+    "Cultos", "Conferências", "Festas", "Passeios"
   ];
 
   return (

@@ -12,7 +12,7 @@ import ErrorAlert from "@/components/ui/ErrorAlert";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import EventCreateForm from "@/components/events/EventCreateForm";
 
-const categories = ["Todos", "Culto", "Oração", "Ação Social", "Retiro"];
+const categories = ["Todos", "Cultos", "Conferências", "Festas", "Passeios"];
 
 interface Event {
   id: number;
@@ -198,7 +198,7 @@ const Eventos = () => {
           )}
         </div>
 
-        {/* Call to Action */}
+        {/* Call to Action 
         <div className="bg-church-900 text-white p-8 rounded-lg">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="mb-6 md:mb-0 md:mr-6">
@@ -216,6 +216,7 @@ const Eventos = () => {
             </div>
           </div>
         </div>
+*/}
       </div>
     </Layout>
   );
