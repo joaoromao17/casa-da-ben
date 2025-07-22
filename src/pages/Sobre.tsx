@@ -152,6 +152,7 @@ const Sobre = () => {
                     </div>
 
                     <div className="mt-8">
+                      <Clock className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
                       <h3 className="font-semibold text-lg text-church-800 mb-3">Horários de Culto</h3>
                       <div className={`${isMobile ? 'space-y-2' : 'space-y-3'} text-gray-700`}>
                         <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
