@@ -24,20 +24,17 @@ const MinistryCard = ({ title, description, imageUrl, slug }: MinistryCardProps)
   const fullImageUrl = imageUrl && imageUrl.startsWith("http") ? imageUrl : `${API_BASE_URL}${imageUrl || ''}`;
   return (
     <Card className="card-church overflow-hidden h-full flex flex-col">
-      <div className="h-48 overflow-hidden">
+      <div className="aspect-video overflow-hidden">
         <img
           src={fullImageUrl}
           alt={`Imagem do ${title}`}
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
       </div>
-      <CardHeader>
+      <CardHeader className="pb-2">
         <CardTitle className="text-xl text-church-800">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="text-gray-600 line-clamp-3">{description}</p>
-      </CardContent>
-      <CardFooter>
+      <CardFooter className="pt-0">
         <Link to={`/ministerios/${slug}`} className="w-full">
           <Button className="w-full flex justify-between items-center btn-outline">
             <span>Saiba Mais</span>
