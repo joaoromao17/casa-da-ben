@@ -12,6 +12,7 @@ import { AvisoCard } from "@/components/avisos/AvisoCard";
 import api from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Ministry {
   name: string;
@@ -46,6 +47,7 @@ interface Aviso {
 
 const Home = () => {
   const isMobile = useIsMobile();
+  const { isAuthenticated } = useAuth();
   
   const [verseOfDay, setVerseOfDay] = useState<{ verse: string; reference: string }>({
     verse: "",
@@ -229,9 +231,9 @@ const Home = () => {
     <section className="md:hidden bg-white py-6">
       <div className="container-church">
         <div className="grid grid-cols-2 gap-4">
-          <Link to="/cadastro" className="flex flex-col items-center justify-center p-4 rounded-lg bg-church-50 hover:bg-church-100 transition-colors">
+          <Link to={isAuthenticated ? "/minha-conta" : "/cadastro"} className="flex flex-col items-center justify-center p-4 rounded-lg bg-church-50 hover:bg-church-100 transition-colors">
             <User className="h-8 w-8 text-church-600 mb-2" />
-            <span className="text-center text-church-800 font-medium">Cadastre-se</span>
+            <span className="text-center text-church-800 font-medium">{isAuthenticated ? "Minha Conta" : "Cadastre-se"}</span>
           </Link>
           <Link to="/estudos" className="flex flex-col items-center justify-center p-4 rounded-lg bg-church-50 hover:bg-church-100 transition-colors">
             <BookOpen className="h-8 w-8 text-church-600 mb-2" />
@@ -484,9 +486,9 @@ const Home = () => {
           Estamos de braços abertos para receber você e sua família. Venha crescer na fé conosco!
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link to="/cadastro">
+          <Link to={isAuthenticated ? "/minha-conta" : "/cadastro"}>
             <Button className="bg-black text-white hover:bg-white hover:text-black text-lg py-6 px-8">
-              Cadastre-se
+              {isAuthenticated ? "Minha Conta" : "Cadastre-se"}
             </Button>
           </Link>
           <Link to="/contato">

@@ -16,8 +16,10 @@ import {
 } from "lucide-react";
 import { AvisoModal } from "@/components/avisos/AvisoModal";
 import api from "@/services/api";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
+  const { isAuthenticated } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRoles, setUserRoles] = useState<string[]>([]);
@@ -126,10 +128,10 @@ const Navbar = () => {
                   <Button onClick={handleLogout} size="sm" className="btn-danger">Sair</Button>
                 </>
               ) : (
-                <>
-                  <Link to="/cadastro">
-                    <Button size="sm" className="bg-black/80 text-white hover:bg-black/70 hover:text-white">Cadastre-se</Button>
-                  </Link>
+                  <>
+                    <Link to={isAuthenticated ? "/minha-conta" : "/cadastro"}>
+                      <Button size="sm" className="bg-black/80 text-white hover:bg-black/70 hover:text-white">{isAuthenticated ? "Minha Conta" : "Cadastre-se"}</Button>
+                    </Link>
                   <Link to="/login">
                     <Button size="sm" className="bg-black/80 text-white hover:bg-black/70 hover:text-white">Entrar</Button>
                   </Link>
@@ -190,8 +192,8 @@ const Navbar = () => {
                     </>
                   ) : (
                     <>
-                      <Link to="/cadastro" className="w-full">
-                        <Button className="btn-outline w-full">Cadastre-se</Button>
+                      <Link to={isAuthenticated ? "/minha-conta" : "/cadastro"} className="w-full">
+                        <Button className="btn-outline w-full">{isAuthenticated ? "Minha Conta" : "Cadastre-se"}</Button>
                       </Link>
                       <Link to="/login" className="w-full">
                         <Button className="btn-primary w-full">Entrar</Button>

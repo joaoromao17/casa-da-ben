@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import Layout from "@/components/layout/Layout";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   User, 
   BookOpen, 
@@ -18,6 +19,8 @@ import {
 } from "lucide-react";
 
 const PorQueSeRegistrar = () => {
+  const { isAuthenticated } = useAuth();
+  
   return (
     <Layout>
       <div className="bg-gradient-to-b from-church-50 to-white min-h-screen">
@@ -151,9 +154,9 @@ const PorQueSeRegistrar = () => {
 
             {/* Botão de Cadastro */}
             <div className="text-center mb-8">
-              <Link to="/cadastro">
+              <Link to={isAuthenticated ? "/minha-conta" : "/cadastro"}>
                 <Button className="btn-primary text-lg px-8 py-3 hover:scale-105 transition-transform">
-                  Cadastre-se
+                  {isAuthenticated ? "Minha Conta" : "Cadastre-se"}
                 </Button>
               </Link>
             </div>
