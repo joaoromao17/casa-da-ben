@@ -163,11 +163,11 @@ const StudiesTab = () => {
 
       {/* Modal Adicionar Novo */}
       <Dialog open={showAddModal} onOpenChange={setShowAddModal}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Adicionar Novo Estudo</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
+          <div className="overflow-y-auto flex-1">
             <UploadEstudoForm onUploadSuccess={handleUploadSuccess} />
           </div>
         </DialogContent>
@@ -175,11 +175,11 @@ const StudiesTab = () => {
 
       {/* Modal Editar */}
       <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle>Editar Estudo: {selectedStudy?.title}</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
+          <div className="overflow-y-auto flex-1">
             {selectedStudy && (
               <UploadEstudoForm
                 onUploadSuccess={handleUploadSuccess}
