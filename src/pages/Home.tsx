@@ -254,7 +254,7 @@ const Home = () => {
       <div className="container-church">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à Família ICB</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-6">Bem-vindo à Família ICB 610</h2>
             <p className="text-lg text-gray-700 mb-6">
               Somos uma igreja comprometida com a propagação do evangelho de Jesus Cristo e o
               desenvolvimento espiritual de cada membro. Nossa missão é impactar vidas através
