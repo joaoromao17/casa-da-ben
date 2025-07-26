@@ -107,7 +107,7 @@ export const AvisoCard: React.FC<AvisoCardProps> = ({ aviso, showDelete = false,
         </CardHeader>
         <CardContent>
           <div
-            className="text-gray-700 mb-4 prose prose-sm max-w-none prose-a:text-blue-600 prose-a:underline prose-a:no-underline hover:prose-a:underline"
+            className="text-gray-700 mb-4 prose prose-sm max-w-none break-words prose-a:text-blue-600 prose-a:underline prose-a:no-underline hover:prose-a:underline prose-a:break-all"
             dangerouslySetInnerHTML={{ __html: aviso.mensagem }}
           />
 

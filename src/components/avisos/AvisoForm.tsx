@@ -139,13 +139,13 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
 
   return (
     <>
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle>
+      <Card className="w-full max-w-2xl mx-auto overflow-hidden">
+        <CardHeader className="px-4 sm:px-6">
+          <CardTitle className="text-lg sm:text-xl break-words">
             {avisoType === 'GERAL' ? 'Criar Aviso Geral' : 'Criar Aviso Ministerial'}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4 sm:px-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="titulo">Título *</Label>
@@ -222,8 +222,8 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
                   className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400"
                 >
                   {file ? (
-                    <div className="text-center">
-                      <p className="text-sm font-medium">{file.name}</p>
+                    <div className="text-center px-4">
+                      <p className="text-sm font-medium break-all">{file.name}</p>
                       <p className="text-xs text-gray-500">
                         {(file.size / 1024 / 1024).toFixed(2)} MB
                       </p>
@@ -242,7 +242,7 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
                       </Button>
                     </div>
                   ) : (
-                    <div className="text-center">
+                    <div className="text-center px-4">
                       <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
                       <p className="text-sm text-gray-600">
                         Clique para selecionar um arquivo
@@ -254,19 +254,22 @@ export const AvisoForm: React.FC<AvisoFormProps> = ({ onSuccess, onCancel, minis
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <Button
                 type="submit"
                 disabled={submitting || uploading}
-                className="flex-1"
+                className="flex-1 w-full sm:w-auto"
               >
-                {uploading ? 'Enviando arquivo...' : submitting ? 'Criando...' : `Criar ${avisoType === 'GERAL' ? 'Aviso Geral' : 'Aviso Ministerial'}`}
+                <span className="break-words">
+                  {uploading ? 'Enviando arquivo...' : submitting ? 'Criando...' : `Criar ${avisoType === 'GERAL' ? 'Aviso Geral' : 'Aviso Ministerial'}`}
+                </span>
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={onCancel}
                 disabled={submitting || uploading}
+                className="w-full sm:w-auto"
               >
                 Cancelar
               </Button>
