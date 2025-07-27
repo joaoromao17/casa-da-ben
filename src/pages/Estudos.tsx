@@ -280,9 +280,9 @@ const Estudos = () => {
             {/* Botão Ações Estudos - visível apenas para ADMIN e PROFESSOR */}
             {canManageStudies && (
               <Link to="/estudos/gerenciar">
-                <Button className="bg-church-900 text-white hover:bg-church-700 flex items-center gap-2">
-                  <Settings size={18} />
-                  Ações Estudos
+                <Button className="bg-church-900 text-white hover:bg-church-700 flex items-center gap-2 text-xs sm:text-sm px-2 sm:px-4 py-2 break-words">
+                  <Settings size={16} className="flex-shrink-0" />
+                  <span className="break-words">Ações Estudos</span>
                 </Button>
               </Link>
             )}

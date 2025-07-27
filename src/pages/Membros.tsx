@@ -120,10 +120,10 @@ const Membros = () => {
       <section className="py-12 bg-white">
         <div className="container-church">
           <Tabs defaultValue="lideranca" className="w-full">
-            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-6">
-              <TabsTrigger value="lideranca">Liderança</TabsTrigger>
-              <TabsTrigger value="membros">Membros</TabsTrigger>
-              <TabsTrigger value="aniversariantes">Aniversariantes</TabsTrigger>
+            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-6 h-auto">
+              <TabsTrigger value="lideranca" className="text-xs sm:text-sm px-2 py-2 break-words">Liderança</TabsTrigger>
+              <TabsTrigger value="membros" className="text-xs sm:text-sm px-2 py-2 break-words">Membros</TabsTrigger>
+              <TabsTrigger value="aniversariantes" className="text-xs sm:text-sm px-1 sm:px-2 py-2 break-words leading-tight">Aniversariantes</TabsTrigger>
             </TabsList>
             
             {/* Aba de Liderança */}
