@@ -17,7 +17,7 @@ import {
 import { AvisoModal } from "@/components/avisos/AvisoModal";
 import api from "@/services/api";
 import { useAuth } from "@/hooks/useAuth";
-import { clearAuthData } from "@/utils/authHelper";
+import { getAccessToken, clearAuthData } from "@/utils/authHelper";
 
 const Navbar = () => {
   const { isAuthenticated } = useAuth();
@@ -31,8 +31,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const token =
-      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    const token = getAccessToken();
     setIsLoggedIn(!!token);
 
     if (token) {
