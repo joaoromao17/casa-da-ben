@@ -17,6 +17,14 @@ export function saveAccessToken(token) {
   }
 }
 
+export function saveRefreshToken(token) {
+  if (localStorage.getItem("refreshToken")) {
+    localStorage.setItem("refreshToken", token);
+  } else {
+    sessionStorage.setItem("refreshToken", token);
+  }
+}
+
 export const clearAuthData = async () => {
   try {
     await axios.put(`${API_BASE_URL}/users/fcm-token`, { fcmToken: null });
@@ -32,23 +40,23 @@ export const clearAuthData = async () => {
 
 // 🕒 RENOVAÇÃO SILENCIOSA
 export function scheduleTokenRefresh() {
-  const REFRESH_INTERVAL = 14 * 60 * 1000; // 14 minutos
+  const REFRESH_INTERVAL = 55 * 60 * 1000; // 55 minutos
 
   setTimeout(async () => {
     const refreshToken = getRefreshToken();
     if (!refreshToken) return;
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+      const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {
         refreshToken,
       });
 
-      saveAccessToken(response.data); // ou response.data.access_token, se necessário
-
+      saveAccessToken(response.data.accessToken);
       scheduleTokenRefresh(); // agendar a próxima
     } catch (err) {
       console.warn("Erro ao renovar token automaticamente:", err);
-      // Redirecionar, alertar ou nada — a depender da política do app
+      await clearAuthData();
+      window.location.href = "/login";
     }
   }, REFRESH_INTERVAL);
 }

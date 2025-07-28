@@ -43,7 +43,7 @@ api.interceptors.response.use(
           refreshToken: getRefreshToken(),
         });
 
-        const newAccessToken = refreshResponse.data;
+        const newAccessToken = refreshResponse.data.accessToken;
 
         saveAccessToken(newAccessToken);
 

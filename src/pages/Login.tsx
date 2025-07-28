@@ -50,15 +50,15 @@ const Login = () => {
         password: data.senha, // o backend espera "password"
       });
 
-      const { access_token, refresh_token } = response.data;
+      const { accessToken, refreshToken } = response.data;
 
       // Dentro do bloco de sucesso do login
       if (data.lembrar) {
-        localStorage.setItem("accessToken", access_token);
-        localStorage.setItem("refreshToken", refresh_token);
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
       } else {
-        sessionStorage.setItem("accessToken", access_token);
-        sessionStorage.setItem("refreshToken", refresh_token);
+        sessionStorage.setItem("accessToken", accessToken);
+        sessionStorage.setItem("refreshToken", refreshToken);
       }
 
       // Agendar renovação automática

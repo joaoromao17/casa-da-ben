@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { currentUser, isLoading } = useCurrentUser();
   
   // Verifica tanto localStorage quanto sessionStorage para o token
-  const hasToken = !!(localStorage.getItem("authToken") || sessionStorage.getItem("authToken"));
+  const hasToken = !!(localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken"));
   const isAuthenticated = !!currentUser && hasToken;
 
   return (
