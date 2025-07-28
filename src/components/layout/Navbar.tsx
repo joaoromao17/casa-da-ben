@@ -17,6 +17,7 @@ import {
 import { AvisoModal } from "@/components/avisos/AvisoModal";
 import api from "@/services/api";
 import { useAuth } from "@/hooks/useAuth";
+import { clearAuthData } from "@/utils/authHelper";
 
 const Navbar = () => {
   const { isAuthenticated } = useAuth();
@@ -33,7 +34,7 @@ const Navbar = () => {
     const token =
       localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     setIsLoggedIn(!!token);
-    
+
     if (token) {
       try {
         // Decodificar o payload do token JWT
@@ -47,24 +48,17 @@ const Navbar = () => {
     }
   }, []);
 
-  const hasAdminAccess = userRoles.some(role => 
+  const hasAdminAccess = userRoles.some(role =>
     role === "ROLE_ADMIN" || role === "ROLE_PASTOR"
   );
 
-  const canCreateGeneralAviso = userRoles.some(role => 
+  const canCreateGeneralAviso = userRoles.some(role =>
     role === "ROLE_ADMIN" || role === "ROLE_PASTOR" || role === "ROLE_PASTORAUXILIAR"
   );
 
   const handleLogout = async () => {
-    try {
-      await api.put("/users/fcm-token", { fcmToken: null });
-    } catch (error) {
-      console.error("Erro ao resetar FCM token:", error);
-    }
-
-    localStorage.removeItem("authToken");
-    sessionStorage.removeItem("authToken");
-    window.location.reload();
+    await clearAuthData();
+    window.location.reload(); // ou use `navigate("/login")` se quiser uma rota mais específica
   };
 
   const handleAvisoSuccess = () => {
@@ -97,7 +91,7 @@ const Navbar = () => {
                 <Link to="/estudos" className="nav-link">Estudos</Link>
                 <Link to="/oracao" className="nav-link">Orações</Link>
                 <Link to="/testemunhos" className="nav-link">Testemunhos</Link>
-                 {/* Em breve <Link to="/contribuicoes" className="nav-link">Contribuições</Link>*/}
+                {/* Em breve <Link to="/contribuicoes" className="nav-link">Contribuições</Link>*/}
                 <Link to="/contato" className="nav-link">Contato</Link>
                 {hasAdminAccess && (
                   <Link to="/admin" className="nav-link flex items-center gap-1">
@@ -113,7 +107,7 @@ const Navbar = () => {
               {isLoggedIn ? (
                 <>
                   {canCreateGeneralAviso && (
-                    <Button 
+                    <Button
                       onClick={() => setIsAvisoModalOpen(true)}
                       size="sm"
                       className="bg-green-600 hover:bg-green-700 text-white"
@@ -128,10 +122,10 @@ const Navbar = () => {
                   <Button onClick={handleLogout} size="sm" className="btn-danger">Sair</Button>
                 </>
               ) : (
-                  <>
-                    <Link to={isAuthenticated ? "/minha-conta" : "/cadastro"}>
-                      <Button size="sm" className="bg-black/80 text-white hover:bg-black/70 hover:text-white">{isAuthenticated ? "Minha Conta" : "Cadastre-se"}</Button>
-                    </Link>
+                <>
+                  <Link to={isAuthenticated ? "/minha-conta" : "/cadastro"}>
+                    <Button size="sm" className="bg-black/80 text-white hover:bg-black/70 hover:text-white">{isAuthenticated ? "Minha Conta" : "Cadastre-se"}</Button>
+                  </Link>
                   <Link to="/login">
                     <Button size="sm" className="bg-black/80 text-white hover:bg-black/70 hover:text-white">Entrar</Button>
                   </Link>
@@ -165,7 +159,7 @@ const Navbar = () => {
                 <Link to="/estudos" className="nav-link py-2">Estudos</Link>
                 <Link to="/oracao" className="nav-link py-2">Orações</Link>
                 <Link to="/testemunhos" className="nav-link py-2">Testemunhos</Link>
-                 {/* Em breve <Link to="/contribuicoes" className="nav-link py-2">Contribuições</Link>*/}
+                {/* Em breve <Link to="/contribuicoes" className="nav-link py-2">Contribuições</Link>*/}
                 <Link to="/contato" className="nav-link py-2">Contato</Link>
                 {hasAdminAccess && (
                   <Link to="/admin" className="nav-link py-2 flex items-center gap-1">
@@ -177,7 +171,7 @@ const Navbar = () => {
                   {isLoggedIn ? (
                     <>
                       {canCreateGeneralAviso && (
-                        <Button 
+                        <Button
                           onClick={() => setIsAvisoModalOpen(true)}
                           className="bg-green-600 hover:bg-green-700 text-white w-full"
                         >

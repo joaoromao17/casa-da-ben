@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import api, { API_BASE_URL } from "@/services/api";
 import { Checkbox } from "@/components/ui/checkbox";
+import { clearAuthData } from "@/utils/authHelper";
 import { Eye, EyeOff } from "lucide-react";
 import InputMask from "react-input-mask";
 import {
@@ -99,16 +100,16 @@ const MinhaConta = () => {
   const handleDeleteAccount = async () => {
     try {
       await api.delete("/users/profile");
-      
+
       // Remover tokens de autenticação
       localStorage.removeItem("authToken");
       sessionStorage.removeItem("authToken");
-      
+
       toast({
         title: "Conta excluída",
         description: "Sua conta foi excluída com sucesso.",
       });
-      
+
       navigate("/");
     } catch (error: any) {
       console.error("Erro ao excluir conta:", error);
@@ -174,14 +175,7 @@ const MinhaConta = () => {
   }, [navigate]);
 
   const handleLogout = async () => {
-    try {
-      await api.put("/users/fcm-token", { fcmToken: null });
-    } catch (error) {
-      console.error("Erro ao resetar FCM token:", error);
-    }
-
-    localStorage.removeItem("authToken");
-    sessionStorage.removeItem("authToken");
+    await clearAuthData();
 
     toast({
       title: "Logout realizado",
@@ -275,7 +269,7 @@ const MinhaConta = () => {
                         .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  
+
                   <div className="flex-1 text-center sm:text-left w-full sm:w-auto">
                     <h2 className="text-2xl font-semibold mb-2 text-church-800 break-words">
                       {userData.name}
@@ -446,18 +440,18 @@ const MinhaConta = () => {
                       userData.member
                         ? fullData
                         : {
-                            ...editData,
-                            ...baseData,
-                            address: "",
-                            birthDate: "",
-                            maritalStatus: "",
-                            baptized: false,
-                            ministries: [],
-                            acceptedTerms: userData.acceptedTerms ?? true,
-                            profileImageUrl: userData.profileImageUrl || "",
-                            roles: userData.roles || [],
-                            member: userData.member,
-                          }
+                          ...editData,
+                          ...baseData,
+                          address: "",
+                          birthDate: "",
+                          maritalStatus: "",
+                          baptized: false,
+                          ministries: [],
+                          acceptedTerms: userData.acceptedTerms ?? true,
+                          profileImageUrl: userData.profileImageUrl || "",
+                          roles: userData.roles || [],
+                          member: userData.member,
+                        }
                     );
                     setIsEditModalOpen(true);
                   }
@@ -482,9 +476,9 @@ const MinhaConta = () => {
                 Sair
               </Button>
 
-              <Button 
-                variant="destructive" 
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 w-full sm:w-auto" 
+              <Button
+                variant="destructive"
+                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 w-full sm:w-auto"
                 onClick={() => setIsDeleteAccountOpen(true)}
               >
                 <Trash2 size={18} />
@@ -754,7 +748,7 @@ const MinhaConta = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir Conta</AlertDialogTitle>
             <AlertDialogDescription>
-              Tem certeza que deseja excluir sua conta permanentemente? 
+              Tem certeza que deseja excluir sua conta permanentemente?
               <br />
               <br />
               <strong>⚠️ Esta ação não pode ser desfeita!</strong>
