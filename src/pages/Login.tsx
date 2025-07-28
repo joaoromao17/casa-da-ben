@@ -15,7 +15,7 @@ import { Mail, Lock, Loader2 } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import api from "@/services/api";
 import { sendFCMTokenToBackend } from "@/utils/fcmHelper";
-import { scheduleTokenRefresh } from "@/utils/authHelper";
+import { scheduleTokenRefresh, saveAccessToken, saveRefreshToken } from "@/utils/authHelper";
 
 // Schema para validação do login
 const loginSchema = z.object({
@@ -50,16 +50,13 @@ const Login = () => {
         password: data.senha, // o backend espera "password"
       });
 
-      const { accessToken, refreshToken } = response.data;
+      // CORREÇÃO: Use os nomes de chave corretos do backend (snake_case)
+      const { access_token, refresh_token } = response.data;
 
-      // Dentro do bloco de sucesso do login
-      if (data.lembrar) {
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-      } else {
-        sessionStorage.setItem("accessToken", accessToken);
-        sessionStorage.setItem("refreshToken", refreshToken);
-      }
+      // Chame as funções do authHelper para salvar os tokens
+      // Passe a preferência do usuário (data.lembrar) para o authHelper
+      saveAccessToken(access_token, data.lembrar);
+      saveRefreshToken(refresh_token, data.lembrar);
 
       // Agendar renovação automática
       scheduleTokenRefresh();

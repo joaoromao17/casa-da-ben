@@ -9,16 +9,16 @@ export function getRefreshToken() {
   return localStorage.getItem("refreshToken") || sessionStorage.getItem("refreshToken");
 }
 
-export function saveAccessToken(token) {
-  if (localStorage.getItem("refreshToken")) {
+export function saveAccessToken(token, rememberMe) {
+  if (rememberMe) {
     localStorage.setItem("accessToken", token);
   } else {
     sessionStorage.setItem("accessToken", token);
   }
 }
 
-export function saveRefreshToken(token) {
-  if (localStorage.getItem("refreshToken")) {
+export function saveRefreshToken(token, rememberMe) {
+  if (rememberMe) {
     localStorage.setItem("refreshToken", token);
   } else {
     sessionStorage.setItem("refreshToken", token);
@@ -51,7 +51,9 @@ export function scheduleTokenRefresh() {
         refreshToken,
       });
 
-      saveAccessToken(response.data.accessToken);
+      // Determine se deve usar localStorage (se já há refresh token lá) ou sessionStorage
+      const isUsingLocalStorage = !!localStorage.getItem("refreshToken");
+      saveAccessToken(response.data.accessToken, isUsingLocalStorage);
       scheduleTokenRefresh(); // agendar a próxima
     } catch (err) {
       console.warn("Erro ao renovar token automaticamente:", err);
