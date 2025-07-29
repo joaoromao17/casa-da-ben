@@ -1,6 +1,9 @@
 
 import { useState, useEffect } from 'react';
 import api from "@/services/api";
+import { getAccessToken } from "@/utils/authHelper";
+import { clearAuthData } from "@/utils/authHelper";
+
 
 interface Ministry {
   id: number;
@@ -25,7 +28,7 @@ export const useCurrentUser = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    const token = getAccessToken();;
 
     if (!token) {
       setIsLoading(false);
