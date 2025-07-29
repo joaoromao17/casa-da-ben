@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import api, { API_BASE_URL } from "@/services/api";
 import { Checkbox } from "@/components/ui/checkbox";
+import { getAccessToken } from "@/utils/authHelper";
 import { clearAuthData } from "@/utils/authHelper";
 import { Eye, EyeOff } from "lucide-react";
 import InputMask from "react-input-mask";
@@ -102,8 +103,7 @@ const MinhaConta = () => {
       await api.delete("/users/profile");
 
       // Remover tokens de autenticação
-      localStorage.removeItem("authToken");
-      sessionStorage.removeItem("authToken");
+      await clearAuthData();
 
       toast({
         title: "Conta excluída",
@@ -136,7 +136,7 @@ const MinhaConta = () => {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    const token = getAccessToken();
 
     if (!token) {
       toast({
@@ -162,8 +162,7 @@ const MinhaConta = () => {
         });
 
         if (error.response?.status === 401) {
-          localStorage.removeItem("authToken");
-          sessionStorage.removeItem("authToken");
+          await clearAuthData();
           navigate("/login");
         }
       } finally {
