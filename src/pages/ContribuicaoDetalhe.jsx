@@ -8,6 +8,8 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { getAccessToken } from "@/utils/authHelper";
+import { clearAuthData } from "@/utils/authHelper";
 import { Loading } from "@/components/ui/loading";
 import ErrorAlert from "@/components/ui/ErrorAlert";
 import LoginRequiredNotice from "@/components/ui/LoginRequiredNotice";
@@ -55,7 +57,7 @@ const ContribuicaoDetalhe = () => {
 
   useEffect(() => {
     // Verificar se o usuário está logado
-    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    const token = getAccessToken();
     setIsLoggedIn(!!token);
     
     if (!token) {
