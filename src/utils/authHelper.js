@@ -9,8 +9,8 @@ export function getRefreshToken() {
   return localStorage.getItem("refreshToken") || sessionStorage.getItem("refreshToken");
 }
 
-export function saveAccessToken(token, rememberMe) {
-  if (rememberMe) {
+export function saveAccessToken(token) {
+  if (localStorage.getItem("refreshToken")) {
     localStorage.setItem("accessToken", token);
   } else {
     sessionStorage.setItem("accessToken", token);

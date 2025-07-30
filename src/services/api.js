@@ -49,7 +49,13 @@ api.interceptors.response.use(
 
         // Atualiza o header e refaz a requisição original
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return api(originalRequest);
+        return api({
+          ...originalRequest,
+          headers: {
+            ...originalRequest.headers,
+            Authorization: `Bearer ${newAccessToken}`,
+          },
+        });
       } catch (refreshError) {
         console.error("Erro ao renovar token:", refreshError);
         // Opcional: redirecionar pro login
