@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Analytics } from '@vercel/analytics/react';
+import { useEffect } from "react";
+import { scheduleTokenRefresh } from "@/utils/authHelper";
 
 // Páginas principais
 import Home from "./pages/Home";
@@ -41,50 +43,55 @@ import Instalar from "./pages/Instalar";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/sobre" element={<Sobre />} />
-            <Route path="/membros" element={<Membros />} />
-            <Route path="/cadastro" element={<Cadastro />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/redefinir-senha" element={<ResetPassword />} />
-            <Route path="/reset-password" element={<NewPassword />} />
-            <Route path="/minha-conta" element={<MinhaConta />} />
-            <Route path="/estudos" element={<Estudos />} />
-            <Route path="/estudos/gerenciar" element={<EstudosGerenciar />} />
-            <Route path="/eventos" element={<Eventos />} />
-            <Route path="/contribuicoes" element={<Contribuicoes />} />
-            <Route path="/contribuicoes/gerenciar" element={<ContribuicoesGerenciar />} />
-            <Route path="/contribuicoes/:id" element={<ContribuicaoDetalhe />} />
-            <Route path="/testemunhos" element={<Testemunhos />} />
-            <Route path="/oracao" element={<Oracao />} />
-            <Route path="/contato" element={<Contato />} />
-            <Route path="/cultos" element={<Cultos />} />
-            <Route path="/ministerios" element={<Ministerios />} />
-            <Route path="/ministerios/:id" element={<MinisterioDetail />} />
-            <Route path="/profile-public/:id" element={<PublicProfilePage />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/por-que-se-registrar" element={<PorQueSeRegistrar />} />
-            <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
-            <Route path="/termos-de-uso" element={<TermosUso />} />
-            <Route path="/relatar-bug" element={<RelatarBug />} />
-            <Route path="/apoiar-desenvolvedor" element={<ApoiarDesenvolvedor />} />
-            <Route path="/instalar" element={<Instalar />} />
-            <Route path="*" element={<NotFound />} />
-            <Route path="/eventos/:id" element={<EventoDetail />} />
-          </Routes>
-        </BrowserRouter>
-        <Analytics />
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  useEffect(() => {
+    scheduleTokenRefresh(); // ⏰ renova o token a cada ~55 minutos
+  }, []);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/sobre" element={<Sobre />} />
+              <Route path="/membros" element={<Membros />} />
+              <Route path="/cadastro" element={<Cadastro />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/redefinir-senha" element={<ResetPassword />} />
+              <Route path="/reset-password" element={<NewPassword />} />
+              <Route path="/minha-conta" element={<MinhaConta />} />
+              <Route path="/estudos" element={<Estudos />} />
+              <Route path="/estudos/gerenciar" element={<EstudosGerenciar />} />
+              <Route path="/eventos" element={<Eventos />} />
+              <Route path="/contribuicoes" element={<Contribuicoes />} />
+              <Route path="/contribuicoes/gerenciar" element={<ContribuicoesGerenciar />} />
+              <Route path="/contribuicoes/:id" element={<ContribuicaoDetalhe />} />
+              <Route path="/testemunhos" element={<Testemunhos />} />
+              <Route path="/oracao" element={<Oracao />} />
+              <Route path="/contato" element={<Contato />} />
+              <Route path="/cultos" element={<Cultos />} />
+              <Route path="/ministerios" element={<Ministerios />} />
+              <Route path="/ministerios/:id" element={<MinisterioDetail />} />
+              <Route path="/profile-public/:id" element={<PublicProfilePage />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/por-que-se-registrar" element={<PorQueSeRegistrar />} />
+              <Route path="/politica-de-privacidade" element={<PoliticaPrivacidade />} />
+              <Route path="/termos-de-uso" element={<TermosUso />} />
+              <Route path="/relatar-bug" element={<RelatarBug />} />
+              <Route path="/apoiar-desenvolvedor" element={<ApoiarDesenvolvedor />} />
+              <Route path="/instalar" element={<Instalar />} />
+              <Route path="*" element={<NotFound />} />
+              <Route path="/eventos/:id" element={<EventoDetail />} />
+            </Routes>
+          </BrowserRouter>
+          <Analytics />
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
