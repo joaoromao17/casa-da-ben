@@ -8,9 +8,6 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import api from "@/services/api";
-import { getAccessToken } from "@/utils/authHelper";
-import { clearAuthData } from "@/utils/authHelper";
-
 
 interface Leader {
   id: number;
@@ -41,7 +38,7 @@ export default function MinisterioDetail() {
 
   useEffect(() => {
     // Verificar se o usuário está logado
-    const token = getAccessToken();
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (!token) {
       setShowLoginNotice(true);
       setLoading(false);

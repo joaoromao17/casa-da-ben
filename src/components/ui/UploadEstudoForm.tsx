@@ -3,9 +3,6 @@ import { useState, useEffect } from "react";
 import { TextareaWithCounter } from "@/components/ui/TextareaWithCounter";
 import { Input } from "@/components/ui/input";
 import api from "@/services/api";
-import { getAccessToken } from "@/utils/authHelper";
-import { clearAuthData } from "@/utils/authHelper";
-
 
 type UploadEstudoFormProps = {
   onUploadSuccess: () => void;
@@ -63,7 +60,7 @@ const UploadEstudoForm = ({ onUploadSuccess, initialData }: UploadEstudoFormProp
     formData.append("category", category);
     formData.append("date", initialData?.date || new Date().toISOString().split("T")[0]);
 
-    const token = getAccessToken();
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (!token) {
       alert("Você precisa estar logado para enviar estudos.");
       setIsSubmitting(false);

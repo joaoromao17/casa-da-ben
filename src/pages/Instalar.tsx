@@ -89,7 +89,7 @@ const Instalar = () => {
                 </CardHeader>
                 <CardContent>
                   <a 
-                    href="https://drive.google.com/file/d/1b3c9dVEZXJ4AoFsBQGrxbE2IAnOWOMNX/view?usp=sharing" 
+                    href="https://drive.google.com/file/d/1YYsSDMopUbimWQzkW8MVbjPeQiy1G9GT/view?usp=sharing" 
                     target="_blank" 
                     rel="noopener noreferrer"
                   >

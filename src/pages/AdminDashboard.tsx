@@ -7,9 +7,6 @@ import { toast } from "@/components/ui/use-toast";
 import Layout from "@/components/layout/Layout";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/services/api";
-import { getAccessToken } from "@/utils/authHelper";
-import { clearAuthData } from "@/utils/authHelper";
-
 
 // Admin Tab Components
 import UsersTab from "@/components/admin/UsersTab";
@@ -22,7 +19,7 @@ import VersesTab from "@/components/admin/VersesTab";
 
 // Role-based protection
 const getUserRoles = (): string[] => {
-  const token = getAccessToken();;
+  const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   if (!token) return [];
   
   try {

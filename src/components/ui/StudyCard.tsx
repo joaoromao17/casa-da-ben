@@ -6,9 +6,6 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useState } from "react";
 import LoginRequiredNotice from "@/components/ui/LoginRequiredNotice";
-import { getAccessToken } from "@/utils/authHelper";
-import { clearAuthData } from "@/utils/authHelper";
-
 
 interface StudyCardProps {
   id: string;
@@ -26,7 +23,7 @@ const StudyCard = ({ id, title, description, author, date, pdfUrl, category }: S
 
   const handleView = () => {
     // Verificar se o usuário está logado para visualizar
-    const token = getAccessToken();
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (!token) {
       setShowLoginNotice(true);
       return;

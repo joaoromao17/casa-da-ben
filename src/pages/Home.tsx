@@ -13,9 +13,6 @@ import api from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuth } from "@/hooks/useAuth";
-import { getAccessToken } from "@/utils/authHelper";
-import { clearAuthData } from "@/utils/authHelper";
-
 
 interface Ministry {
   name: string;
@@ -100,7 +97,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const token = getAccessToken();
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     
     if (token) {
       try {

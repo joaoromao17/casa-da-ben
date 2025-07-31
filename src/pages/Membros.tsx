@@ -7,9 +7,6 @@ import api from "@/services/api";
 import LeadershipSection from "@/components/ui/LeadershipSection";
 import MembersSection from "@/components/ui/MembersSection";
 import BirthdaysSection from "@/components/ui/BirthdaysSection";
-import { getAccessToken } from "@/utils/authHelper";
-import { clearAuthData } from "@/utils/authHelper";
-
 
 const Membros = () => {
   const navigate = useNavigate();
@@ -37,7 +34,7 @@ const Membros = () => {
 
   useEffect(() => {
     // Verificar se o usuário está logado
-    const token = getAccessToken();
+    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (!token) {
       navigate("/login");
       return;
