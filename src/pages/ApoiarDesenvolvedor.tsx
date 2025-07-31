@@ -125,6 +125,7 @@ const ApoiarDesenvolvedor = () => {
                     </div>
                   </div>
                   
+                   {/* Pix desenvolvedor
                   <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
                     <Smartphone className="h-5 w-5 text-green-600 mt-0.5" />
                     <div>
@@ -140,6 +141,7 @@ const ApoiarDesenvolvedor = () => {
                       </p>
                     </div>
                   </div>
+                  */}
                 </div>
               </CardContent>
             </Card>
