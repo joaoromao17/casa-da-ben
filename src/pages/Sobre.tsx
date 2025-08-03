@@ -16,7 +16,10 @@ const historicoImagens = [
   "/lovable-uploads/carrossel2.jpg",
   "/lovable-uploads/carrossel3.jpg",
   "/lovable-uploads/carrossel4.jpg",
-  "/lovable-uploads/carrossel5.jpg"
+  "/lovable-uploads/carrossel5.jpg",
+  "/lovable-uploads/carrossel6.PNG",
+  "/lovable-uploads/carrossel7.jpg",
+  "/lovable-uploads/carrossel8.jpg"
 ];
 
 const Sobre = () => {
