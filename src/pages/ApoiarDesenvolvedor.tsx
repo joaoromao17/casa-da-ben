@@ -42,7 +42,7 @@ const ApoiarDesenvolvedor = () => {
               <CardContent className="space-y-4">
                 <div className="text-center mb-4">
                   <Avatar className="h-24 w-24 mx-auto mb-3">
-                    <AvatarImage src="/lovable-uploads/759f8e23-09e1-40d2-8796-6a6d0dde9c8a.png" alt="João Vítor" />
+                    <AvatarImage src="/lovable-uploads/desenvolvedor.png" alt="João Vítor" />
                     <AvatarFallback>JV</AvatarFallback>
                   </Avatar>
                   <h3 className="font-semibold text-lg mb-2">João Vítor Romão Colares de França</h3>
