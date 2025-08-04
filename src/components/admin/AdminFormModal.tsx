@@ -22,18 +22,18 @@ const AdminFormModal = ({
 }: AdminFormModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0">
-        <DialogHeader className="p-6 pb-0">
+      <DialogContent className="sm:max-w-[800px] max-h-[90vh] p-0 flex flex-col">
+        <DialogHeader className="p-6 pb-0 flex-shrink-0">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         
-        <ScrollArea className="max-h-[calc(90vh-120px)] px-6">
-          <div className="py-4">
+        <ScrollArea className="flex-1 px-6">
+          <div className="py-4 pb-6">
             {children}
           </div>
         </ScrollArea>
         
-        <div className="flex justify-end gap-2 p-6 pt-0 border-t bg-gray-50/50">
+        <div className="flex justify-end gap-2 p-6 pt-0 border-t bg-gray-50/50 flex-shrink-0">
           <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
             Cancelar
           </Button>
