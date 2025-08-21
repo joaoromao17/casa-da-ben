@@ -44,7 +44,7 @@ const shareOnWhatsApp = () => {
     message += `🔗 *Link do estudo:* ${pdfUrl}\n\n`;
   }
 
-  message += `📚 *Mais estudos:* https://casa-da-ben.vercel.app/estudos\n\n`;
+  message += `📚 *Mais estudos:* https://www.icb610.com.br/estudos\n\n`;
   message += `🙏 *Compartilhado pela Igreja Casa da Benção*`;
 
   const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
