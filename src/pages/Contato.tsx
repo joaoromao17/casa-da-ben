@@ -190,19 +190,10 @@ const Contato = () => {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-lg text-church-900 mb-2">Como posso me tornar membro da igreja?</h3>
-              <p className="text-gray-600">Para se tornar membro, basta enviar-nos uma mensagem ou ir a nossa igreja.</p>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-sm">
               <h3 className="font-semibold text-lg text-church-900 mb-2">A igreja possui estacionamento?</h3>
-              <p className="text-gray-600">Sim, possuímos estacionamento próprio com capacidade para 30 veículos.</p>
+              <p className="text-gray-600">Sim, possuímos estacionamento próprio com capacidade para 20 veículos.</p>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-lg text-church-900 mb-2">Como posso agendar um aconselhamento pastoral?</h3>
-              <p className="text-gray-600">Os aconselhamentos são agendados diretamente com os pastores.</p>
-            </div>
           </div>
         </div>
 
