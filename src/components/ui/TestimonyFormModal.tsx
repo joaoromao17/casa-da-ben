@@ -145,7 +145,7 @@ const TestimonyFormModal = ({
               onChange={(e) => setMessage(e.target.value)}
               placeholder={isFromPrayer ? "Edite como quiser compartilhar seu testemunho..." : "Compartilhe como Deus tem agido em sua vida..."}
               className="h-24 sm:h-32 text-sm"
-              maxLength={500}
+              maxLength={800}
             />
           </div>
 
