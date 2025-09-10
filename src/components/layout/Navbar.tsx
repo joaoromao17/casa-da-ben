@@ -52,7 +52,7 @@ const Navbar = () => {
   );
 
   const canCreateGeneralAviso = userRoles.some(role => 
-    role === "ROLE_ADMIN" || role === "ROLE_PASTOR" || role === "ROLE_PASTORAUXILIAR"
+    role === "ROLE_ADMIN" || role === "ROLE_PASTOR"
   );
 
   const handleLogout = async () => {

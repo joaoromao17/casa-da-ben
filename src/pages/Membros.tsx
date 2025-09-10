@@ -12,6 +12,7 @@ const Membros = () => {
   const navigate = useNavigate();
   const [leadersData, setLeadersData] = useState({
     pastores: [],
+    pastoresAuxiliares: [],
     lideres: [],
     professores: [],
     presbiteros: [],
@@ -23,6 +24,7 @@ const Membros = () => {
 
   const [loadingStates, setLoadingStates] = useState({
     pastores: true,
+    pastoresAuxiliares: true,
     lideres: true,
     professores: true,
     presbiteros: true,
@@ -52,17 +54,17 @@ const Membros = () => {
 
     const loadLeadershipData = async () => {
       try {
-        // Fetch pastores (combinando ROLE_PASTOR e ROLE_PASTORAUXILIAR)
+        // Buscar pastores e auxiliares separadamente
         const [pastores, pastoresAuxiliares] = await Promise.all([
           fetchUsersByRole('ROLE_PASTOR'),
           fetchUsersByRole('ROLE_PASTORAUXILIAR')
         ]);
-        const todosPastores = [...pastores, ...pastoresAuxiliares];
-        
-        setLeadersData(prev => ({ ...prev, pastores: todosPastores }));
-        setLoadingStates(prev => ({ ...prev, pastores: false }));
 
-        // Fetch outros roles
+        setLeadersData(prev => ({ ...prev, pastores }));
+        setLeadersData(prev => ({ ...prev, pastoresAuxiliares }));
+        setLoadingStates(prev => ({ ...prev, pastores: false, pastoresAuxiliares: false }));
+
+        // Outros cargos
         const roles = [
           { key: 'lideres', role: 'ROLE_LIDER' },
           { key: 'professores', role: 'ROLE_PROFESSOR' },
@@ -82,6 +84,7 @@ const Membros = () => {
         console.error('Erro ao carregar dados de liderança:', error);
         setLoadingStates({
           pastores: false,
+          pastoresAuxiliares: false,
           lideres: false,
           professores: false,
           presbiteros: false,
@@ -125,7 +128,7 @@ const Membros = () => {
               <TabsTrigger value="membros" className="text-xs sm:text-sm px-2 py-2 break-words">Membros</TabsTrigger>
               <TabsTrigger value="aniversariantes" className="text-xs sm:text-sm px-1 sm:px-2 py-2 break-words leading-tight">Aniversariantes</TabsTrigger>
             </TabsList>
-            
+
             {/* Aba de Liderança */}
             <TabsContent value="lideranca">
               <div className="text-center mb-12">
@@ -134,50 +137,55 @@ const Membros = () => {
                   Conheça os líderes que Deus levantou para servir e conduzir nossa igreja
                 </p>
               </div>
-              
               <div className="space-y-12">
                 <LeadershipSection
                   title="Pastores"
                   usuarios={leadersData.pastores}
                   isLoading={loadingStates.pastores}
                 />
-                
+
+                <LeadershipSection
+                  title="Pastores Auxiliares"
+                  usuarios={leadersData.pastoresAuxiliares}
+                  isLoading={loadingStates.pastoresAuxiliares}
+                />
+
                 <LeadershipSection
                   title="Líderes"
                   usuarios={leadersData.lideres}
                   isLoading={loadingStates.lideres}
                 />
-                
+
                 <LeadershipSection
                   title="Professores"
                   usuarios={leadersData.professores}
                   isLoading={loadingStates.professores}
                 />
-                
+
                 <LeadershipSection
                   title="Presbíteros"
                   usuarios={leadersData.presbiteros}
                   isLoading={loadingStates.presbiteros}
                 />
-                
+
                 <LeadershipSection
                   title="Evangelistas"
                   usuarios={leadersData.evangelistas}
                   isLoading={loadingStates.evangelistas}
                 />
-                
+
                 <LeadershipSection
                   title="Missionários"
                   usuarios={leadersData.missionarios}
                   isLoading={loadingStates.missionarios}
                 />
-                
+
                 <LeadershipSection
                   title="Diáconos"
                   usuarios={leadersData.diaconos}
                   isLoading={loadingStates.diaconos}
                 />
-                
+
                 <LeadershipSection
                   title="Obreiros"
                   usuarios={leadersData.obreiros}
@@ -198,7 +206,7 @@ const Membros = () => {
           </Tabs>
         </div>
       </section>
-    </Layout>
+    </Layout >
   );
 };
 
