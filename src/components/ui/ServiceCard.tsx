@@ -20,7 +20,7 @@ const ServiceCard = ({ day, time, title, description, icon: Icon, featured = fal
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className={`relative rounded-2xl p-6 md:p-8 transition-all duration-300 group ${
         featured
-          ? "bg-warm-50 border-2 border-church-gold/40 shadow-md"
+          ? "bg-warm-50 border-2 border-church-gold/40 shadow-lg"
           : "bg-card border border-warm-200 hover:border-church-gold/30 hover:shadow-md"
       }`}
     >

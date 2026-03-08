@@ -29,7 +29,6 @@ const Navbar = () => {
     setIsMenuOpen(false);
   }, [location]);
 
-  // Lock body scroll when menu is open
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -44,17 +43,17 @@ const Navbar = () => {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? "bg-card/85 backdrop-blur-md shadow-sm border-b border-warm-200/50"
-          : "bg-transparent"
+          : "bg-gradient-to-b from-black/40 via-black/15 to-transparent"
       }`}
     >
       <div className="container-church">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
+          {/* Logo — bigger */}
           <Link to="/" className="flex-shrink-0">
             <img
               src="/lovable-uploads/logo.png"
               alt="ICB 610"
-              className="h-12 md:h-14 w-auto"
+              className="h-14 md:h-16 w-auto"
             />
           </Link>
 
@@ -67,8 +66,11 @@ const Navbar = () => {
                 className={`nav-link-animated px-3 py-2 text-sm ${
                   location.pathname === link.to
                     ? "text-foreground font-semibold"
-                    : scrolled ? "text-foreground/70 hover:text-foreground" : "text-white/80 hover:text-white"
+                    : scrolled
+                      ? "text-foreground/70 hover:text-foreground"
+                      : "text-white/90 hover:text-white"
                 }`}
+                style={!scrolled ? { textShadow: "0 1px 4px rgba(0,0,0,0.35)" } : undefined}
               >
                 {link.label}
               </Link>
@@ -81,7 +83,8 @@ const Navbar = () => {
               href="https://www.instagram.com/icb_610/"
               target="_blank"
               rel="noopener noreferrer"
-              className={`transition-colors ${scrolled ? "text-foreground/60 hover:text-foreground" : "text-white/70 hover:text-white"}`}
+              className={`transition-colors ${scrolled ? "text-foreground/60 hover:text-foreground" : "text-white/80 hover:text-white"}`}
+              style={!scrolled ? { filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))" } : undefined}
             >
               <Instagram className="w-5 h-5" />
             </a>
@@ -92,12 +95,13 @@ const Navbar = () => {
             </a>
           </div>
 
-          {/* Mobile Toggle */}
+          {/* Mobile Toggle — larger touch area */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`lg:hidden p-2 rounded-lg transition-colors ${
+            className={`lg:hidden p-2.5 rounded-lg transition-colors ${
               scrolled ? "text-foreground" : "text-white"
             }`}
+            style={!scrolled ? { filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.4))" } : undefined}
             aria-label="Menu"
           >
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

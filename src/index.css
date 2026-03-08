@@ -113,7 +113,27 @@
   }
 
   .section-padding {
+    @apply py-14 md:py-20;
+  }
+
+  .section-padding-lg {
     @apply py-16 md:py-24;
+  }
+
+  .cta-section-overlay {
+    @apply relative overflow-hidden;
+  }
+  .cta-section-overlay > .cta-bg {
+    @apply absolute inset-0 w-full h-full object-cover;
+  }
+  .cta-section-overlay > .cta-overlay {
+    @apply absolute inset-0;
+    background: linear-gradient(
+      135deg,
+      hsla(20, 15%, 8%, 0.8) 0%,
+      hsla(30, 10%, 12%, 0.65) 50%,
+      hsla(35, 20%, 15%, 0.75) 100%
+    );
   }
 
   .heading-display {
