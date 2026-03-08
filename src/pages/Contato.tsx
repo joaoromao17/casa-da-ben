@@ -1,5 +1,6 @@
 import Layout from "@/components/layout/Layout";
 import PageHero from "@/components/ui/PageHero";
+import SectionHeading from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Mail, MapPin, Clock, Instagram, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
