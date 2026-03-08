@@ -25,12 +25,7 @@ const ComoChegar = () => {
       <section className="section-padding bg-background">
         <div className="container-church max-w-4xl">
           {/* Map */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="rounded-2xl overflow-hidden shadow-md mb-6"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-2xl overflow-hidden shadow-md mb-6">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr"
               width="100%"
@@ -55,14 +50,7 @@ const ComoChegar = () => {
             {infoCards.map((card, i) => {
               const Icon = card.icon;
               return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="card-warm p-6"
-                >
+                <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="card-warm p-6">
                   <div className="w-10 h-10 rounded-xl bg-warm-100 flex items-center justify-center mb-4">
                     <Icon className="w-5 h-5 text-church-gold" />
                   </div>
@@ -82,14 +70,19 @@ const ComoChegar = () => {
         </div>
       </section>
 
-      <section className="section-padding bg-warm-50">
-        <div className="container-church text-center max-w-2xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <h2 className="heading-display text-2xl md:text-3xl text-foreground mb-4">Nos vemos em breve!</h2>
-            <p className="text-muted-foreground mb-8">
-              Nosso culto principal é aos domingos às 18h30. Venha como está — estamos esperando por você.
-            </p>
-          </motion.div>
+      {/* CTA with image overlay */}
+      <section className="cta-section-overlay">
+        <img src="/lovable-uploads/sobre_nos.png" alt="" className="cta-bg" />
+        <div className="cta-overlay" />
+        <div className="relative z-10 section-padding">
+          <div className="container-church text-center max-w-2xl">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <h2 className="heading-display text-2xl md:text-3xl text-white mb-4">Nos vemos em breve!</h2>
+              <p className="text-white/70 mb-8">
+                Nosso culto principal é aos domingos às 18h30. Venha como está — estamos esperando por você.
+              </p>
+            </motion.div>
+          </div>
         </div>
       </section>
     </Layout>

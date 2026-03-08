@@ -17,18 +17,9 @@ const Lideranca = () => {
 
       <section className="section-padding bg-background">
         <div className="container-church max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-warm-100 mx-auto mb-6 flex items-center justify-center overflow-hidden border-4 border-warm-200">
-              <img
-                src="/lovable-uploads/membros.JPG"
-                alt="Pastor Marcial"
-                className="w-full h-full object-cover"
-              />
+          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center">
+            <div className="w-36 h-36 md:w-44 md:h-44 rounded-full bg-warm-100 mx-auto mb-6 flex items-center justify-center overflow-hidden border-4 border-warm-200">
+              <img src="/lovable-uploads/membros.JPG" alt="Pastor Marcial" className="w-full h-full object-cover" />
             </div>
             <h2 className="heading-display text-2xl md:text-3xl text-foreground mb-1">Pastor Marcial</h2>
             <p className="text-church-gold font-medium text-sm uppercase tracking-wider mb-6">Pastor Titular</p>
@@ -42,12 +33,7 @@ const Lideranca = () => {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mt-16 bg-warm-50 border border-warm-200 rounded-2xl p-6 md:p-8 text-center"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 bg-warm-50 border border-warm-200 rounded-2xl p-6 md:p-8 text-center">
             <blockquote className="font-display text-xl md:text-2xl italic text-foreground leading-relaxed mb-4">
               "Nossa missão é glorificar a Deus e formar discípulos comprometidos com Cristo."
             </blockquote>
@@ -56,17 +42,22 @@ const Lideranca = () => {
         </div>
       </section>
 
-      <section className="section-padding bg-warm-50">
-        <div className="container-church text-center max-w-2xl">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <h2 className="heading-display text-2xl md:text-3xl text-foreground mb-4">Venha nos Conhecer</h2>
-            <p className="text-muted-foreground mb-8">Será um prazer receber você em nossa comunidade.</p>
-            <Link to="/primeira-visita">
-              <Button className="btn-primary-warm group">
-                Planeje sua Visita <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-          </motion.div>
+      {/* CTA with image overlay */}
+      <section className="cta-section-overlay">
+        <img src="/lovable-uploads/banner.png" alt="" className="cta-bg" />
+        <div className="cta-overlay" />
+        <div className="relative z-10 section-padding">
+          <div className="container-church text-center max-w-2xl">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <h2 className="heading-display text-2xl md:text-3xl text-white mb-4">Venha nos Conhecer</h2>
+              <p className="text-white/70 mb-8">Será um prazer receber você em nossa comunidade.</p>
+              <Link to="/primeira-visita">
+                <Button className="btn-primary-warm group">
+                  Planeje sua Visita <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </section>
     </Layout>
