@@ -1,7 +1,7 @@
-
 import { ReactNode } from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import MobileFloatingCTA from "@/components/ui/MobileFloatingCTA";
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,6 +15,7 @@ const Layout = ({ children }: LayoutProps) => {
         {children}
       </main>
       <Footer />
+      <MobileFloatingCTA />
     </div>
   );
 };

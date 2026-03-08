@@ -1,148 +1,104 @@
-
 import { Link } from "react-router-dom";
-import {
-  Instagram,
-  Facebook,
-  Youtube,
-  MapPin,
-  Mail,
-  Heart,
-} from "lucide-react";
+import { Instagram, Facebook, Youtube, MapPin, Mail, Heart } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-church-800 text-white pt-12 pb-6">
+    <footer className="bg-church-800 text-white pt-14 pb-8">
       <div className="container-church">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* About Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12">
+          {/* About */}
           <div>
-            <h3 className="text-xl font-bold mb-4">ICB 610</h3>
-            <p className="mb-4 text-gray-300">
-              Igreja comprometida com a propagação do evangelho de Jesus Cristo e o
-              desenvolvimento espiritual de cada membro.
+            <img
+              src="/lovable-uploads/logo_branco.png"
+              alt="ICB 610"
+              className="h-16 w-auto mb-4"
+            />
+            <p className="text-warm-300 text-sm leading-relaxed mb-5">
+              Igreja comprometida com a propagação do evangelho de Jesus Cristo e o desenvolvimento espiritual de cada membro.
             </p>
-            <div className="flex space-x-4">
-              <a
-                href="https://www.instagram.com/icb_610/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-church-gold transition-colors"
-              >
-                <Instagram size={20} />
+            <div className="flex items-center gap-4">
+              <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer" className="text-warm-400 hover:text-church-gold transition-colors">
+                <Instagram size={18} />
               </a>
-              <a
-                href="https://www.facebook.com/icbsamambaianorte610"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-church-gold transition-colors"
-              >
-                <Facebook size={20} />
+              <a href="https://www.facebook.com/icbsamambaianorte610" target="_blank" rel="noopener noreferrer" className="text-warm-400 hover:text-church-gold transition-colors">
+                <Facebook size={18} />
               </a>
-              <a
-                href="https://www.youtube.com/@icbsamambaianorte610"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-church-gold transition-colors"
-              >
-                <Youtube size={20} />
+              <a href="https://www.youtube.com/@icbsamambaianorte610" target="_blank" rel="noopener noreferrer" className="text-warm-400 hover:text-church-gold transition-colors">
+                <Youtube size={18} />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Links Rápidos</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/sobre" className="text-gray-300 hover:text-white transition-colors">
-                  Sobre Nós
-                </Link>
-              </li>
-              <li>
-                <Link to="/cultos" className="text-gray-300 hover:text-white transition-colors">
-                  Cultos
-                </Link>
-              </li>
-              <li>
-                <Link to="/contato" className="text-gray-300 hover:text-white transition-colors">
-                  Contato
-                </Link>
-              </li>
+            <h4 className="text-sm uppercase tracking-wider font-semibold text-warm-300 mb-4">Navegação</h4>
+            <ul className="space-y-2.5">
+              {[
+                { to: "/sobre", label: "Sobre Nós" },
+                { to: "/cultos", label: "Horários de Culto" },
+                { to: "/primeira-visita", label: "Primeira Visita" },
+                { to: "/no-que-cremos", label: "No que Cremos" },
+                { to: "/lideranca", label: "Liderança" },
+                { to: "/ministerios", label: "Ministérios" },
+                { to: "/contato", label: "Contato" },
+                { to: "/como-chegar", label: "Como Chegar" },
+              ].map((link) => (
+                <li key={link.to}>
+                  <Link to={link.to} className="text-warm-400 hover:text-white text-sm transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Horários de culto */}
+          {/* Contact */}
           <div>
-            <h3 className="text-xl font-bold mb-4">Cultos</h3>
-            <ul className="space-y-2">
-              <li>
-                <span className="text-gray-300">Domingo: 18:30h</span>
-              </li>
-              <li>
-                <span className="text-gray-300">Terça: 20h</span>
-              </li>
-              <li>
-                <span className="text-gray-300">Quarta: 20h</span>
-              </li>
-              <li>
-                <span className="text-gray-300">Sexta: 20h</span>
-              </li>
-            </ul>
-          </div>
+            <h4 className="text-sm uppercase tracking-wider font-semibold text-warm-300 mb-4">Contato</h4>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 text-church-gold flex-shrink-0 mt-0.5" />
+                <span className="text-warm-400 text-sm">QS 610 — Samambaia Norte, Brasília - DF</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <Instagram className="w-4 h-4 text-church-gold flex-shrink-0 mt-0.5" />
+                <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer" className="text-warm-400 hover:text-white text-sm transition-colors">
+                  @icb_610
+                </a>
+              </div>
+              <div className="flex items-start gap-3">
+                <Mail className="w-4 h-4 text-church-gold flex-shrink-0 mt-0.5" />
+                <a href="mailto:icbcasadabencao610@gmail.com" className="text-warm-400 hover:text-white text-sm transition-colors break-all">
+                  icbcasadabencao610@gmail.com
+                </a>
+              </div>
+            </div>
 
-          {/* Contact Information */}
-          <div>
-            <h3 className="text-xl font-bold mb-4">Contato</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start">
-                <MapPin className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
-                <span className="text-gray-300">Qs 610 Samambaia Norte</span>
-              </li>
-              
-              <li className="flex items-center">
-                <Instagram className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
-                <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer">@icb_610</a>
-              </li>
-              
-              <li className="flex items-center">
-                <Mail className="mr-2 h-5 w-5 text-church-gold flex-shrink-0" />
-                <a href="mailto:icbcasadabencao610@gmail.com" className="text-gray-300 hover:underline break-all">icbcasadabencao610@gmail.com</a>
-              </li>
-            </ul>
-          </div>
-          <div className="col-span-full flex justify-center mt-4">
-            <img
-              src="/lovable-uploads/logo_branco.png"
-              alt="Logo da Casa da Benção"
-              width="250px"
-            />
+            <div className="mt-6">
+              <h4 className="text-sm uppercase tracking-wider font-semibold text-warm-300 mb-3">Cultos</h4>
+              <div className="text-warm-400 text-sm space-y-1">
+                <p>Domingo — 18h30</p>
+                <p>Terça — 20h</p>
+                <p>Quarta — 20h</p>
+                <p>Sexta — 20h</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <hr className="border-gray-700 my-8" />
-
-        {/* Bottom Footer */}
-        <div className="text-center text-gray-400">
+        <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-warm-500">
           <p>&copy; {currentYear} ICB 610. Todos os direitos reservados.</p>
-          
-          <p className="mt-2">
-            <Link to="/politica-de-privacidade" className="hover:text-white transition-colors">
-              Política de Privacidade
-            </Link>
-            {" • "}
-            <Link to="/termos-de-uso" className="hover:text-white transition-colors">
-              Termos de Uso
-            </Link>
-          </p>
-
-          <p className="mt-1">
+          <div className="flex items-center gap-3">
+            <Link to="/politica-de-privacidade" className="hover:text-white transition-colors">Privacidade</Link>
+            <span>•</span>
+            <Link to="/termos-de-uso" className="hover:text-white transition-colors">Termos</Link>
+            <span>•</span>
             <Link to="/apoiar-desenvolvedor" className="hover:text-white transition-colors inline-flex items-center gap-1">
-              <Heart size={16} />
-              Apoiar Desenvolvedor
+              <Heart size={12} /> Apoiar
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </footer>
