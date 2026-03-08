@@ -1,181 +1,19 @@
+
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import VerseCard from "@/components/ui/VerseCard";
-import EventCard from "@/components/ui/EventCard";
-import MinistryCard from "@/components/ui/MinistryCard";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Instagram, User, BookOpen, CalendarDays, ArrowRight, ArrowDown, Clock } from "lucide-react";
-import InstagramWidget from "@/components/ui/InstagramWidget";
-import { AvisoCard } from "@/components/avisos/AvisoCard";
-import api from "@/services/api";
-import { useToast } from "@/hooks/use-toast";
+import { Instagram, ArrowRight, Clock } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useAuth } from "@/hooks/useAuth";
-
-interface Ministry {
-  name: string;
-  id: number;
-  title: string;
-  description: string;
-  imageUrl: string;
-  slug: string;
-}
-
-type Evento = {
-  time: string;
-  description: string;
-  id: number;
-  title: string;
-  date: string;
-  location: string;
-  imageUrl: string;
-  category: string;
-};
-
-interface Aviso {
-  id: number;
-  titulo: string;
-  mensagem: string;
-  arquivoUrl?: string;
-  dataCriacao: string;
-  tipo: 'GERAL' | 'MINISTERIAL';
-  nomeMinisterio?: string;
-  nomeAutor: string;
-}
 
 const Home = () => {
   const isMobile = useIsMobile();
-  const { isAuthenticated } = useAuth();
-  
-  const [verseOfDay, setVerseOfDay] = useState<{ verse: string; reference: string }>({
-    verse: "",
-    reference: "",
-  });
 
-  const [avisoGeral, setAvisoGeral] = useState<Aviso | null>(null);
-  const [userRoles, setUserRoles] = useState<string[]>([]);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchVerse = async () => {
-      try {
-        const res = await api.get('/versiculos/random');
-        const data = res.data;
-
-        console.log("Versículo recebido:", data);
-
-        setVerseOfDay({
-          verse: data.verse.trim(),
-          reference: data.reference,
-        });
-      } catch (error) {
-        console.error("Erro ao buscar versículo:", error);
-        setVerseOfDay({
-          verse: "Erro ao carregar o versículo.",
-          reference: "",
-        });
-      }
-    };
-
-    fetchVerse();
-  }, []);
-
-  useEffect(() => {
-    const fetchAvisoGeral = async () => {
-      try {
-        const response = await api.get('/avisos/ativos');
-        const avisoGeralAtivo = response.data.find((aviso: Aviso) => aviso.tipo === 'GERAL');
-        setAvisoGeral(avisoGeralAtivo || null);
-      } catch (error) {
-        console.error("Erro ao buscar aviso geral:", error);
-      }
-    };
-
-    fetchAvisoGeral();
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
-    
-    if (token) {
-      try {
-        // Decodificar o payload do token JWT
-        const payload = token.split(".")[1];
-        const decodedPayload = JSON.parse(atob(payload));
-        setUserRoles(decodedPayload.roles || []);
-      } catch (error) {
-        console.error("Erro ao decodificar token:", error);
-        setUserRoles([]);
-      }
-    }
-  }, []);
-
-  const canDeleteAviso = userRoles.some(role => 
-    role === "ROLE_ADMIN" || role === "ROLE_PASTOR" || role === "ROLE_PASTORAUXILIAR"
-  );
-
-  const handleDeleteAviso = async (avisoId: number) => {
-    try {
-      await api.delete(`/avisos/${avisoId}`);
-      setAvisoGeral(null);
-      toast({
-        title: "Sucesso",
-        description: "Aviso excluído com sucesso!"
-      });
-    } catch (error: any) {
-      toast({
-        title: "Erro",
-        description: error.response?.data?.message || "Erro ao excluir aviso",
-        variant: "destructive"
-      });
-    }
+  // Versículo fixo (sem chamada ao backend)
+  const verseOfDay = {
+    verse: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna.",
+    reference: "João 3:16",
   };
-
-  const [ministries, setMinistries] = useState<Ministry[]>([]);
-
-  useEffect(() => {
-    async function fetchMinistries() {
-      try {
-        const response = await api.get("/ministerios");
-        const limited = response.data.slice(0, 3);
-        setMinistries(limited);
-      } catch (error) {
-        console.error("Erro ao buscar ministérios:", error);
-      }
-    }
-
-    fetchMinistries();
-  }, []);
-
-  const [eventos, setEventos] = useState<Evento[]>([]);
-
-  useEffect(() => {
-    async function fetchEventos() {
-      try {
-        const response = await api.get("/eventos");
-
-        const eventosComDataCorrigida = response.data.map((evento: any) => {
-          const [year, month, day] = evento.date.split("-").map(Number);
-          return {
-            ...evento,
-            date: new Date(year, month - 1, day),
-          };
-        });
-
-        const eventosOrdenados = eventosComDataCorrigida.sort(
-          (a: any, b: any) => a.date.getTime() - b.date.getTime()
-        );
-
-        setEventos(eventosOrdenados);
-      } catch (error) {
-        console.error("Erro ao buscar eventos:", error);
-      }
-    }
-
-    fetchEventos();
-  }, []);
 
   return <Layout>
     {/* Hero Section */}
@@ -212,38 +50,15 @@ const Home = () => {
       </div>
     </section>
 
-    {/* Aviso Geral */}
-    {avisoGeral && (
-      <section className="py-8 bg-yellow-50 border-l-4 border-yellow-400">
-        <div className="container-church">
-          <div className="max-w-4xl mx-auto">
-            <AvisoCard 
-              aviso={avisoGeral} 
-              showDelete={canDeleteAviso}
-              onDelete={handleDeleteAviso}
-            />
-          </div>
-        </div>
-      </section>
-    )}
-
     {/* Quick Access Buttons (Mobile) */}
     <section className="md:hidden bg-white py-6">
       <div className="container-church">
         <div className="grid grid-cols-2 gap-4">
-          <Link to={isAuthenticated ? "/minha-conta" : "/cadastro"} className="flex flex-col items-center justify-center p-4 rounded-lg bg-church-50 hover:bg-church-100 transition-colors">
-            <User className="h-8 w-8 text-church-600 mb-2" />
-            <span className="text-center text-church-800 font-medium">{isAuthenticated ? "Minha Conta" : "Cadastre-se"}</span>
+          <Link to="/cultos" className="flex flex-col items-center justify-center p-4 rounded-lg bg-church-50 hover:bg-church-100 transition-colors">
+            <Clock className="h-8 w-8 text-church-600 mb-2" />
+            <span className="text-center text-church-800 font-medium">Cultos</span>
           </Link>
-          <Link to="/estudos" className="flex flex-col items-center justify-center p-4 rounded-lg bg-church-50 hover:bg-church-100 transition-colors">
-            <BookOpen className="h-8 w-8 text-church-600 mb-2" />
-            <span className="text-center text-church-800 font-medium">Escola Bíblica</span>
-          </Link>
-          <Link to="/eventos" className="flex flex-col items-center justify-center p-4 rounded-lg bg-church-50 hover:bg-church-100 transition-colors">
-            <CalendarDays className="h-8 w-8 text-church-600 mb-2" />
-            <span className="text-center text-church-800 font-medium">Eventos</span>
-          </Link>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 rounded-lg bg-church-50 hover:bg-church-100 transition-colors">
+          <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 rounded-lg bg-church-50 hover:bg-church-100 transition-colors">
             <Instagram className="h-8 w-8 text-church-600 mb-2" />
             <span className="text-center text-church-800 font-medium">Instagram</span>
           </a>
@@ -289,64 +104,6 @@ const Home = () => {
           </p>
         </div>
         <VerseCard verse={verseOfDay.verse} reference={verseOfDay.reference} />
-        <div className="text-center mt-8">
-          <Link to="/estudos">
-            <Button variant="outline" className="btn-outline">
-              Explorar Mais Estudos Bíblicos <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </section>
-
-    {/* Featured Events */}
-    <section className="py-16 bg-gray-100">
-      <div className="container-church">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-church-800">Próximos Eventos</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Cada evento é uma oportunidade de se aproximar de Deus e da família da fé.
-          </p>
-        </div>
-
-        {eventos.length > 0 ? (
-          <>
-            <div className={`grid gap-8 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-3'}`}>
-              {eventos.slice(0, isMobile ? 1 : 3).map((evento) => (
-                <EventCard
-                  key={evento.id}
-                  id={evento.id.toString()}
-                  title={evento.title}
-                  description={evento.description}
-                  date={new Date(evento.date)}
-                  time={evento.time}
-                  location={evento.location}
-                  imageUrl={evento.imageUrl}
-                  category={evento.category}
-                />
-              ))}
-            </div>
-            <div className="text-center mt-12">
-              <Link to="/eventos">
-                <Button className="btn-primary">
-                  Ver todos os eventos <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </>
-        ) : (
-          <div className="text-center">
-            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              Não temos nenhuma programação especial no momento, mas ainda sim temos os nossos cultos da semana. Não Perca!!
-            </p>
-            <Link to="/cultos">
-              <Button className="btn-primary">
-                <Clock className="mr-2 h-4 w-4" />
-                Horário dos Cultos
-              </Button>
-            </Link>
-          </div>
-        )}
       </div>
     </section>
 
@@ -409,38 +166,6 @@ const Home = () => {
       </div>
     </section>
 
-    {/* Our Ministries */}
-    <section className="py-16 bg-gray-100">
-      <div className="container-church">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-church-800">Nossos Ministérios</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Descubra como você pode servir e crescer em nossa comunidade através dos diversos ministérios
-          </p>
-        </div>
-
-        <div className={`grid gap-8 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-3'}`}>
-          {ministries.slice(0, isMobile ? 1 : 3).map((ministry, index) => (
-            <MinistryCard
-              key={ministry.id}
-              title={ministry.name}
-              description={ministry.description}
-              imageUrl={ministry.imageUrl}
-              slug={ministry.id.toString()}
-            />
-          ))}
-        </div>
-
-        <div className="text-center mt-12">
-          <Link to="/ministerios">
-            <Button className="btn-primary">
-              Conhecer Todos os Ministérios <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </section>
-
     {/* Instagram Feed */}
     <section className="py-16 bg-gray-50">
       <div className="container-church">
@@ -486,14 +211,14 @@ const Home = () => {
           Estamos de braços abertos para receber você e sua família. Venha crescer na fé conosco!
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link to={isAuthenticated ? "/minha-conta" : "/cadastro"}>
+          <Link to="/contato">
             <Button className="bg-black text-white hover:bg-white hover:text-black text-lg py-6 px-8">
-              {isAuthenticated ? "Minha Conta" : "Cadastre-se"}
+              Fale Conosco
             </Button>
           </Link>
-          <Link to="/contato">
+          <Link to="/cultos">
             <Button variant="outline" className="border-black text-black bg-white hover:bg-black hover:text-white text-lg py-6 px-8">
-              Fale Conosco
+              Horários de Culto
             </Button>
           </Link>
         </div>

@@ -6,10 +6,7 @@ import {
   Youtube,
   MapPin,
   Mail,
-  Bug,
   Heart,
-  Smartphone,
-  Lightbulb
 } from "lucide-react";
 
 const Footer = () => {
@@ -64,34 +61,13 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/eventos" className="text-gray-300 hover:text-white transition-colors">
-                  Eventos
+                <Link to="/cultos" className="text-gray-300 hover:text-white transition-colors">
+                  Cultos
                 </Link>
               </li>
               <li>
-                <Link to="/ministerios" className="text-gray-300 hover:text-white transition-colors">
-                  Ministérios
-                </Link>
-              </li>
-              <li>
-                <Link to="/estudos" className="text-gray-300 hover:text-white transition-colors">
-                  Escola Bíblica
-                </Link>
-              </li>
-              <li>
-                {/* Em breve <Link to="/contribuicoes" className="text-gray-300 hover:text-white transition-colors">
-                  Contribuições
-                </Link>*/}
-              </li>
-              <li>
-                <Link to="/testemunhos" className="text-gray-300 hover:text-white transition-colors">
-                  Testemunhos
-                </Link>
-              </li>
-              <li>
-                <Link to="/instalar" className="text-gray-300 hover:text-white transition-colors flex items-center">
-                  <Smartphone className="h-4 w-4 mr-1" />
-                  Instalar App
+                <Link to="/contato" className="text-gray-300 hover:text-white transition-colors">
+                  Contato
                 </Link>
               </li>
             </ul>
@@ -147,35 +123,27 @@ const Footer = () => {
 
         <hr className="border-gray-700 my-8" />
 
-      {/* Bottom Footer */}
-      <div className="text-center text-gray-400">
-        <p>&copy; {currentYear} ICB 610. Todos os direitos reservados.</p>
-        
-        {/* Primeira linha de links */}
-        <p className="mt-2">
-          <Link to="/politica-de-privacidade" className="hover:text-white transition-colors">
-            Política de Privacidade
-          </Link>
-          {" • "}
-          <Link to="/termos-de-uso" className="hover:text-white transition-colors">
-            Termos de Uso
-          </Link>
-        </p>
-      
-        {/* Segunda linha de links */}
-        <p className="mt-1">
-          <Link to="/relatar-bug" className="hover:text-white transition-colors inline-flex items-center gap-1">
-            <Bug size={16} />
-            <Lightbulb size={16} />
-            Sugestão/Bug
-          </Link>
-          {" • "}
-          <Link to="/apoiar-desenvolvedor" className="hover:text-white transition-colors inline-flex items-center gap-1">
-            <Heart size={16} />
-            Apoiar Desenvolvedor
-          </Link>
-        </p>
-      </div>
+        {/* Bottom Footer */}
+        <div className="text-center text-gray-400">
+          <p>&copy; {currentYear} ICB 610. Todos os direitos reservados.</p>
+          
+          <p className="mt-2">
+            <Link to="/politica-de-privacidade" className="hover:text-white transition-colors">
+              Política de Privacidade
+            </Link>
+            {" • "}
+            <Link to="/termos-de-uso" className="hover:text-white transition-colors">
+              Termos de Uso
+            </Link>
+          </p>
+
+          <p className="mt-1">
+            <Link to="/apoiar-desenvolvedor" className="hover:text-white transition-colors inline-flex items-center gap-1">
+              <Heart size={16} />
+              Apoiar Desenvolvedor
+            </Link>
+          </p>
+        </div>
       </div>
     </footer>
   );
