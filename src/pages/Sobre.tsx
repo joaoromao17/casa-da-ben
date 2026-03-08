@@ -42,14 +42,14 @@ const Sobre = () => {
       <section className="section-padding bg-background">
         <div className="container-church">
           <Tabs defaultValue="historia" className="w-full">
-            <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3 mb-10 h-12 bg-warm-100 rounded-xl p-1">
-              <TabsTrigger value="historia" className="rounded-lg text-sm font-medium data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground">
+            <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3 mb-10 h-14 bg-warm-100 rounded-xl p-1.5">
+              <TabsTrigger value="historia" className="rounded-lg text-base font-medium data-[state=active]:bg-card data-[state=active]:border-b-2 data-[state=active]:border-church-gold data-[state=active]:text-foreground data-[state=active]:font-semibold transition-all">
                 História
               </TabsTrigger>
-              <TabsTrigger value="localizacao" className="rounded-lg text-sm font-medium data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground">
+              <TabsTrigger value="localizacao" className="rounded-lg text-base font-medium data-[state=active]:bg-card data-[state=active]:border-b-2 data-[state=active]:border-church-gold data-[state=active]:text-foreground data-[state=active]:font-semibold transition-all">
                 Localização
               </TabsTrigger>
-              <TabsTrigger value="galeria" className="rounded-lg text-sm font-medium data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground">
+              <TabsTrigger value="galeria" className="rounded-lg text-base font-medium data-[state=active]:bg-card data-[state=active]:border-b-2 data-[state=active]:border-church-gold data-[state=active]:text-foreground data-[state=active]:font-semibold transition-all">
                 Galeria
               </TabsTrigger>
             </TabsList>
@@ -73,7 +73,7 @@ const Sobre = () => {
                     >
                       <div className="hidden md:block md:w-1/2" />
                       <div className="absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-church-gold border-2 border-card -translate-x-1/2 mt-1.5 z-10" />
-                      <div className="ml-10 md:ml-0 md:w-1/2 bg-card border border-warm-200 rounded-2xl p-6">
+                      <div className="ml-10 md:ml-0 md:w-1/2 bg-card border border-warm-200 rounded-2xl p-5 md:p-6">
                         <span className="text-church-gold font-display text-2xl font-bold">{item.year}</span>
                         <h3 className="text-lg font-semibold text-foreground mt-1">{item.title}</h3>
                         <p className="text-muted-foreground text-sm mt-2 leading-relaxed">{item.text}</p>
@@ -116,25 +116,22 @@ const Sobre = () => {
                     <div>
                       <h2 className="heading-display text-2xl text-foreground mb-6">Onde Estamos</h2>
                       <div className="space-y-5">
-                        <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 rounded-full bg-warm-100 flex items-center justify-center flex-shrink-0">
-                            <MapPin className="w-5 h-5 text-church-gold" />
+                        {[
+                          { icon: MapPin, title: "Endereço", lines: ["QS 610 — Samambaia Norte", "Brasília - DF, 72320-500"] },
+                          { icon: Mail, title: "E-mail", lines: ["icbcasadabencao610@gmail.com"] },
+                        ].map((info, i) => (
+                          <div key={i} className="flex items-start gap-4">
+                            <div className="w-10 h-10 rounded-full bg-warm-100 flex items-center justify-center flex-shrink-0">
+                              <info.icon className="w-5 h-5 text-church-gold" />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-foreground">{info.title}</h3>
+                              {info.lines.map((l, j) => (
+                                <p key={j} className="text-muted-foreground text-sm break-all">{l}</p>
+                              ))}
+                            </div>
                           </div>
-                          <div>
-                            <h3 className="font-semibold text-foreground">Endereço</h3>
-                            <p className="text-muted-foreground text-sm">QS 610 — Samambaia Norte</p>
-                            <p className="text-muted-foreground text-sm">Brasília - DF, 72320-500</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 rounded-full bg-warm-100 flex items-center justify-center flex-shrink-0">
-                            <Mail className="w-5 h-5 text-church-gold" />
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-foreground">E-mail</h3>
-                            <p className="text-muted-foreground text-sm break-all">icbcasadabencao610@gmail.com</p>
-                          </div>
-                        </div>
+                        ))}
                         <div className="flex items-start gap-4">
                           <div className="w-10 h-10 rounded-full bg-warm-100 flex items-center justify-center flex-shrink-0">
                             <Clock className="w-5 h-5 text-church-gold" />
@@ -185,7 +182,7 @@ const Sobre = () => {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.06 }}
-                    className="aspect-[4/3] overflow-hidden rounded-2xl cursor-pointer group"
+                    className="aspect-[4/3] overflow-hidden rounded-2xl cursor-pointer group ring-1 ring-warm-100 shadow-sm hover:shadow-lg transition-shadow duration-300"
                     onClick={() => setLightboxImg(img)}
                   >
                     <img
@@ -201,28 +198,27 @@ const Sobre = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="section-padding bg-church-800 text-white">
-        <div className="container-church text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-2xl mx-auto"
-          >
-            <h2 className="heading-display text-3xl md:text-4xl text-white mb-4">Venha nos Visitar</h2>
-            <p className="text-white/65 mb-8">
-              Estamos esperando por você! Venha participar dos nossos cultos e conhecer nossa comunidade.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link to="/cultos">
-                <Button className="btn-primary-warm">Horários de Culto</Button>
-              </Link>
-              <Link to="/contato">
-                <Button className="btn-outline-warm">Fale Conosco</Button>
-              </Link>
-            </div>
-          </motion.div>
+      {/* CTA with image overlay */}
+      <section className="cta-section-overlay">
+        <img src="/lovable-uploads/banner.png" alt="" className="cta-bg" />
+        <div className="cta-overlay" />
+        <div className="relative z-10 section-padding">
+          <div className="container-church text-center">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-2xl mx-auto">
+              <h2 className="heading-display text-3xl md:text-4xl text-white mb-4">Venha nos Visitar</h2>
+              <p className="text-white/70 mb-8">
+                Estamos esperando por você! Venha participar dos nossos cultos e conhecer nossa comunidade.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link to="/cultos">
+                  <Button className="btn-primary-warm">Horários de Culto</Button>
+                </Link>
+                <Link to="/contato">
+                  <Button className="btn-outline-warm">Fale Conosco</Button>
+                </Link>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

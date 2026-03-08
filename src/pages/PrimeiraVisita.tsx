@@ -30,12 +30,7 @@ const PrimeiraVisita = () => {
 
       <section className="section-padding bg-background">
         <div className="container-church max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12">
             <h2 className="heading-display text-3xl text-foreground mb-4">
               O que esperar na sua primeira visita
             </h2>
@@ -48,17 +43,10 @@ const PrimeiraVisita = () => {
             {faqs.map((faq, i) => {
               const Icon = faq.icon;
               return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06 }}
-                  className="card-warm p-5"
-                >
+                <motion.div key={i} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }} className="card-warm p-6">
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-warm-100 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-4.5 h-4.5 text-church-gold" />
+                    <div className="w-10 h-10 rounded-lg bg-warm-100 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-5 h-5 text-church-gold" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground text-sm">{faq.q}</h3>
@@ -72,33 +60,31 @@ const PrimeiraVisita = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="section-padding bg-warm-50">
-        <div className="container-church text-center max-w-2xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="heading-display text-2xl md:text-3xl text-foreground mb-4">
-              Estamos esperando por você
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              Venha nos conhecer neste domingo às 18h30. Não precisa agendar — basta chegar!
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
-                <Button className="btn-primary-warm group">
-                  Como Chegar <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </a>
-              <Link to="/cultos">
-                <Button variant="outline" className="border-warm-300 text-foreground hover:bg-warm-100">
-                  Ver Horários
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
+      {/* CTA with image overlay */}
+      <section className="cta-section-overlay">
+        <img src="/lovable-uploads/banner.png" alt="" className="cta-bg" />
+        <div className="cta-overlay" />
+        <div className="relative z-10 section-padding">
+          <div className="container-church text-center max-w-2xl">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <h2 className="heading-display text-2xl md:text-3xl text-white mb-4">
+                Estamos esperando por você
+              </h2>
+              <p className="text-white/70 mb-8">
+                Venha nos conhecer neste domingo às 18h30. Não precisa agendar — basta chegar!
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
+                  <Button className="btn-primary-warm group">
+                    Como Chegar <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </a>
+                <Link to="/cultos">
+                  <Button className="btn-outline-warm">Ver Horários</Button>
+                </Link>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
     </Layout>

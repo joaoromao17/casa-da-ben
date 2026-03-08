@@ -113,8 +113,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Word for You */}
-      <section className="section-padding bg-warm-50">
+      {/* Word for You — tighter padding */}
+      <section className="py-12 md:py-20 bg-warm-50">
         <div className="container-church max-w-3xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -142,46 +142,12 @@ const Home = () => {
             subtitle="Venha nos visitar e experimentar a presença de Deus em nossos encontros"
           />
           <div className="grid sm:grid-cols-2 gap-4 md:gap-5 max-w-3xl mx-auto">
-            <ServiceCard
-              day="Domingo"
-              time="18h30"
-              title="Culto da Família"
-              description="Culto principal da semana. Venha como está."
-              icon={Church}
-              featured
-              index={0}
-            />
-            <ServiceCard
-              day="Terça-feira"
-              time="20h"
-              title="Reunião de Oração"
-              description="Momento de oração e intercessão."
-              icon={HandHelping}
-              index={1}
-            />
-            <ServiceCard
-              day="Quarta-feira"
-              time="20h"
-              title="Escola Bíblica"
-              description="Estudo bíblico para crescimento espiritual."
-              icon={BookOpen}
-              index={2}
-            />
-            <ServiceCard
-              day="Sexta-feira"
-              time="20h"
-              title="Culto de Libertação"
-              description="Todos são bem-vindos. Não precisa agendar."
-              icon={Link2}
-              index={3}
-            />
+            <ServiceCard day="Domingo" time="18h30" title="Culto da Família" description="Culto principal da semana. Venha como está." icon={Church} featured index={0} />
+            <ServiceCard day="Terça-feira" time="20h" title="Reunião de Oração" description="Momento de oração e intercessão." icon={HandHelping} index={1} />
+            <ServiceCard day="Quarta-feira" time="20h" title="Escola Bíblica" description="Estudo bíblico para crescimento espiritual." icon={BookOpen} index={2} />
+            <ServiceCard day="Sexta-feira" time="20h" title="Culto de Libertação" description="Todos são bem-vindos. Não precisa agendar." icon={Link2} index={3} />
           </div>
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mt-10"
-          >
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mt-10">
             <Link to="/como-chegar">
               <Button className="btn-primary-warm group">
                 Como Chegar
@@ -192,16 +158,11 @@ const Home = () => {
         </div>
       </section>
 
-      {/* First Visit Preview */}
-      <section className="section-padding bg-warm-50">
+      {/* First Visit Preview — tighter padding */}
+      <section className="py-12 md:py-20 bg-warm-50">
         <div className="container-church">
           <div className="max-w-3xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
               <h2 className="heading-display text-3xl md:text-4xl text-foreground mb-4">
                 Primeira vez na <span className="text-church-gold">ICB 610</span>?
               </h2>
@@ -209,20 +170,8 @@ const Home = () => {
                 Sabemos que visitar uma igreja pela primeira vez pode gerar dúvidas. Preparamos tudo para você se sentir em casa.
               </p>
               <div className="grid sm:grid-cols-2 gap-3 text-left max-w-lg mx-auto mb-8">
-                {[
-                  "Venha como está, sem formalidade",
-                  "Não precisa agendar",
-                  "Crianças são muito bem-vindas",
-                  "Estacionamento disponível",
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex items-center gap-2.5 text-sm text-foreground"
-                  >
+                {["Venha como está, sem formalidade", "Não precisa agendar", "Crianças são muito bem-vindas", "Estacionamento disponível"].map((item, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="flex items-center gap-2.5 text-sm text-foreground">
                     <span className="w-1.5 h-1.5 rounded-full bg-church-gold flex-shrink-0" />
                     {item}
                   </motion.div>
@@ -248,33 +197,35 @@ const Home = () => {
           />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             {[
-              "/lovable-uploads/galeria1.jpg",
-              "/lovable-uploads/galeria2.jpg",
-              "/lovable-uploads/galeria3.jpg",
-              "/lovable-uploads/galeria4.jpg",
+              { src: "/lovable-uploads/galeria1.jpg", aspect: "aspect-[4/5]" },
+              { src: "/lovable-uploads/galeria2.jpg", aspect: "aspect-square" },
+              { src: "/lovable-uploads/galeria3.jpg", aspect: "aspect-square" },
+              { src: "/lovable-uploads/galeria4.jpg", aspect: "aspect-[4/5]" },
             ].map((img, i) => (
-              <motion.div
+              <motion.a
                 key={i}
+                href="https://www.instagram.com/icb_610/"
+                target="_blank"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="aspect-square overflow-hidden rounded-2xl group"
+                className={`${img.aspect} overflow-hidden rounded-2xl group relative ring-1 ring-warm-200 shadow-md hover:shadow-lg transition-shadow duration-300`}
               >
                 <img
-                  src={img}
+                  src={img.src}
                   alt={`Vida na ICB 610 ${i + 1}`}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-              </motion.div>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                  <Instagram className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
+                </div>
+              </motion.a>
             ))}
           </div>
           <div className="text-center mt-10">
-            <a
-              href="https://www.instagram.com/icb_610/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://www.instagram.com/icb_610/" target="_blank" rel="noopener noreferrer">
               <Button className="bg-foreground text-background hover:bg-foreground/90 font-medium px-6 py-5 rounded-xl group">
                 <Instagram className="mr-2 h-5 w-5" />
                 Siga @icb_610
@@ -285,22 +236,12 @@ const Home = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 overlay-warm z-10" />
-        <img
-          src="/lovable-uploads/sobre_nos.png"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="relative z-20 section-padding">
+      <section className="cta-section-overlay">
+        <img src="/lovable-uploads/sobre_nos.png" alt="" className="cta-bg" />
+        <div className="cta-overlay" />
+        <div className="relative z-20 section-padding-lg">
           <div className="container-church text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="max-w-2xl mx-auto"
-            >
+            <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="max-w-2xl mx-auto">
               <h2 className="heading-display text-3xl md:text-4xl lg:text-5xl text-white mb-4">
                 Sua primeira visita começa aqui
               </h2>
@@ -309,14 +250,10 @@ const Home = () => {
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
-                  <Button className="btn-primary-warm text-base py-6 px-8">
-                    Como Chegar
-                  </Button>
+                  <Button className="btn-primary-warm text-base py-6 px-8">Como Chegar</Button>
                 </a>
                 <Link to="/contato">
-                  <Button className="btn-outline-warm text-base py-6 px-8">
-                    Fale Conosco
-                  </Button>
+                  <Button className="btn-outline-warm text-base py-6 px-8">Fale Conosco</Button>
                 </Link>
               </div>
             </motion.div>

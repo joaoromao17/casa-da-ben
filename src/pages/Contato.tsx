@@ -5,34 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Mail, MapPin, Clock, Instagram, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const GOOGLE_MAPS_URL = "https://www.google.com/maps/place/Igreja+Casa+Da+Bencao/@-15.8712465,-48.0704318,15z/data=!4m6!3m5!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!8m2!3d-15.8563574!4d-48.0797843!16s%2Fg%2F11cs01rnj5";
 
 const contactItems = [
-  {
-    icon: MapPin,
-    title: "Endereço",
-    content: "QS 610 — Samambaia Norte, Brasília - DF",
-    action: { label: "Ver no mapa", href: GOOGLE_MAPS_URL },
-  },
-  {
-    icon: Instagram,
-    title: "Instagram",
-    content: "@icb_610",
-    action: { label: "Seguir", href: "https://www.instagram.com/icb_610/" },
-  },
-  {
-    icon: Mail,
-    title: "E-mail",
-    content: "icbcasadabencao610@gmail.com",
-    action: { label: "Enviar e-mail", href: "mailto:icbcasadabencao610@gmail.com" },
-  },
-  {
-    icon: Clock,
-    title: "Horários de Culto",
-    content: "Dom 18h30 · Ter 20h · Qua 20h · Sex 20h",
-    action: { label: "Ver detalhes", to: "/cultos" },
-  },
+  { icon: MapPin, title: "Endereço", content: "QS 610 — Samambaia Norte, Brasília - DF", action: { label: "Ver no mapa", href: GOOGLE_MAPS_URL } },
+  { icon: Instagram, title: "Instagram", content: "@icb_610", action: { label: "Seguir", href: "https://www.instagram.com/icb_610/" } },
+  { icon: Mail, title: "E-mail", content: "icbcasadabencao610@gmail.com", action: { label: "Enviar e-mail", href: "mailto:icbcasadabencao610@gmail.com" } },
+  { icon: Clock, title: "Horários de Culto", content: "Dom 18h30 · Ter 20h · Qua 20h · Sex 20h", action: { label: "Ver detalhes", to: "/cultos" } },
 ];
 
 const faqItems = [
@@ -64,7 +45,7 @@ const Contato = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 }}
-                    className="card-warm p-5 flex items-start gap-4"
+                    className="card-warm p-6 flex items-start gap-4"
                   >
                     <div className="w-10 h-10 rounded-full bg-warm-100 flex items-center justify-center flex-shrink-0">
                       <Icon className="w-5 h-5 text-church-gold" />
@@ -88,19 +69,10 @@ const Contato = () => {
             </div>
 
             {/* Photo + Message */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="space-y-6"
-            >
+            <motion.div initial={{ opacity: 0, scale: 0.97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="space-y-6">
               <div className="relative">
                 <div className="absolute -inset-2 bg-warm-200/30 rounded-3xl rotate-1" />
-                <img
-                  src="/lovable-uploads/contato.jpg"
-                  alt="Igreja Casa da Benção"
-                  className="relative rounded-2xl shadow-lg w-full h-auto object-cover"
-                />
+                <img src="/lovable-uploads/contato.jpg" alt="Igreja Casa da Benção" className="relative rounded-2xl shadow-lg w-full h-auto object-cover" />
               </div>
               <div className="bg-warm-50 rounded-2xl p-6 border border-warm-200">
                 <h3 className="font-semibold text-foreground mb-2">Venha nos visitar!</h3>
@@ -135,45 +107,41 @@ const Contato = () => {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* FAQ — Accordion */}
       <section className="section-padding bg-background">
         <div className="container-church max-w-3xl">
           <SectionHeading title="Perguntas Frequentes" />
-          <div className="space-y-4">
+          <Accordion type="single" collapsible className="space-y-3">
             {faqItems.map((faq, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="card-warm p-6"
-              >
-                <h3 className="font-semibold text-foreground mb-2">{faq.q}</h3>
-                <p className="text-muted-foreground text-sm">{faq.a}</p>
-              </motion.div>
+              <AccordionItem key={i} value={`faq-${i}`} className="card-warm px-6 border-none">
+                <AccordionTrigger className="text-foreground font-semibold text-sm hover:no-underline py-5">
+                  {faq.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground text-sm pb-5">
+                  {faq.a}
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="section-padding bg-church-800">
-        <div className="container-church text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-xl mx-auto"
-          >
-            <h2 className="heading-display text-3xl text-white mb-4">Venha nos Visitar</h2>
-            <p className="text-white/65 mb-8">Será um prazer receber você e sua família em nossa comunidade.</p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link to="/cultos">
-                <Button className="btn-primary-warm">Ver Horários dos Cultos</Button>
-              </Link>
-            </div>
-          </motion.div>
+      {/* CTA with image overlay */}
+      <section className="cta-section-overlay">
+        <img src="/lovable-uploads/sobre_nos.png" alt="" className="cta-bg" />
+        <div className="cta-overlay" />
+        <div className="relative z-10 section-padding">
+          <div className="container-church text-center">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="max-w-xl mx-auto">
+              <h2 className="heading-display text-3xl text-white mb-4">Venha nos Visitar</h2>
+              <p className="text-white/70 mb-8">Será um prazer receber você e sua família em nossa comunidade.</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link to="/cultos">
+                  <Button className="btn-primary-warm">Ver Horários dos Cultos</Button>
+                </Link>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
     </Layout>

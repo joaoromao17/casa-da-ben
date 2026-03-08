@@ -51,7 +51,7 @@ const QuemEJesus = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className={`${i > 0 ? "mt-16" : ""}`}
+              className={`${i > 0 ? "border-t border-warm-100 pt-12 mt-12" : ""}`}
             >
               <h2 className="heading-display text-2xl md:text-3xl text-foreground mb-4">{section.title}</h2>
               <p className="text-muted-foreground leading-relaxed mb-6">{section.text}</p>
@@ -66,32 +66,31 @@ const QuemEJesus = () => {
         </div>
       </section>
 
-      <section className="section-padding bg-warm-50">
-        <div className="container-church text-center max-w-2xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="heading-display text-2xl md:text-3xl text-foreground mb-4">
-              Queremos caminhar com você
-            </h2>
-            <p className="text-muted-foreground mb-8">
-              Se esta mensagem tocou o seu coração, venha nos visitar. Estamos aqui para ajudar você a dar os próximos passos na sua caminhada de fé.
-            </p>
-            <div className="flex flex-wrap justify-center gap-3">
-              <Link to="/primeira-visita">
-                <Button className="btn-primary-warm group">
-                  Planeje sua Visita <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Link to="/contato">
-                <Button variant="outline" className="border-warm-300 text-foreground hover:bg-warm-100">
-                  Fale Conosco
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
+      {/* CTA with image overlay */}
+      <section className="cta-section-overlay">
+        <img src="/lovable-uploads/banner.png" alt="" className="cta-bg" />
+        <div className="cta-overlay" />
+        <div className="relative z-10 section-padding">
+          <div className="container-church text-center max-w-2xl">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <h2 className="heading-display text-2xl md:text-3xl text-white mb-4">
+                Queremos caminhar com você
+              </h2>
+              <p className="text-white/70 mb-8">
+                Se esta mensagem tocou o seu coração, venha nos visitar. Estamos aqui para ajudar você a dar os próximos passos na sua caminhada de fé.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link to="/primeira-visita">
+                  <Button className="btn-primary-warm group">
+                    Planeje sua Visita <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Link to="/contato">
+                  <Button className="btn-outline-warm">Fale Conosco</Button>
+                </Link>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
     </Layout>
