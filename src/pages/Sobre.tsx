@@ -1,209 +1,172 @@
 import Layout from "@/components/layout/Layout";
+import PageHero from "@/components/ui/PageHero";
+import SectionHeading from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { MapPin, Phone, Mail, Clock, ChevronRight } from "lucide-react";
+import { MapPin, Mail, Clock, Target, Eye, Gem, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
-// Dados simulados da galeria
-const galeria = ["/lovable-uploads/galeria1.jpg", "/lovable-uploads/galeria2.jpg", "/lovable-uploads/galeria3.jpg", "/lovable-uploads/galeria4.jpg", "/lovable-uploads/galeria5.jpg", "/lovable-uploads/galeria6.jpg"];
-
-// Imagens para o carrossel da história
-const historicoImagens = [
-  "/lovable-uploads/carrossel1.jpg",
-  "/lovable-uploads/carrossel2.jpg",
-  "/lovable-uploads/carrossel3.jpg",
-  "/lovable-uploads/carrossel4.jpg",
-  "/lovable-uploads/carrossel5.jpg",
-  "/lovable-uploads/carrossel6.PNG",
-  "/lovable-uploads/carrossel7.jpg",
-  "/lovable-uploads/carrossel8.jpg"
+const galeria = [
+  "/lovable-uploads/galeria1.jpg",
+  "/lovable-uploads/galeria2.jpg",
+  "/lovable-uploads/galeria3.jpg",
+  "/lovable-uploads/galeria4.jpg",
+  "/lovable-uploads/galeria5.jpg",
+  "/lovable-uploads/galeria6.jpg",
 ];
 
+const timeline = [
+  { year: "1992", title: "Fundação", text: "A irmã Luzete, vinda de Paracatu (MG), iniciou cultos na casa da irmã Maria (Tia Quinha) em Samambaia Norte." },
+  { year: "1990s", title: "Crescimento", text: "Com o crescimento das reuniões, o grupo alugou espaços maiores — lojas nas quadras 608 e 408, e um pequeno templo no lote da irmã Fátima." },
+  { year: "2000s", title: "Construção do Templo", text: "A igreja se estabeleceu definitivamente na QS 610 com a construção do templo atual sob a liderança da pastora Luzete e Pastor Joaquim." },
+  { year: "2006", title: "Nova Liderança", text: "O Pastor Marcial assumiu a liderança da igreja e permanece no cargo até os dias de hoje, conduzindo a comunidade com dedicação." },
+];
+
+const GOOGLE_MAPS_URL = "https://www.google.com/maps/place/Igreja+Casa+Da+Bencao/@-15.8712465,-48.0704318,15z/data=!4m6!3m5!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!8m2!3d-15.8563574!4d-48.0797843!16s%2Fg%2F11cs01rnj5";
+
 const Sobre = () => {
-  const isMobile = useIsMobile();
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-church-900/70 to-church-800/70 z-10"></div>
-        <div className="relative h-[40vh] min-h-[300px]">
-          <img src="/lovable-uploads/sobre_nos.png" alt="Igreja Casa da Benção" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 flex items-center z-20">
-            <div className="container-church text-white">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Sobre Nós
-              </h1>
-              <p className="text-xl md:text-2xl max-w-2xl">
-                Conheça a história, valores e missão da Igreja Casa da Benção
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        title="Sobre Nós"
+        subtitle="Conheça a história, valores e missão da Igreja Casa da Benção"
+        image="/lovable-uploads/sobre_nos.png"
+        imageAlt="Igreja Casa da Benção"
+      />
 
-      {/* Tabs de Conteúdo */}
-      <section className="py-12 bg-white">
+      <section className="section-padding bg-background">
         <div className="container-church">
           <Tabs defaultValue="historia" className="w-full">
-            <TabsList className={`grid w-full ${isMobile ? 'grid-cols-3' : 'max-w-2xl mx-auto grid-cols-3'} mb-6`}>
-              <TabsTrigger value="historia" className={isMobile ? 'text-xs px-2' : ''}>História</TabsTrigger>
-              <TabsTrigger value="localizacao" className={isMobile ? 'text-xs px-2' : ''}>Localização</TabsTrigger>
-              <TabsTrigger value="galeria" className={isMobile ? 'text-xs px-2' : ''}>Galeria</TabsTrigger>
+            <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3 mb-10 h-12 bg-warm-100 rounded-xl p-1">
+              <TabsTrigger value="historia" className="rounded-lg text-sm font-medium data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground">
+                História
+              </TabsTrigger>
+              <TabsTrigger value="localizacao" className="rounded-lg text-sm font-medium data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground">
+                Localização
+              </TabsTrigger>
+              <TabsTrigger value="galeria" className="rounded-lg text-sm font-medium data-[state=active]:bg-card data-[state=active]:shadow-sm data-[state=active]:text-foreground">
+                Galeria
+              </TabsTrigger>
             </TabsList>
 
-            {/* Aba de História */}
+            {/* History Tab */}
             <TabsContent value="historia">
-              <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                  <h2 className="text-3xl font-bold text-church-900 mb-6">Nossa História</h2>
-                  <div className="space-y-4 text-gray-700">
-                    <p>
-                      A história da Igreja Casa da Bênção 610 começou no ano de 1992 com a irmã Luzete, vinda de Paracatu (MG), que iniciou cultos na casa da irmã Maria (Tia Quinha) em Samambaia Norte. Com o crescimento das reuniões, surgiu a necessidade de alugar um espaço maior para acomodar os fiéis.
-                    </p>
-                    <p>
-                      O grupo passou por diferentes locais: lojas nas quadras 608 e 408, e até mesmo um pequeno templo no lote da irmã Fátima. Sob a liderança da evangelista Luzete e do obreiro Joaquim, a igreja cresceu rapidamente através de cultos de cura e libertação.
-                    </p>
-                    <p>
-                      O ministério foi se fortalecendo com a chegada de novos membros e, com isso surgiu a necessidade de consagrar novos obreiros, como os irmãos Ari, João e a evangelista Zumira.                   </p>
-                    <p>
-                      Após um período no prédio da 408, a igreja se estabeleceu definitivamente na QS 610 - Samambaia Norte, com a construção do templo atual sob a liderança da pastora Luzete e seu esposo, Pastor Joaquim.
-                    </p>
-                    <p>
-                      Posteriormente, o pastor Wellington Nogueira assumiu a liderança realizando melhorias na estrutura. Em 2006, o pastor Marcial passou a liderar a igreja e encontra-se no cargo até os dias de hoje.
-                    </p>
-                  </div>
+              <div className="max-w-3xl mx-auto">
+                <SectionHeading title="Nossa História" subtitle="Uma jornada de fé desde 1992" />
+
+                {/* Timeline */}
+                <div className="relative">
+                  <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-warm-200 md:-translate-x-px" />
+                  {timeline.map((item, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: i * 0.1 }}
+                      className={`relative flex items-start gap-6 mb-10 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
+                    >
+                      <div className="hidden md:block md:w-1/2" />
+                      <div className="absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-church-gold border-2 border-card -translate-x-1/2 mt-1.5 z-10" />
+                      <div className="ml-10 md:ml-0 md:w-1/2 bg-card border border-warm-200 rounded-2xl p-6">
+                        <span className="text-church-gold font-display text-2xl font-bold">{item.year}</span>
+                        <h3 className="text-lg font-semibold text-foreground mt-1">{item.title}</h3>
+                        <p className="text-muted-foreground text-sm mt-2 leading-relaxed">{item.text}</p>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
-                <div className="space-y-8">
-                  {/* Carrossel de imagens históricas */}
-                  <div className="relative">
-                    <Carousel className="w-full max-w-xl mx-auto" showDots={true}>
-                      <CarouselContent>
-                        {historicoImagens.map((imagem, index) => (
-                          <CarouselItem key={index}>
-                            <div className="p-1">
-                              <Card>
-                                <CardContent className="flex aspect-video items-center justify-center p-0">
-                                  <img
-                                    src={imagem}
-                                    alt={`História da Igreja ${index + 1}`}
-                                    className="w-full h-full object-cover rounded-lg"
-                                  />
-                                </CardContent>
-                              </Card>
-                            </div>
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                      {!isMobile && (
-                        <>
-                          <CarouselPrevious />
-                          <CarouselNext />
-                        </>
-                      )}
-                    </Carousel>
-                  </div>
 
-                  <div className="bg-church-50 p-6 rounded-lg border border-church-100">
-                    <h3 className="text-xl font-semibold text-church-800 mb-3">Nossa Missão</h3>
-                    <p className="text-gray-700 mb-4">
-                      Glorificar a Deus através da adoração, evangelização, discipulado, comunhão e serviço, formando discípulos comprometidos com Cristo.
-                    </p>
-
-                    <h3 className="text-xl font-semibold text-church-800 mb-3">Nossa Visão</h3>
-                    <p className="text-gray-700 mb-4">
-                      Ser uma igreja que impacta vidas e transforma a comunidade através do evangelho de Cristo, formando líderes e multiplicando discípulos.
-                    </p>
-
-                    <h3 className="text-xl font-semibold text-church-800 mb-3">Nossos Valores</h3>
-                    <ul className="list-disc pl-5 text-gray-700">
-                      <li>Fidelidade à Palavra de Deus</li>
-                      <li>Compromisso com a oração</li>
-                      <li>Excelência no serviço ao Senhor</li>
-                      <li>Relacionamentos de amor e comunhão</li>
-                      <li>Mordomia dos recursos e talentos</li>
-                    </ul>
-                  </div>
+                {/* Mission / Vision / Values */}
+                <div className="grid sm:grid-cols-3 gap-4 mt-16">
+                  {[
+                    { icon: Target, title: "Missão", text: "Glorificar a Deus através da adoração, evangelização, discipulado, comunhão e serviço." },
+                    { icon: Eye, title: "Visão", text: "Ser uma igreja que impacta vidas e transforma a comunidade através do evangelho de Cristo." },
+                    { icon: Gem, title: "Valores", text: "Fidelidade à Palavra, compromisso com a oração, excelência no serviço, amor e comunhão." },
+                  ].map((item, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 }}
+                      className="card-warm p-6 text-center"
+                    >
+                      <div className="w-12 h-12 rounded-xl bg-warm-100 flex items-center justify-center mx-auto mb-4">
+                        <item.icon className="w-6 h-6 text-church-gold" />
+                      </div>
+                      <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{item.text}</p>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </TabsContent>
 
-            {/* Aba de Localização */}
+            {/* Location Tab */}
             <TabsContent value="localizacao">
-              <div className={`${isMobile ? 'space-y-6' : 'grid md:grid-cols-2 gap-12'}`}>
-                <div className={isMobile ? 'order-2' : ''}>
-                  <h2 className="text-3xl font-bold text-church-900 mb-6">Onde Estamos</h2>
+              <div className="max-w-4xl mx-auto">
+                <div className="grid md:grid-cols-2 gap-8">
                   <div className="space-y-6">
-                    <div className="flex items-start space-x-3">
-                      <MapPin className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-lg text-church-800">Endereço</h3>
-                        <p className="text-gray-700">QS 610 - Samambaia Norte</p>
-                        <p className="text-gray-700">Brasília - DF, 72320-500</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <Mail className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
-                      <div>
-                        <h3 className="font-semibold text-lg text-church-800">E-mail</h3>
-                        <p className="text-gray-700 break-all">icbcasadabencao610@gmail.com</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-8">
-                      <div className="flex items-start space-x-3 mb-3">
-                        <Clock className="h-6 w-6 text-church-600 flex-shrink-0 mt-1" />
-                        <h3 className="font-semibold text-lg text-church-800">Horários de Culto</h3>
-                      </div>
-                      <div className={`${isMobile ? 'space-y-2' : 'space-y-3'} text-gray-700`}>
-                        <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
-                          <span className="font-medium">Domingo - Culto da Família</span>
-                          <span>18:30</span>
+                    <div>
+                      <h2 className="heading-display text-2xl text-foreground mb-6">Onde Estamos</h2>
+                      <div className="space-y-5">
+                        <div className="flex items-start gap-4">
+                          <div className="w-10 h-10 rounded-full bg-warm-100 flex items-center justify-center flex-shrink-0">
+                            <MapPin className="w-5 h-5 text-church-gold" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-foreground">Endereço</h3>
+                            <p className="text-muted-foreground text-sm">QS 610 — Samambaia Norte</p>
+                            <p className="text-muted-foreground text-sm">Brasília - DF, 72320-500</p>
+                          </div>
                         </div>
-                        <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
-                          <span className="font-medium">Terça-feira - Reunião de Oração</span>
-                          <span>20:00</span>
+                        <div className="flex items-start gap-4">
+                          <div className="w-10 h-10 rounded-full bg-warm-100 flex items-center justify-center flex-shrink-0">
+                            <Mail className="w-5 h-5 text-church-gold" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-foreground">E-mail</h3>
+                            <p className="text-muted-foreground text-sm break-all">icbcasadabencao610@gmail.com</p>
+                          </div>
                         </div>
-                        <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
-                          <span className="font-medium">Quarta-feira - Escola Bíblica</span>
-                          <span>20:00</span>
-                        </div>
-                        <div className={`flex justify-between ${isMobile ? 'border-b pb-1 text-sm' : 'border-b pb-2'}`}>
-                          <span className="font-medium">Sexta-feira - Culto de Libertação</span>
-                          <span>20:00</span>
+                        <div className="flex items-start gap-4">
+                          <div className="w-10 h-10 rounded-full bg-warm-100 flex items-center justify-center flex-shrink-0">
+                            <Clock className="w-5 h-5 text-church-gold" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-foreground mb-2">Horários de Culto</h3>
+                            <div className="space-y-1.5 text-sm text-muted-foreground">
+                              <div className="flex justify-between gap-4"><span>Domingo — Culto da Família</span><span className="font-medium text-foreground">18h30</span></div>
+                              <div className="flex justify-between gap-4"><span>Terça — Reunião de Oração</span><span className="font-medium text-foreground">20h</span></div>
+                              <div className="flex justify-between gap-4"><span>Quarta — Escola Bíblica</span><span className="font-medium text-foreground">20h</span></div>
+                              <div className="flex justify-between gap-4"><span>Sexta — Culto de Libertação</span><span className="font-medium text-foreground">20h</span></div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className={`space-y-8 ${isMobile ? 'order-1' : ''}`}>
-                  <div className={`rounded-lg overflow-hidden shadow-lg ${isMobile ? 'h-48' : 'h-80'}`}>
-                    <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr"
-                      width="100%"
-                      height="100%"
-                      loading="lazy"
-                      className="w-full h-full"
-                    />
-                  </div>
-
-                  <div className={`bg-church-50 ${isMobile ? 'p-4' : 'p-6'} rounded-lg border border-church-100`}>
-                    <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold text-church-800 mb-3`}>Como Chegar</h3>
-                    <p className={`text-gray-700 ${isMobile ? 'text-sm mb-3' : 'mb-4'}`}>Nossa igreja está localizada na avenida do HRSAM</p>
-
-                    <h4 className={`font-medium text-church-700 ${isMobile ? 'text-sm mb-1' : 'mb-2'}`}>Transporte Público:</h4>
-                    <ul className={`list-disc pl-5 text-gray-700 ${isMobile ? 'text-xs mb-3' : 'mb-4'}`}>
-                      <li>Ponto de ônibus próximo a igreja</li>
-                    </ul>
-
-                    <a href="https://www.google.com/maps/place/Igreja+Casa+Da+Bencao/@-15.8712465,-48.0704318,15z/data=!4m6!3m5!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!8m2!3d-15.8563574!4d-48.0797843!16s%2Fg%2F11cs01rnj5?entry=ttu&g_ep=EgoyMDI1MDQxNi4xIKXMDSoJLDEwMjExNDUzSAFQAw%3D%3D" target="_blank">
-                      <Button className={`w-full ${isMobile ? 'text-sm py-2' : ''}`}>
+                  <div className="space-y-4">
+                    <div className="rounded-2xl overflow-hidden shadow-md h-56 md:h-72">
+                      <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15350.884606274025!2d-48.0704318!3d-15.8712465!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!2sIgreja%20Casa%20Da%20Bencao!5e0!3m2!1spt-BR!2sbr!4v1745341351430!5m2!1spt-BR!2sbr"
+                        width="100%"
+                        height="100%"
+                        loading="lazy"
+                        className="w-full h-full"
+                      />
+                    </div>
+                    <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
+                      <Button className="btn-primary-warm w-full">
                         Abrir no Google Maps
+                        <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </a>
                   </div>
@@ -211,58 +174,66 @@ const Sobre = () => {
               </div>
             </TabsContent>
 
-            {/* Aba de Galeria */}
+            {/* Gallery Tab */}
             <TabsContent value="galeria">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold text-church-900 mb-4">Nossa Galeria</h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                  Momentos especiais da nossa igreja ao longo dos anos
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {galeria.map((imagem, index) => (
-                  <div key={index} className="overflow-hidden rounded-lg shadow-md group">
-                    <img src={imagem} alt={`Foto da Igreja ${index + 1}`} className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110" />
-                  </div>
+              <SectionHeading title="Nossa Galeria" subtitle="Momentos especiais da nossa igreja ao longo dos anos" />
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                {galeria.map((img, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.06 }}
+                    className="aspect-[4/3] overflow-hidden rounded-2xl cursor-pointer group"
+                    onClick={() => setLightboxImg(img)}
+                  >
+                    <img
+                      src={img}
+                      alt={`Foto da Igreja ${i + 1}`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </motion.div>
                 ))}
               </div>
-
-              {/* Aba de Galeria 
-              <div className="text-center mt-12">
-                <a href="https://drive.google.com/drive/folders/1-7c8j9A9urrFsOtD_8tBx3e5AOD-9ybY?usp=sharing" target="_blank">
-                  <Button className="btn-primary">
-                    Ver Mais Fotos
-                  </Button>
-                </a>
-              </div>
-              */}
             </TabsContent>
           </Tabs>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-church-600 text-white">
+      {/* CTA */}
+      <section className="section-padding bg-church-800 text-white">
         <div className="container-church text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Venha nos Visitar</h2>
-          <p className="text-xl text-church-100 max-w-3xl mx-auto mb-10">
-            Estamos esperando por você! Venha participar dos nossos cultos e conhecer nossa comunidade.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/cultos">
-              <Button className="bg-white text-black hover:bg-black hover:text-white transition-colors text-lg py-6 px-8">
-                Horários de Culto
-              </Button>
-            </Link>
-            <Link to="/contato">
-              <Button variant="outline" className="bg-white text-black hover:bg-black hover:text-white border-white transition-colors text-lg py-6 px-8">
-                Fale Conosco
-              </Button>
-            </Link>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="max-w-2xl mx-auto"
+          >
+            <h2 className="heading-display text-3xl md:text-4xl text-white mb-4">Venha nos Visitar</h2>
+            <p className="text-white/65 mb-8">
+              Estamos esperando por você! Venha participar dos nossos cultos e conhecer nossa comunidade.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Link to="/cultos">
+                <Button className="btn-primary-warm">Horários de Culto</Button>
+              </Link>
+              <Link to="/contato">
+                <Button className="btn-outline-warm">Fale Conosco</Button>
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
+
+      {/* Lightbox */}
+      <Dialog open={!!lightboxImg} onOpenChange={() => setLightboxImg(null)}>
+        <DialogContent className="max-w-3xl p-1 bg-transparent border-none shadow-none">
+          {lightboxImg && (
+            <img src={lightboxImg} alt="Galeria" className="w-full h-auto rounded-xl" />
+          )}
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
