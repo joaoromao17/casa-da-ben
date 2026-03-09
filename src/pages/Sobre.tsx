@@ -139,10 +139,9 @@ const Sobre = () => {
                           <div>
                             <h3 className="font-semibold text-foreground mb-2">Horários de Culto</h3>
                             <div className="space-y-1.5 text-sm text-muted-foreground">
-                              <div className="flex justify-between gap-4"><span>Domingo — Culto da Família</span><span className="font-medium text-foreground">18h30</span></div>
-                              <div className="flex justify-between gap-4"><span>Terça — Reunião de Oração</span><span className="font-medium text-foreground">20h</span></div>
-                              <div className="flex justify-between gap-4"><span>Quarta — Escola Bíblica</span><span className="font-medium text-foreground">20h</span></div>
-                              <div className="flex justify-between gap-4"><span>Sexta — Culto de Libertação</span><span className="font-medium text-foreground">20h</span></div>
+                              <div className="flex justify-between gap-4"><span>Domingo — Culto da Família</span><span className="font-medium text-foreground">20h</span></div>
+                              <div className="flex justify-between gap-4"><span>Terça — Culto de Oração</span><span className="font-medium text-foreground">20h</span></div>
+                              <div className="flex justify-between gap-4"><span>Quinta — Culto da Palavra</span><span className="font-medium text-foreground">20h</span></div>
                             </div>
                           </div>
                         </div>

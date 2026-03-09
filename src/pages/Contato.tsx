@@ -17,7 +17,7 @@ const contactItems = [
 ];
 
 const faqItems = [
-  { q: "Quais são os horários dos cultos?", a: "Nossos cultos acontecem aos domingos às 18h30 e às terças, quartas e sextas às 20h." },
+  { q: "Quais são os horários dos cultos?", a: "Nossos cultos acontecem aos domingos, terças e quintas às 20h." },
   { q: "A igreja possui estacionamento?", a: "Sim, possuímos estacionamento próprio com capacidade para 20 veículos." },
 ];
 

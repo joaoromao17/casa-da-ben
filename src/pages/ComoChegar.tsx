@@ -79,7 +79,7 @@ const ComoChegar = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <h2 className="heading-display text-2xl md:text-3xl text-white mb-4">Nos vemos em breve!</h2>
               <p className="text-white/70 mb-8">
-                Nosso culto principal é aos domingos às 18h30. Venha como está — estamos esperando por você.
+                Nosso culto principal é aos domingos às 20h. Venha como está — estamos esperando por você.
               </p>
             </motion.div>
           </div>

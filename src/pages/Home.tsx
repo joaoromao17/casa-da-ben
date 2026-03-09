@@ -141,11 +141,10 @@ const Home = () => {
             title="Nossos Cultos"
             subtitle="Venha nos visitar e experimentar a presença de Deus em nossos encontros"
           />
-          <div className="grid sm:grid-cols-2 gap-4 md:gap-5 max-w-3xl mx-auto">
-            <ServiceCard day="Domingo" time="18h30" title="Culto da Família" description="Culto principal da semana. Venha como está." icon={Church} featured index={0} />
-            <ServiceCard day="Terça-feira" time="20h" title="Reunião de Oração" description="Momento de oração e intercessão." icon={HandHelping} index={1} />
-            <ServiceCard day="Quarta-feira" time="20h" title="Escola Bíblica" description="Estudo bíblico para crescimento espiritual." icon={BookOpen} index={2} />
-            <ServiceCard day="Sexta-feira" time="20h" title="Culto de Libertação" description="Todos são bem-vindos. Não precisa agendar." icon={Link2} index={3} />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 max-w-4xl mx-auto">
+            <ServiceCard day="Domingo" time="20h" title="Culto da Família" description="Culto principal da semana. Venha como está." icon={Church} featured index={0} />
+            <ServiceCard day="Terça-feira" time="20h" title="Culto de Oração" description="Momento de oração e intercessão." icon={HandHelping} index={1} />
+            <ServiceCard day="Quinta-feira" time="20h" title="Culto da Palavra" description="Estudo bíblico para crescimento espiritual." icon={BookOpen} index={2} />
           </div>
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mt-10">
             <Link to="/como-chegar">

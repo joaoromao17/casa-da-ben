@@ -71,7 +71,7 @@ const PrimeiraVisita = () => {
                 Estamos esperando por você
               </h2>
               <p className="text-white/70 mb-8">
-                Venha nos conhecer neste domingo às 18h30. Não precisa agendar — basta chegar!
+                Venha nos conhecer neste domingo às 20h. Não precisa agendar — basta chegar!
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer">
