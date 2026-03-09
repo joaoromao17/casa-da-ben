@@ -13,7 +13,7 @@ const InfoBar = () => {
     {
       icon: Clock,
       label: "Próximo Culto",
-      value: "Domingo às 18h30",
+      value: "Domingo às 20h",
     },
     {
       icon: Navigation,

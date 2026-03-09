@@ -3,7 +3,7 @@ import PageHero from "@/components/ui/PageHero";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ServiceCard from "@/components/ui/ServiceCard";
 import { Button } from "@/components/ui/button";
-import { Church, HandHelping, BookOpen, Link2, ArrowRight } from "lucide-react";
+import { Church, HandHelping, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -25,11 +25,10 @@ const Cultos = () => {
             title="Nossos Encontros Semanais"
             subtitle="Cada momento é uma oportunidade de crescer na fé e na comunhão"
           />
-          <div className="grid sm:grid-cols-2 gap-4 md:gap-5 max-w-3xl mx-auto">
-            <ServiceCard day="Domingo" time="18h30" title="Culto da Família" description="Culto principal da semana. Um momento especial de adoração, palavra e comunhão para toda a família." icon={Church} featured index={0} />
-            <ServiceCard day="Terça-feira" time="20h" title="Reunião de Oração" description="Momento de intercessão e busca pela presença de Deus." icon={HandHelping} index={1} />
-            <ServiceCard day="Quarta-feira" time="20h" title="Escola Bíblica" description="Estudo aprofundado da Palavra de Deus para crescimento espiritual." icon={BookOpen} index={2} />
-            <ServiceCard day="Sexta-feira" time="20h" title="Culto de Libertação" description="Todos são bem-vindos. Venha como está. Não precisa agendar." icon={Link2} index={3} />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 max-w-4xl mx-auto">
+            <ServiceCard day="Domingo" time="20h" title="Culto da Família" description="Culto principal da semana. Um momento especial de adoração, palavra e comunhão para toda a família." icon={Church} featured index={0} />
+            <ServiceCard day="Terça-feira" time="20h" title="Culto de Oração" description="Momento de intercessão e busca pela presença de Deus." icon={HandHelping} index={1} />
+            <ServiceCard day="Quinta-feira" time="20h" title="Culto da Palavra" description="Estudo e ensino bíblico para crescimento espiritual." icon={BookOpen} index={2} />
           </div>
         </div>
       </section>

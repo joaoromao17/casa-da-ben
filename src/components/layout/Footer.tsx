@@ -79,10 +79,9 @@ const Footer = () => {
             <div className="mt-6">
               <h4 className="text-sm uppercase tracking-wider font-semibold text-warm-300 mb-3">Cultos</h4>
               <div className="text-warm-400 text-sm space-y-1">
-                <p>Domingo — 18h30</p>
+                <p>Domingo — 20h</p>
                 <p>Terça — 20h</p>
-                <p>Quarta — 20h</p>
-                <p>Sexta — 20h</p>
+                <p>Quinta — 20h</p>
               </div>
             </div>
           </div>
