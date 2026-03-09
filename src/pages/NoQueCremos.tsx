@@ -56,7 +56,7 @@ const NoQueCremos = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
               <h2 className="heading-display text-2xl md:text-3xl text-white mb-4">Quer saber mais?</h2>
               <p className="text-white/70 mb-8">
-                Participe da nossa Escola Bíblica às quartas-feiras às 20h ou entre em contato conosco.
+                Participe do Culto da Palavra às quintas-feiras às 20h ou entre em contato conosco.
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <Link to="/cultos">
