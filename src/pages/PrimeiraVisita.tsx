@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const faqs = [
-  { icon: Clock, q: "Quanto tempo dura um culto?", a: "Nossos cultos duram em média 1h30. O culto de domingo começa às 18h30." },
+  { icon: Clock, q: "Quanto tempo dura um culto?", a: "Nossos cultos duram em média 1h30. O culto de domingo começa às 20h." },
   { icon: Shirt, q: "O que vestir?", a: "Venha como está! Não há código de vestimenta. O importante é você se sentir confortável." },
   { icon: Baby, q: "Posso ir com crianças?", a: "Sim! Crianças são muito bem-vindas. Temos um espaço dedicado para os pequenos." },
   { icon: Car, q: "Tem estacionamento?", a: "Sim, possuímos estacionamento próprio com capacidade para 20 veículos." },

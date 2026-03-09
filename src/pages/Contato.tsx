@@ -13,7 +13,7 @@ const contactItems = [
   { icon: MapPin, title: "Endereço", content: "QS 610 — Samambaia Norte, Brasília - DF", action: { label: "Ver no mapa", href: GOOGLE_MAPS_URL } },
   { icon: Instagram, title: "Instagram", content: "@icb_610", action: { label: "Seguir", href: "https://www.instagram.com/icb_610/" } },
   { icon: Mail, title: "E-mail", content: "icbcasadabencao610@gmail.com", action: { label: "Enviar e-mail", href: "mailto:icbcasadabencao610@gmail.com" } },
-  { icon: Clock, title: "Horários de Culto", content: "Dom 18h30 · Ter 20h · Qua 20h · Sex 20h", action: { label: "Ver detalhes", to: "/cultos" } },
+  { icon: Clock, title: "Horários de Culto", content: "Dom 20h · Ter 20h · Qui 20h", action: { label: "Ver detalhes", to: "/cultos" } },
 ];
 
 const faqItems = [

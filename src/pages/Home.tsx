@@ -5,7 +5,7 @@ import InfoBar from "@/components/ui/InfoBar";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ServiceCard from "@/components/ui/ServiceCard";
 import FeatureHighlight from "@/components/ui/FeatureHighlight";
-import { Instagram, ArrowRight, Heart, Users, Calendar, Church, HandHelping, BookOpen, Link2 } from "lucide-react";
+import { Instagram, ArrowRight, Heart, Users, Calendar, Church, HandHelping, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
 
 const GOOGLE_MAPS_URL = "https://www.google.com/maps/place/Igreja+Casa+Da+Bencao/@-15.8712465,-48.0704318,15z/data=!4m6!3m5!1s0x935a32ad2f29b613:0x1adc8d6dfc71e5df!8m2!3d-15.8563574!4d-48.0797843!16s%2Fg%2F11cs01rnj5";

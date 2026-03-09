@@ -3,7 +3,7 @@ import PageHero from "@/components/ui/PageHero";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ServiceCard from "@/components/ui/ServiceCard";
 import { Button } from "@/components/ui/button";
-import { Church, HandHelping, BookOpen, Link2, ArrowRight } from "lucide-react";
+import { Church, HandHelping, BookOpen, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
