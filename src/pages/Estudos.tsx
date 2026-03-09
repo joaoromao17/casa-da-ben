@@ -339,7 +339,7 @@ const Estudos = () => {
         {/* Call to Action */}
         <div className="bg-church-900 text-white p-8 rounded-lg text-center">
           <h2 className="text-2xl font-bold mb-4">Escola Bíblica</h2>
-          <p className="mb-6">Participe de nossa Escola Bíblica todas as quartas-feiras às 20h e aprofunde seu conhecimento da Palavra.</p>
+          <p className="mb-6">Participe do nosso Culto da Palavra às quintas-feiras às 20h e aprofunde seu conhecimento da Palavra.</p>
         </div>
       </div>
     </Layout>
